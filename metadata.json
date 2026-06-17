@@ -1,0 +1,6 @@
+{
+  "name": "Azta Best Choice",
+  "description": "Website resmi Azta Best Choice Counseling & Psychology di Madiun. Lembaga bimbingan psikotes, asesmen psikologi, dan layanan konseling profesional untuk optimasi potensi diri, siswa, dan persiapan masuk instansi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
