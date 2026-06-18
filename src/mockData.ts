@@ -231,27 +231,27 @@ export const MOCK_SLOTS = [
 export const ALUMNI_TESTIMONIALS = [
   {
     id: 1,
-    name: 'Ipda Rizky Pratama',
-    info: 'Alumni Akpol 2023 - Sekarang Dinas di Polda Jatim',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
-    quote: 'Azta melatih ketajaman psikotes saya dari nol. Analisis skor dari tim psikolog Azta sangat presisi mengenai kelemahan jasmani dan kognitif saya, sehingga saya bisa memperbaikinya dan lolos dengan ranking tinggi.',
-    pilar: 'TNI-POLRI Prep'
+    name: 'Enggar Satria Pratama',
+    info: 'Lolos Taruna Akademi Kepolisian (AKPOL) 2026 - Taruna Akpol',
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150',
+    quote: 'Bimbingan psikotes kognitif, ketahanan stres (tes koran Pauli/Kraepelin) dan kepribadian dari tim psikolog Azta Best Choice sangat presisi. Saya terbantu melewati serangkaian seleksi rumit hingga akhirnya dinyatakan lolos taruna kepolisian!',
+    pilar: 'AKPOL & Kesamaptaan'
   },
   {
     id: 2,
-    name: 'Siti Nurhaliza, S.T.',
-    info: 'Staff Rekrutmen - PT Pertamina (Persero)',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
-    quote: 'Terima kasih program Assessment Center dan Kelas Wawancara Kerja BUMN di Azta! Saya tidak lagi grogi menghadapi panelis dan tahu cara menuangkan portofolio teknik saya dengan metode STAR secara meyakinkan.',
-    pilar: 'BUMN & PNS Prep'
+    name: 'Muhammad Fauzan Al Madany',
+    info: 'Masinis DAOP 8 Surabaya PT. Kereta Api Indonesia (Persero) - Lulus 2026',
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150',
+    quote: 'Kejarlah cita-citamu sebelum habis masamu. Bergabunglah bersama kami di AZTA BEST CHOICE untuk meraih cita-citamu menjadi insan perkeretaapian yang andal, amanah, dan berdedikasi tinggi.',
+    pilar: 'BUMN & Masinis Prep'
   },
   {
     id: 3,
-    name: 'Bagus Wicaksono',
-    info: 'Orang Tua dari Kevin (Siswa SMA - Sukses Tes Bakat PTN Kedinasan)',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
-    quote: 'Sangat puas dengan hasil Tes IQ serta Bakat Minat Azta. Konseling lanjutannya benar-benar membuka mata anak saya tentang mana jurusan kuliah yang sejalan dengan jiwanya. Kevin kini mantap di PKN STAN!',
-    pilar: 'Asesmen Bakat Minat'
+    name: 'Ananda Putri Setyawan',
+    info: 'Lolos Bintara PTU POLRI Polda Jatim 2025',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
+    quote: 'Sistem simulasi psikotes terkomputerisasi CAT di Azta sangat mirip dengan tes aslinya. Pembekalan mental ideologi serta penelusuran minat bakat membuat nilai saya unggul tinggi di tingkat daerah.',
+    pilar: 'Bintara POLRI Prep'
   }
 ];
 
