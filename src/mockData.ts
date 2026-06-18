@@ -404,31 +404,31 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
 export const INITIAL_ALUMNI: Alumni[] = [
   {
     id: 'alum-1',
+    fullName: 'Enggar Satria Pratama',
+    graduationYear: '2026',
+    achievement: 'Lolos Taruna Akademi Kepolisian (AKPOL)',
+    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150'
+  },
+  {
+    id: 'alum-2',
+    fullName: 'Muhammad Fauzan Al Madany',
+    graduationYear: '2026',
+    achievement: 'Lolos Masinis DAOP 8 Surabaya PT. Kereta Api Indonesia (Persero)',
+    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150'
+  },
+  {
+    id: 'alum-3',
     fullName: 'Fahreezi Akbar',
     graduationYear: '2024',
     achievement: 'Lulus Akademi Kepolisian (AKPOL) Rangking 3 Jawa Timur',
     photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150'
   },
   {
-    id: 'alum-2',
+    id: 'alum-4',
     fullName: 'Ananda Putri Setyawan',
     graduationYear: '2025',
     achievement: 'Lolos Bintara PTU POLRI Polda Jatim',
     photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150'
-  },
-  {
-    id: 'alum-3',
-    fullName: 'Eko Wahyudi',
-    graduationYear: '2024',
-    achievement: 'Lolos Bintara TNI Angkatan Darat (AD)',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150'
-  },
-  {
-    id: 'alum-4',
-    fullName: 'Nadia Amalia',
-    graduationYear: '2025',
-    achievement: 'Diterima MT PT. Kereta Api Indonesia (Persero)',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150'
   }
 ];
 

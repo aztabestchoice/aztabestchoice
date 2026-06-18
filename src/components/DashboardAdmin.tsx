@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, ProgramRegistration, PaymentTransaction, PsychologicalResult, CounselingSession, SiteSettings, Student, Alumni } from '../types';
-import { MOCK_USERS } from '../mockData';
+import { MOCK_USERS, INITIAL_ALUMNI } from '../mockData';
 import { compressImage } from '../utils/imageCompressor';
 import { 
   ShieldAlert, 
@@ -237,6 +237,14 @@ export default function DashboardAdmin({
     if (window.confirm(`Apakah Anda yakin ingin menghapus alumni "${name}"?`)) {
       onUpdateAlumni(alumni.filter(a => a.id !== id));
       setSuccessAlert('Data alumni berhasil dihapus!');
+      setTimeout(() => setSuccessAlert(''), 3000);
+    }
+  };
+
+  const handleResetAlumniToDefault = () => {
+    if (window.confirm("Apakah Anda yakin ingin menyinkronkan/memulihkan daftar alumni ke pengaturan default terbaru dari sistem? Langkah ini akan memperbarui tampilan pilar alumni Anda dengan data yang valid, termasuk Enggar Satria Pratama & Muhammad Fauzan Al Madany.")) {
+      onUpdateAlumni(INITIAL_ALUMNI);
+      setSuccessAlert('Data alumni berhasil disinkronkan ke default sistem terbaru!');
       setTimeout(() => setSuccessAlert(''), 3000);
     }
   };
@@ -2294,14 +2302,24 @@ export default function DashboardAdmin({
                   <h3 className="text-lg font-black text-slate-900">Kelola Alumni / Lulusan Siswa</h3>
                   <p className="text-xs text-slate-500 mt-0.5">Kelola dokumentasi pilar alumni taruna berprestasi, tambahkan foto, tahun kelulusan, dan prestasi kedinasan terkait.</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleStartAddAlumni}
-                  className="px-4 py-2.5 bg-emerald-900 hover:bg-emerald-950 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Tambah Alumni Baru</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleResetAlumniToDefault}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-xs border border-gray-200"
+                    title="Kembalikan / Sinkronkan data alumni ke pengaturan bawaan sistem terbaru (Enggar Satria, Muhammad Fauzan, dll.)"
+                  >
+                    Sinkronisasi Default
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleStartAddAlumni}
+                    className="px-4 py-2.5 bg-emerald-900 hover:bg-emerald-950 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Tambah Alumni Baru</span>
+                  </button>
+                </div>
               </div>
 
               {/* ALUMNI INPUT DIALOG/SECTION (Dinamis jika showAlumniModal === true) */}
