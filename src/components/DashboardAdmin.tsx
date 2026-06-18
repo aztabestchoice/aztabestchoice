@@ -29,7 +29,10 @@ import {
   Trash2,
   GraduationCap,
   Bell,
-  RefreshCw
+  RefreshCw,
+  Download,
+  Upload,
+  Copy
 } from 'lucide-react';
 import AdminNotifications from './AdminNotifications';
 
@@ -94,6 +97,83 @@ export default function DashboardAdmin({
       alert('Gagal menghubungi dev server sync. Jika Anda sudah deploy di Vercel secara statis, fitur sinkronisasi ini hanya dapat digunakan sementara di mode Dev lokal Anda.');
     } finally {
       setIsSyncing(false);
+    }
+  };
+
+  // Export/Import states
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [importError, setImportError] = useState('');
+  const [importSuccess, setImportSuccess] = useState('');
+
+  const handleCopyBackupJSON = () => {
+    const compactData = {
+      siteSettings: siteSettings,
+      students: students,
+      alumni: alumni
+    };
+    navigator.clipboard.writeText(JSON.stringify(compactData, null, 2))
+      .then(() => {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 4000);
+      })
+      .catch(err => {
+        console.error('Gagal menyalin teks:', err);
+        alert('Gagal menyalin otomatis. Silakan salin teks dari kotak secara manual!');
+      });
+  };
+
+  const handleDownloadBackupFile = () => {
+    const compactData = {
+      siteSettings: siteSettings,
+      students: students,
+      alumni: alumni
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(compactData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `azta_backup_data_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  const handleImportBackupFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImportError('');
+    setImportSuccess('');
+    const fileReader = new FileReader();
+    if (e.target.files && e.target.files[0]) {
+      fileReader.readAsText(e.target.files[0], "UTF-8");
+      fileReader.onload = (event) => {
+        try {
+          const parsed = JSON.parse(event.target?.result as string);
+          if (!parsed) throw new Error("File kosong atau tidak valid.");
+          
+          let count = 0;
+          if (parsed.siteSettings) {
+            onUpdateSettings(parsed.siteSettings);
+            count++;
+          }
+          if (parsed.students && Array.isArray(parsed.students)) {
+            onUpdateStudents(parsed.students);
+            count++;
+          }
+          if (parsed.alumni && Array.isArray(parsed.alumni)) {
+            onUpdateAlumni(parsed.alumni);
+            count++;
+          }
+
+          if (count > 0) {
+            setImportSuccess(`🎉 Berhasil mengimpor data! ${parsed.alumni?.length || 0} Alumni dan ${parsed.students?.length || 0} Siswa kini aktif di perangkat ini.`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => setImportSuccess(''), 6050);
+          } else {
+            setImportError("Format berkas tidak sesuai. Harus mengandung kunci 'siteSettings', 'students', atau 'alumni'.");
+          }
+        } catch (err: any) {
+          console.error(err);
+          setImportError("Gagal membaca berkas JSON: " + err.message);
+        }
+      };
     }
   };
   
@@ -1971,6 +2051,97 @@ export default function DashboardAdmin({
                       <Plus className="w-3.5 h-3.5" />
                       <span>Tambah Poin</span>
                     </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Portability (Backup / Export / Import) block */}
+              <div className="space-y-4 pt-6 border-t" id="settings-backup-block">
+                <div className="flex items-center space-x-2">
+                  <span className="p-1 px-2.5 bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono text-[10px] font-bold rounded-lg uppercase">Portability</span>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-900 font-sans">11. Pencadangan, Ekspor, & Impor Data Lintas Perangkat</h4>
+                </div>
+                <p className="text-[11px] text-gray-500">
+                  Karena database aplikasi saat ini berjalan secara lokal (Local Browser Storage), data kustomisasi/24 alumni Anda tersimpan di komputer/hp yang sedang Anda gunakan saat ini. Jika Anda membuka link Vercel di Hp atau perangkat lain, data akan kembali ke default. Gunakan alat di bawah ini untuk mentransfer data Anda dengan mudah atau mengirimkannya ke asisten AI untuk ditanam permanen ke dalam file GitHub/Vercel berikutnya!
+                </p>
+
+                {importSuccess && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-250 text-emerald-850 rounded-xl text-xs font-semibold animate-bounce shadow-xs text-left">
+                    {importSuccess}
+                  </div>
+                )}
+
+                {importError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-medium text-left">
+                    ⚠️ {importError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5" id="backup-actions-grid">
+                  {/* Left Column: Local JSON Copy for AI */}
+                  <div className="p-4 bg-indigo-50/50 border border-indigo-150 rounded-2xl flex flex-col justify-between space-y-3.5 text-left">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-extrabold text-indigo-700 uppercase tracking-widest block">Metode 1: Ekspor & Kirim ke AI (Rekomendasi Utama)</span>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        Salin seluruh database alumni & pengaturan saat ini menjadi teks sandi JSON sekali klik, lalu kirimkan teks ini ke chat asisten AI. Kami akan memperbaikinya langsung ke file source code project agar menjadi bawaan default bagi semua pengunjung di semua perangkat!
+                      </p>
+                    </div>
+
+                    <div className="pt-1.5 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCopyBackupJSON}
+                        className={`px-4 py-2.5 rounded-xl font-bold text-xs uppercase transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs ${
+                          copySuccess
+                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                            : 'bg-indigo-900 hover:bg-indigo-950 text-white'
+                        }`}
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>{copySuccess ? 'BERHASIL DISALIN! ✓' : 'SALIN DATA JSON UNTUK CHAT AI'}</span>
+                      </button>
+                    </div>
+                    {copySuccess && (
+                      <p className="text-[10px] text-emerald-700 font-medium animate-pulse">
+                        💡 Teks disalin! Silakan paste (Ctrl+V atau tempel) ke kolom chat dan katakan: "Ini adalah data 24 alumni saya: [paste di sini]".
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Right Column: JSON Backup File Export/Import */}
+                  <div className="p-4 bg-slate-50 border rounded-2xl flex flex-col justify-between space-y-3.5 text-left">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">Metode 2: Download & Upload Berkas Berbagi Mandiri</span>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        Unduh data Anda berupa berkas file <code className="bg-slate-100 p-0.5 px-1 rounded font-mono text-[10px]">.json</code>. Anda bisa menyimpan berkas ini sebagai cadangan rahasia, atau membagikannya ke admin lain untuk diunggah langsung di Vercel perangkat mana pun!
+                      </p>
+                    </div>
+
+                    <div className="pt-1 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
+                      {/* Download */}
+                      <button
+                        type="button"
+                        onClick={handleDownloadBackupFile}
+                        className="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Unduh File Cadangan</span>
+                      </button>
+
+                      {/* Upload */}
+                      <div className="relative flex-grow">
+                        <label className="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 hover:text-emerald-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs text-center">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Unggah & Impor File</span>
+                          <input
+                            type="file"
+                            accept=".json"
+                            onChange={handleImportBackupFile}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
