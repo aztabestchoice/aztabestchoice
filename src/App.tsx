@@ -144,6 +144,27 @@ export default function App() {
     setResults(INITIAL_RESULTS);
     setSessions(INITIAL_SESSIONS);
 
+    // Fetch latest persistent data from dev server workspace if available
+    fetch('/api/workspace-data')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          if (data.siteSettings) {
+            setSiteSettings(data.siteSettings);
+            localStorage.setItem('azta_site_settings', JSON.stringify(data.siteSettings));
+          }
+          if (data.students) {
+            setStudents(data.students);
+            localStorage.setItem('azta_students', JSON.stringify(data.students));
+          }
+          if (data.alumni) {
+            setAlumni(data.alumni);
+            localStorage.setItem('azta_alumni', JSON.stringify(data.alumni));
+          }
+        }
+      })
+      .catch(err => console.log('Notice: Dev-sync server not reachable, using static bundle fallbacks.'));
+
     // Clean initial scroll
     window.scrollTo(0, 0);
 

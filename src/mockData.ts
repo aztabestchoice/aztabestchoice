@@ -4,6 +4,7 @@
  */
 
 import { User, ProgramRegistration, PaymentTransaction, PsychologicalResult, Psychologist, CounselingSession, BlogArticle, SiteSettings, Student, Alumni, NotificationLog, NotificationSetting } from './types';
+import persistentData from './persistentData.json';
 
 export const MOCK_USERS: User[] = [
   {
@@ -329,7 +330,7 @@ BUMN-BUMN besar menerapkan metode Assessment Center untuk mengevaluasi manajeria
   }
 ];
 
-export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
   logoUrl: '', // empty to use beautiful built-in SVG logo by default
   brandName: 'Azta',
   brandSuffix: 'Best Choice',
@@ -401,7 +402,11 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   showBenefitsOnHome: true
 };
 
-export const INITIAL_ALUMNI: Alumni[] = [
+export const DEFAULT_SITE_SETTINGS: SiteSettings = (persistentData && persistentData.siteSettings)
+  ? (persistentData.siteSettings as SiteSettings)
+  : BASE_DEFAULT_SITE_SETTINGS;
+
+const BASE_INITIAL_ALUMNI: Alumni[] = [
   {
     id: 'alum-1',
     fullName: 'Enggar Satria Pratama',
@@ -432,7 +437,11 @@ export const INITIAL_ALUMNI: Alumni[] = [
   }
 ];
 
-export const INITIAL_STUDENTS: Student[] = [
+export const INITIAL_ALUMNI: Alumni[] = (persistentData && persistentData.alumni)
+  ? (persistentData.alumni as Alumni[])
+  : BASE_INITIAL_ALUMNI;
+
+const BASE_INITIAL_STUDENTS: Student[] = [
   {
     id: 'stud-001',
     studentNumber: 'AST-2026-001',
@@ -466,6 +475,10 @@ export const INITIAL_STUDENTS: Student[] = [
     registrationDate: '2026-06-14'
   }
 ];
+
+export const INITIAL_STUDENTS: Student[] = (persistentData && persistentData.students)
+  ? (persistentData.students as Student[])
+  : BASE_INITIAL_STUDENTS;
 
 export const INITIAL_NOTIFICATION_SETTINGS: NotificationSetting = {
   enableAutomatedEmail: true,

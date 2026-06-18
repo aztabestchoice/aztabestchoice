@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
@@ -270,6 +271,42 @@ app.post('/api/notifications/trigger-auto', (req, res) => {
   }
 
   res.json({ success: true, triggeredCount: triggered.length, triggered });
+});
+
+// API to read/write persistent workspace data
+app.get('/api/workspace-data', (req, res) => {
+  const filePath = path.join(process.cwd(), 'src', 'persistentData.json');
+  try {
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf8');
+      res.json(JSON.parse(data));
+    } else {
+      res.json({ siteSettings: null, students: null, alumni: null });
+    }
+  } catch (error) {
+    console.error('Error reading persistent data:', error);
+    res.status(500).json({ error: 'Gagal membaca data presisten' });
+  }
+});
+
+app.post('/api/workspace-data', (req, res) => {
+  const filePath = path.join(process.cwd(), 'src', 'persistentData.json');
+  try {
+    const { siteSettings, students, alumni } = req.body;
+    const currentData = fs.existsSync(filePath) 
+      ? JSON.parse(fs.readFileSync(filePath, 'utf8')) 
+      : { siteSettings: null, students: null, alumni: null };
+
+    if (siteSettings !== undefined) currentData.siteSettings = siteSettings;
+    if (students !== undefined) currentData.students = students;
+    if (alumni !== undefined) currentData.alumni = alumni;
+
+    fs.writeFileSync(filePath, JSON.stringify(currentData, null, 2), 'utf8');
+    res.json({ success: true, data: currentData });
+  } catch (error) {
+    console.error('Error writing persistent data:', error);
+    res.status(500).json({ error: 'Gagal memperbarui data presisten' });
+  }
 });
 
 // Setup Vite/Static serving

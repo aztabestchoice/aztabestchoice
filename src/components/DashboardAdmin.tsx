@@ -28,7 +28,8 @@ import {
   Plus,
   Trash2,
   GraduationCap,
-  Bell
+  Bell,
+  RefreshCw
 } from 'lucide-react';
 import AdminNotifications from './AdminNotifications';
 
@@ -70,6 +71,31 @@ export default function DashboardAdmin({
   onUpdateAlumni
 }: DashboardAdminProps) {
   const [activeTab, setActiveTab] = useState<AdminSubTab>('stats');
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSyncWorkspaceData = async () => {
+    setIsSyncing(true);
+    try {
+      const response = await fetch('/api/workspace-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ siteSettings, students, alumni })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSuccessAlert('✅ Sinkronisasi Berhasil! Seluruh data kustomisasi, alumni, dan siswa Anda telah dipanggang secara permanen ke file project (persistentData.json). Silakan publish ulang ke GitHub/Vercel dan saksikan di perangkat lain!');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => setSuccessAlert(''), 10000);
+      } else {
+        alert('Gagal menyinkronkan data.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghubungi dev server sync. Jika Anda sudah deploy di Vercel secara statis, fitur sinkronisasi ini hanya dapat digunakan sementara di mode Dev lokal Anda.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
   
   // Settings Form State
   const [settingsForm, setSettingsForm] = useState<SiteSettings>({ ...siteSettings });
@@ -599,12 +625,31 @@ export default function DashboardAdmin({
             </p>
           </div>
 
-          <div className="mt-4 sm:mt-0 bg-slate-950 p-4 border border-slate-800 rounded-2xl flex items-center space-x-3 shadow-md" id="admin-meta">
-            <ShieldAlert className="w-8 h-8 text-amber-500 shrink-0" />
-            <div>
-              <p className="text-xs font-bold font-mono">ROLE: ADMINISTRATOR</p>
-              <p className="text-[10px] text-emerald-400 mt-0.5 leading-none">Status Enkripsi: Aktif</p>
+          <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <div className="bg-slate-950 p-4 border border-slate-800 rounded-2xl flex items-center space-x-3 shadow-md" id="admin-meta">
+              <ShieldAlert className="w-8 h-8 text-amber-500 shrink-0" />
+              <div>
+                <p className="text-xs font-bold font-mono text-slate-100">ROLE: ADMINISTRATOR</p>
+                <p className="text-[10px] text-emerald-400 mt-0.5 leading-none font-mono">Status Enkripsi: Aktif</p>
+              </div>
             </div>
+
+            <button
+              onClick={handleSyncWorkspaceData}
+              disabled={isSyncing}
+              className={`p-4 border rounded-2xl flex items-center space-x-3 shadow-md transition-all text-xs font-bold font-mono uppercase text-left shrink-0 ${
+                isSyncing 
+                  ? 'bg-amber-950/80 border-amber-800 text-amber-400 animate-pulse cursor-not-allowed'
+                  : 'bg-indigo-950 border-indigo-800 hover:bg-indigo-900 text-indigo-300 hover:border-indigo-600 active:scale-95 cursor-pointer'
+              }`}
+              title="Panggang kustomisasi beranda & alumni Anda saat ini ke dalam source code agar menjadi default bagi semua pengunjung!"
+            >
+              <RefreshCw className={`w-5 h-5 ${isSyncing ? 'animate-spin' : ''}`} />
+              <div className="font-sans">
+                <p className="text-[10px] font-bold font-mono uppercase leading-tight">{isSyncing ? 'Menyimpan...' : 'SIMPAN KE PROJECT SOURCE'}</p>
+                <p className="text-[8px] text-indigo-400 font-mono lowercase tracking-normal">Bake data to code for all devices</p>
+              </div>
+            </button>
           </div>
         </div>
 
