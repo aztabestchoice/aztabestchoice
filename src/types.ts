@@ -176,5 +176,37 @@ export interface SiteSettings {
   // Dynamic Programs list managed by Admin
   programs?: string[];
   backgroundImageUrl?: string; // Changeable website background picture
+  services?: ServiceItem[];
+  benefits?: string[];
 }
+
+export interface ServiceItem {
+  id: string;
+  title: string;
+  instruments: string[];
+}
+
+export interface NotificationLog {
+  id: string;
+  recipientName: string;
+  recipientContact: string;
+  type: 'counseling_reminder' | 'registration_deadline' | 'article_update' | 'manual';
+  channel: 'email' | 'sms' | 'whatsapp';
+  title: string;
+  message: string;
+  status: 'sent' | 'failed' | 'pending';
+  timestamp: string;
+}
+
+export interface NotificationSetting {
+  enableAutomatedEmail: boolean;
+  enableAutomatedSms: boolean;
+  emailSenderName: string;
+  emailApiKey: string; // e.g. SendGrid/Mailchimp
+  smsSenderId: string; // e.g. Twilio/SmsGateway
+  smsApiKey: string;
+  notifyOnBookingTimesBeforeHours: number;
+  notifyOnDeadlineDaysBefore: number;
+}
+
 

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ActiveTab, ServiceTab } from '../types';
+import { ActiveTab, ServiceTab, SiteSettings } from '../types';
 import { 
   GraduationCap, 
   FileText, 
@@ -23,9 +23,10 @@ interface LayananDetailProps {
   serviceSubTab: ServiceTab;
   setServiceSubTab: (subTab: ServiceTab) => void;
   setActiveTab: (tab: ActiveTab) => void;
+  siteSettings?: SiteSettings;
 }
 
-export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActiveTab }: LayananDetailProps) {
+export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActiveTab, siteSettings }: LayananDetailProps) {
   
   const handleRegisterRedirect = () => {
     setActiveTab('portal');
@@ -297,6 +298,38 @@ export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActi
                     </p>
                   </div>
 
+                  {/* Dynamic Services from Admin Settings */}
+                  {siteSettings?.services && siteSettings.services.length > 0 && (
+                    <div className="pt-6 border-t border-dashed border-gray-200 space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-850 text-left">
+                        Layanan Tambahan & Alat Tes Khusus (Aktif):
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {siteSettings.services.map((srv, sIdx) => (
+                          <div key={srv.id || sIdx} className="border border-gray-150 rounded-2xl p-5 hover:border-emerald-300 transition-all bg-white shadow-xs text-left space-y-2">
+                            <h4 className="text-xs font-black text-slate-800 flex items-center space-x-1.5 uppercase tracking-wide">
+                              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0 animate-pulse-slow" />
+                              <span>{srv.title}</span>
+                            </h4>
+                            <div className="space-y-1">
+                              <p className="text-[9px] font-extrabold text-gray-400 uppercase tracking-widest leading-none">Spesifikasi Alat Ukur / Tes:</p>
+                              <div className="flex flex-wrap gap-1.5 pt-1">
+                                {srv.instruments.map((inst, iIdx) => (
+                                  <span key={iIdx} className="px-2 py-0.5 bg-emerald-50 text-emerald-950 border border-emerald-100 rounded text-[10px] font-medium font-sans">
+                                    {inst}
+                                  </span>
+                                ))}
+                                {srv.instruments.length === 0 && (
+                                  <span className="text-[10px] text-gray-400 italic">Hanya materi inti</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                 </div>
               </div>
             </div>
@@ -372,6 +405,36 @@ export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActi
           )}
 
         </div>
+
+        {/* MANFAAT & TUJUAN SECTION */}
+        {siteSettings?.benefits && siteSettings.benefits.length > 0 && (
+          <div className="mt-16 bg-white border border-gray-150 rounded-3xl p-8 sm:p-10 shadow-xs text-left" id="manfaat-tujuan-section">
+            <div className="max-w-3xl">
+              <span className="text-xs text-emerald-850 font-bold uppercase tracking-widest block mb-1">
+                Kenapa Memilih Asesmen & Bimbingan Azta?
+              </span>
+              <h2 className="font-sans font-black text-2xl sm:text-3xl text-emerald-950 tracking-tight">
+                Manfaat & Tujuan Program Asesmen
+              </h2>
+              <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                Asesmen, bimbingan psikotes, serta konseling terencana bersama tim profesional kami dirancang matang untuk menghadirkan kontribusi nyata bagi masa depan akademis dan kestabilan mental anak didik:
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              {siteSettings.benefits.map((benefit, idx) => (
+                <div key={idx} className="flex items-start space-x-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-emerald-200 transition-all shadow-xs">
+                  <div className="p-1 px-1.5 bg-emerald-100 text-emerald-950 font-black rounded-lg text-xs shrink-0 font-mono">
+                    0{idx + 1}
+                  </div>
+                  <p className="text-xs text-slate-700 leading-relaxed font-sans font-medium">
+                    {benefit}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

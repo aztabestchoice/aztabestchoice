@@ -11,23 +11,25 @@
   --font-display: "Space Grotesk", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  /* Remap Emerald primary hues to Majestic deep blues for Bento Theme */
-  --color-emerald-50: #efinit-f4f8ff; /* soft ice-blue */
-  --color-emerald-50: #eff6ff;
-  --color-emerald-100: #dbeafe;
-  --color-emerald-200: #bfdbfe;
-  --color-emerald-300: #93c5fd;
-  --color-emerald-400: #3b82f6; 
-  --color-emerald-500: #1d4ed8; /* beautiful rich primary blue */
-  --color-emerald-600: #1e40af;
-  --color-emerald-700: #1d4ed8;
-  --color-emerald-800: #1e3a8a; /* deep blue-900 */
-  --color-emerald-900: #1e3a8a; /* deep blue-900 */
-  --color-emerald-950: #0f172a; /* dark slate-950 */
-  --color-emerald-990: #0f172a;
+  /* Remap Emerald primary hues to Majestic deep toska/turquoise for Bento Theme */
+  --color-emerald-50: #f0fdfa; /* soft ice-toska */
+  --color-emerald-100: #ccfbf1;
+  --color-emerald-250: #99f6e4;
+  --color-emerald-200: #99f6e4;
+  --color-emerald-300: #5eead4;
+  --color-emerald-400: #2dd4bf; 
+  --color-emerald-500: #0d9488; /* beautiful rich primary toska */
+  --color-emerald-600: #0f766e;
+  --color-emerald-700: #0d9488;
+  --color-emerald-800: #115e59; /* deep toska-800 */
+  --color-emerald-850: #0f766e;
+  --color-emerald-900: #134e4a; /* very deep toska-900 */
+  --color-emerald-950: #042f2e; /* dark toska slate-950 */
+  --color-emerald-990: #021414;
+  --color-emerald-1020: #021414;
 
   /* Remap dark accent greens for high contrast texts */
-  --color-emerald-1000: #0f172a;
+  --color-emerald-1000: #042f2e;
 
   /* Custom bento radius and borders */
   --radius-[2rem]: 2rem;

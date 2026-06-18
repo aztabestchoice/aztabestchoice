@@ -55,8 +55,14 @@ export default function App() {
         const parsed = JSON.parse(saved);
         if (parsed.backgroundImageUrl === '/src/assets/images/bg_azta_1781689948341.jpg') {
           parsed.backgroundImageUrl = '/bg_azta_1781689948341.jpg';
-          localStorage.setItem('azta_site_settings', JSON.stringify(parsed));
         }
+        if (!parsed.services) {
+          parsed.services = DEFAULT_SITE_SETTINGS.services;
+        }
+        if (!parsed.benefits) {
+          parsed.benefits = DEFAULT_SITE_SETTINGS.benefits;
+        }
+        localStorage.setItem('azta_site_settings', JSON.stringify(parsed));
         return parsed;
       } catch (e) {
         // use default
@@ -228,6 +234,7 @@ export default function App() {
             serviceSubTab={serviceSubTab}
             setServiceSubTab={setServiceSubTab}
             setActiveTab={setActiveTab}
+            siteSettings={siteSettings}
           />
         )}
 

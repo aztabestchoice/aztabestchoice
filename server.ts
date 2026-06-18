@@ -88,6 +88,190 @@ app.post('/api/tanya-ai', async (req, res) => {
   }
 });
 
+// Notifications Simulation Memory Database
+let notificationSettings = {
+  enableAutomatedEmail: true,
+  enableAutomatedSms: true,
+  emailSenderName: 'Azta Best Choice Madiun',
+  emailApiKey: 'SG.AztaSecretApiKeyPlaceholder34928347',
+  smsSenderId: 'AZTA_INFO',
+  smsApiKey: 'TXT-AZTA-KEY-9231804712497',
+  notifyOnBookingTimesBeforeHours: 24,
+  notifyOnDeadlineDaysBefore: 3
+};
+
+let notificationLogs: any[] = [
+  {
+    id: 'notif-log-1',
+    recipientName: 'Dimas Anggara',
+    recipientContact: 'dimas@gmail.com',
+    type: 'counseling_reminder',
+    channel: 'email',
+    title: '⏰ Pengingat Sesi Konseling Psikologis Anda',
+    message: 'Halo Dimas Anggara, ini adalah pengingat sesi konseling psikologi TNI-POLRI Anda yang terjadwal besok pukul 09:00 WIB bersama Tim Segenap Psikolog Azta.',
+    status: 'sent',
+    timestamp: new Date(Date.now() - 3600000 * 2).toISOString()
+  },
+  {
+    id: 'notif-log-2',
+    recipientName: 'Lia Rahmawati',
+    recipientContact: '089876543210',
+    type: 'registration_deadline',
+    channel: 'sms',
+    title: 'Pemberitahuan Pendaftaran',
+    message: 'Halo Lia Rahmawati, batas akhir pelunasan pendaftaran program Bimbel CAT BUMN tinggal 3 hari lagi. Segera penuhi berkas pendaftaran Anda. Terimakasih.',
+    status: 'sent',
+    timestamp: new Date(Date.now() - 3600000 * 5).toISOString()
+  },
+  {
+    id: 'notif-log-3',
+    recipientName: 'Seluruh Siswa Terdaftar',
+    recipientContact: 'Mailing List (Siswa & Alumni)',
+    type: 'article_update',
+    channel: 'email',
+    title: '📚 Tips Psikotes Baru: Menguasai Tes EPPS & Wartegg',
+    message: 'Halo Siswa Azta, artikel blog instruksional baru mengenai tips melatih kepribadian EPPS dan menggambar Wartegg telah diterbitkan! Baca selengkapnya di portal.',
+    status: 'sent',
+    timestamp: new Date(Date.now() - 3600000 * 12).toISOString()
+  }
+];
+
+// Notifications endpoints
+app.get('/api/notifications/settings', (req, res) => {
+  res.json(notificationSettings);
+});
+
+app.post('/api/notifications/settings', (req, res) => {
+  notificationSettings = { ...notificationSettings, ...req.body };
+  res.json({ success: true, settings: notificationSettings });
+});
+
+app.get('/api/notifications/logs', (req, res) => {
+  res.json(notificationLogs);
+});
+
+app.post('/api/notifications/clear-logs', (req, res) => {
+  notificationLogs = [];
+  res.json({ success: true });
+});
+
+app.post('/api/notifications/send', (req, res) => {
+  const { recipientName, recipientContact, type, channel, title, message } = req.body;
+  if (!recipientName || !recipientContact || !title || !message) {
+    res.status(400).json({ error: 'Parameter nama penerima, kontak, judul, dan isi pesan wajib diisi!' });
+    return;
+  }
+  const newLog = {
+    id: `notif-log-${Date.now()}`,
+    recipientName,
+    recipientContact,
+    type: type || 'manual',
+    channel: channel || 'email',
+    title,
+    message,
+    status: 'sent',
+    timestamp: new Date().toISOString()
+  };
+  notificationLogs.unshift(newLog);
+  res.json({ success: true, log: newLog });
+});
+
+app.post('/api/notifications/trigger-auto', (req, res) => {
+  const { registrations, sessions, articles } = req.body;
+  const triggered: any[] = [];
+  
+  // 1. Scan counseling sessions (with Status = booked)
+  if (Array.isArray(sessions)) {
+    sessions.forEach(session => {
+      if (session.status === 'booked' || session.status === 'scheduled') {
+        const alreadyExists = notificationLogs.some(log => 
+          log.recipientName === session.studentName && 
+          log.type === 'counseling_reminder' &&
+          log.message.includes(session.date)
+        );
+        
+        if (!alreadyExists) {
+          const channel = notificationSettings.enableAutomatedEmail ? 'email' : 'sms';
+          const contact = channel === 'email' ? `${session.studentName.toLowerCase().replace(/\s+/g, '')}@gmail.com` : '081234567xxx';
+          
+          const log = {
+            id: `notif-log-auto-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            recipientName: session.studentName,
+            recipientContact: contact,
+            type: 'counseling_reminder',
+            channel: channel,
+            title: `⏰ Pengingat Sesi Konseling Psikologis: ${session.date}`,
+            message: `Halo ${session.studentName}, ini adalah pesan otomatis dari Azta Best Choice. Sesi konseling psikologi Anda dijadwalkan pada ${session.date} pukul ${session.time} bersama Dr. ${session.psychologistName}. Mohon hadir tepat waktu.`,
+            status: 'sent',
+            timestamp: new Date().toISOString()
+          };
+          notificationLogs.unshift(log);
+          triggered.push(log);
+        }
+      }
+    });
+  }
+
+  // 2. Scan registrations coming up
+  if (Array.isArray(registrations)) {
+    registrations.forEach(reg => {
+      if (reg.status === 'pending' || reg.paymentStatus === 'unpaid' || reg.paymentStatus === 'pending_verification') {
+        const alreadyExists = notificationLogs.some(log => 
+          log.recipientName === reg.studentName && 
+          log.type === 'registration_deadline' &&
+          log.message.includes(reg.programName)
+        );
+        
+        if (!alreadyExists) {
+          const channel = notificationSettings.enableAutomatedSms ? 'sms' : 'email';
+          const contact = channel === 'sms' ? '081234567xxx' : `${reg.studentName.toLowerCase().replace(/\s+/g, '')}@gmail.com`;
+          
+          const log = {
+            id: `notif-log-auto-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            recipientName: reg.studentName,
+            recipientContact: contact,
+            type: 'registration_deadline',
+            channel: channel,
+            title: `⚠️ Pengingat Pembayaran & Registrasi: ${reg.programName}`,
+            message: `Halo ${reg.studentName}, kelengkapan administrasi Anda untuk bimbingan ${reg.programName} mendekati tenggat waktu seleksi. Mohon segera laksanakan verifikasi pembayaran (Status: ${reg.paymentStatus}).`,
+            status: 'sent',
+            timestamp: new Date().toISOString()
+          };
+          notificationLogs.unshift(log);
+          triggered.push(log);
+        }
+      }
+    });
+  }
+
+  // 3. Scan newest articles
+  if (Array.isArray(articles) && articles.length > 0) {
+    const newestArticle = articles[0];
+    const alreadyExists = notificationLogs.some(log => 
+      log.type === 'article_update' &&
+      log.title.includes(newestArticle.title)
+    );
+
+    if (!alreadyExists) {
+      const log = {
+        id: `notif-log-auto-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        recipientName: 'Mailing List Azta',
+        recipientContact: 'semua-siswa@azta-madiun.web.id',
+        type: 'article_update',
+        channel: 'email',
+        title: `📚 Info Seleksi Terbit: ${newestArticle.title}`,
+        message: `Kabar gembira! Artikel bimbingan / informasi seleksi terbaru telah terbit: "${newestArticle.title}". Kategori: ${newestArticle.category}. Silakan login ke portal siswa Anda untuk membaca ulasan lengkapnya.`,
+        status: 'sent',
+        timestamp: new Date().toISOString()
+      };
+      notificationLogs.unshift(log);
+      triggered.push(log);
+    }
+  }
+
+  res.json({ success: true, triggeredCount: triggered.length, triggered });
+});
+
 // Setup Vite/Static serving
 async function start() {
   if (process.env.NODE_ENV !== 'production') {

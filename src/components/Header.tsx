@@ -60,10 +60,10 @@ export default function Header({
           )}
           <div>
             <div className="flex items-center space-x-1">
-              <span className="font-display font-bold text-base tracking-tight text-blue-900 group-hover:text-blue-700 transition-colors">
+              <span className="font-display font-bold text-base tracking-tight text-emerald-900 group-hover:text-emerald-700 transition-colors">
                 {siteSettings?.brandName || 'Azta'}
               </span>
-              <span className="font-sans font-light text-slate-500 text-xs underline decoration-blue-400">
+              <span className="font-sans font-light text-slate-500 text-xs underline decoration-emerald-400">
                 {siteSettings?.brandSuffix || 'Best Choice'}
               </span>
             </div>
@@ -78,7 +78,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('home'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'home' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'home' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-home"
           >
@@ -91,7 +91,7 @@ export default function Header({
               onMouseEnter={() => setDropdownOpen(true)}
               onClick={() => { setActiveTab('layanan'); setServiceSubTab('all'); }}
               className={`flex items-center space-x-1 font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-                activeTab === 'layanan' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+                activeTab === 'layanan' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
               }`}
               id="nav-services-dropdown"
             >
@@ -116,9 +116,9 @@ export default function Header({
                 
                 <button
                   onClick={() => handleServiceClick('seleksi')}
-                  className="flex w-full items-center space-x-3 px-4 py-2 text-left text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-900 rounded-lg transition-colors"
+                  className="flex w-full items-center space-x-3 px-4 py-2 text-left text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-900 rounded-lg transition-colors"
                 >
-                  <GraduationCap className="w-4 h-4 text-blue-650 shrink-0" />
+                  <GraduationCap className="w-4 h-4 text-emerald-600 shrink-0" />
                   <div>
                     <p className="font-bold text-xs text-slate-900 leading-tight">Persiapan Seleksi</p>
                     <p className="text-[10px] text-zinc-500">TNI, POLRI, Kedinasan & BUMN</p>
@@ -127,7 +127,7 @@ export default function Header({
 
                 <button
                   onClick={() => handleServiceClick('asesmen')}
-                  className="flex w-full items-center space-x-3 px-4 py-2 text-left text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-900 rounded-lg transition-colors"
+                  className="flex w-full items-center space-x-3 px-4 py-2 text-left text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-900 rounded-lg transition-colors"
                 >
                   <FileText className="w-4 h-4 text-emerald-500 shrink-0" />
                   <div>
@@ -153,7 +153,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('pendaftaran'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'pendaftaran' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'pendaftaran' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-pendaftaran"
           >
@@ -163,7 +163,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('tentang'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'tentang' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'tentang' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-about"
           >
@@ -173,7 +173,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('alumni'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'alumni' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'alumni' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-alumni"
           >
@@ -183,7 +183,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('blog'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'blog' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'blog' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-blog"
           >
@@ -193,7 +193,7 @@ export default function Header({
           <button
             onClick={() => { setActiveTab('kontak'); }}
             className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'kontak' ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              activeTab === 'kontak' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
             }`}
             id="nav-contact"
           >
@@ -213,14 +213,14 @@ export default function Header({
                 <img 
                   src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'} 
                   alt={currentUser.name} 
-                  className="w-8 h-8 rounded-full border border-blue-500 object-cover"
+                  className="w-8 h-8 rounded-full border border-emerald-500 object-cover"
                   referrerPolicy="no-referrer"
                 />
                 <div className="text-left">
                   <p className="text-xs font-bold text-slate-800 line-clamp-1 max-w-[120px]">
                     {currentUser.name}
                   </p>
-                  <span className="flex items-center text-[9px] text-blue-700 font-semibold uppercase tracking-wider">
+                  <span className="flex items-center text-[9px] text-emerald-700 font-semibold uppercase tracking-wider">
                     {currentUser.role === 'admin' ? (
                       <>
                         <ShieldAlert className="w-2.5 h-2.5 mr-0.5 text-amber-500" /> Executive Admin
@@ -245,7 +245,7 @@ export default function Header({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="font-sans font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-blue-900 transition-all shadow-xs"
+              className="font-sans font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-emerald-850 transition-all shadow-xs"
               id="btn-login"
             >
               PORTAL AKSES

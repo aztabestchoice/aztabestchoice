@@ -32,6 +32,7 @@ import {
 import StudentCard from './StudentCard';
 import OnlineTraining from './OnlineTraining';
 import AiCounselor from './AiCounselor';
+import AztaPayGateway from './AztaPayGateway';
 
 interface DashboardClientProps {
   currentUser: User;
@@ -79,10 +80,19 @@ export default function DashboardClient({
   const [selectedMethod, setSelectedMethod] = useState<'offline' | 'online'>('offline');
   const [tempRegId, setTempRegId] = useState('');
 
+  // Web Secure Payment Gateway States
+  const [payGatewayOpen, setPayGatewayOpen] = useState(false);
+  const [payGatewayAmount, setPayGatewayAmount] = useState(0);
+  const [payGatewayTitle, setPayGatewayTitle] = useState('');
+  const [payGatewayTxId, setPayGatewayTxId] = useState('');
+  const [payGatewayType, setPayGatewayType] = useState<'full' | 'dp' | 'pelunasan'>('full');
+  const [payGatewayOnSuccess, setPayGatewayOnSuccess] = useState<((method: string, payType?: string) => void) | null>(null);
+
   // Sesi Booking states
   const [selectedPsy, setSelectedPsy] = useState<Psychologist>(MOCK_PSYCHOLOGISTS[0]);
   const [selectedSlot, setSelectedSlot] = useState(MOCK_SLOTS[0]);
   const [bookingSuccessAlert, setBookingSuccessAlert] = useState(false);
+  const [showCounselPaymentOptionModal, setShowCounselPaymentOptionModal] = useState(false);
 
   // Upload receipt state
   const [selectedPayForReceipt, setSelectedPayForReceipt] = useState<PaymentTransaction | null>(null);
@@ -120,6 +130,122 @@ export default function DashboardClient({
     setRegistrations(prev => [newReg, ...prev]);
     setTempRegId(newRegId);
     setNewRegStep(2); // advance to invoice step
+  };
+
+  // Trigger online gateway checkout
+  const handleTriggerGatewayCheckout = (amount: number, title: string, trxId: string, type: 'full' | 'dp' | 'pelunasan', successCallback: (method: string, payType?: string) => void) => {
+    setPayGatewayAmount(amount);
+    setPayGatewayTitle(title);
+    setPayGatewayTxId(trxId);
+    setPayGatewayType(type);
+    setPayGatewayOnSuccess(() => successCallback);
+    setPayGatewayOpen(true);
+  };
+
+  // Callback on successful wizard registration payment through the gateway
+  const onPaymentGatewaySuccessWizard = (method: string, payType?: string) => {
+    const parentReg = registrations.find(r => r.id === tempRegId);
+    if (!parentReg) return;
+
+    let amountToPay = parentReg.totalPrice;
+    if (payType === 'dp') {
+      amountToPay = parentReg.totalPrice * 0.3; // 30% DP
+    }
+
+    const newPayId = 'pay-' + Math.floor(100 + Math.random() * 900);
+    const newPay: PaymentTransaction = {
+      id: newPayId,
+      registrationId: parentReg.id,
+      studentName: currentUser.name,
+      programName: parentReg.programName,
+      amount: amountToPay,
+      paymentType: (payType as 'dp' | 'full' | 'pelunasan') || 'full',
+      paymentMethod: method === 'qris' ? 'qris' : 'bank_transfer',
+      status: 'approved', // Online gateway instantly approves!
+      date: new Date().toISOString().split('T')[0],
+      bankSenderName: `${currentUser.name} (Direct Online Gateway)`,
+      receiptUrl: 'electronic_receipt_download.png'
+    };
+
+    setPayments(prev => [newPay, ...prev]);
+
+    // Update registration status to approved and fully_paid/dp_paid
+    setRegistrations(prev => prev.map(r => {
+      if (r.id === parentReg.id) {
+        return {
+          ...r,
+          status: 'approved', // Instantly approved!
+          paymentStatus: payType === 'dp' ? 'dp_paid' : 'fully_paid',
+          amountPaid: amountToPay
+        };
+      }
+      return r;
+    }));
+
+    setPayGatewayOpen(false);
+    setNewRegStep(3); // Go to finish wizard
+  };
+
+  // Callback on successful counseling payment through the gateway
+  const onCounselPaymentGatewaySuccess = (method: string) => {
+    const newSessionId = 'sess-' + Math.floor(500 + Math.random() * 500);
+    const newSession: CounselingSession = {
+      id: newSessionId,
+      studentId: currentUser.id,
+      studentName: currentUser.name,
+      psychologistId: selectedPsy.id,
+      psychologistName: selectedPsy.name,
+      date: new Date().getFullYear() + '-06-25', // mock future date
+      time: selectedSlot.time,
+      status: 'booked'
+    };
+
+    setSessions(prev => [newSession, ...prev]);
+
+    // Add paid payment transaction for this counseling session!
+    const newPayId = 'pay-' + Math.floor(100 + Math.random() * 900);
+    const newPay: PaymentTransaction = {
+      id: newPayId,
+      registrationId: newSessionId,
+      studentName: currentUser.name,
+      programName: `Sesi Konseling dengan ${selectedPsy.name}`,
+      amount: 450000,
+      paymentType: 'full',
+      paymentMethod: method === 'qris' ? 'qris' : 'bank_transfer',
+      status: 'approved', // Instantly approved/Lunas
+      date: new Date().toISOString().split('T')[0],
+      bankSenderName: `${currentUser.name} (Direct Online Gateway)`
+    };
+
+    setPayments(prev => [newPay, ...prev]);
+
+    setBookingSuccessAlert(true);
+    setPayGatewayOpen(false);
+    setShowCounselPaymentOptionModal(false);
+    setTimeout(() => {
+      setBookingSuccessAlert(false);
+    }, 4000);
+  };
+
+  const handleCounselBookingCash = () => {
+    const newSessionId = 'sess-' + Math.floor(500 + Math.random() * 500);
+    const newSession: CounselingSession = {
+      id: newSessionId,
+      studentId: currentUser.id,
+      studentName: currentUser.name,
+      psychologistId: selectedPsy.id,
+      psychologistName: selectedPsy.name,
+      date: new Date().getFullYear() + '-06-25', // mock future date
+      time: selectedSlot.time,
+      status: 'booked'
+    };
+
+    setSessions(prev => [newSession, ...prev]);
+    setBookingSuccessAlert(true);
+    setShowCounselPaymentOptionModal(false);
+    setTimeout(() => {
+      setBookingSuccessAlert(false);
+    }, 4000);
   };
 
   // Simulate Payment Transfer
@@ -193,6 +319,44 @@ export default function DashboardClient({
       setUploadReceiptSuccess(false);
       setSelectedPayForReceipt(null);
     }, 3000);
+  };
+
+  const handlePayExistingPendingPaymentOnline = (p: PaymentTransaction) => {
+    handleTriggerGatewayCheckout(
+      p.amount,
+      `Pelunasan: ${p.programName}`,
+      p.id,
+      p.paymentType,
+      (method) => {
+        // Set payment transaction status to approved
+        setPayments(prev => prev.map(pay => {
+          if (pay.id === p.id) {
+            return {
+              ...pay,
+              status: 'approved',
+              paymentMethod: method === 'qris' ? 'qris' : 'bank_transfer',
+              bankSenderName: `${currentUser.name} (Direct Online Gateway)`
+            };
+          }
+          return pay;
+        }));
+
+        // Update program registration
+        setRegistrations(prev => prev.map(r => {
+          if (r.id === p.registrationId) {
+            return {
+              ...r,
+              status: 'approved',
+              paymentStatus: p.paymentType === 'dp' ? 'dp_paid' : 'fully_paid',
+              amountPaid: r.amountPaid + p.amount
+            };
+          }
+          return r;
+        }));
+
+        setPayGatewayOpen(false);
+      }
+    );
   };
 
   // Booking Counseling click
@@ -750,13 +914,62 @@ export default function DashboardClient({
                   </div>
 
                   <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-                    <button
-                      onClick={handleCounselBooking}
-                      className="px-6 py-3 bg-rose-900 hover:bg-rose-950 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors inline-flex items-center space-x-1"
-                    >
-                      <Calendar className="w-4 h-4 text-rose-300" />
-                      <span>Konfirmasi Jadwal Sesi Konseling</span>
-                    </button>
+                    {!showCounselPaymentOptionModal ? (
+                      <button
+                        onClick={() => { setShowCounselPaymentOptionModal(true); }}
+                        className="px-6 py-3 bg-rose-900 hover:bg-rose-950 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors inline-flex items-center space-x-1"
+                        id="btn-confirm-booking-lobby"
+                      >
+                        <Calendar className="w-4 h-4 text-rose-300" />
+                        <span>Konfirmasi Jadwal Sesi Konseling</span>
+                      </button>
+                    ) : (
+                      <div className="bg-rose-50/70 border border-rose-200 p-6 rounded-3xl max-w-md mx-auto space-y-4 text-left animate-fade-in" id="counsel-booking-options-prompt">
+                        <div className="flex items-center space-x-2">
+                          <Heart className="w-5 h-5 text-rose-600 animate-pulse animate-bounce animate-duration-1000" />
+                          <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Metode Pembayaran Sesi Konseling</h4>
+                        </div>
+                        <p className="text-[11px] text-zinc-650 leading-relaxed">
+                          Anda sedang memesan sesi bersama <strong>{selectedPsy.name}</strong> pada slot <strong>{selectedSlot.time}</strong>. Tarif pelayanan sesi psikolog resmi adalah <strong>Rp450.000</strong>. Pilih metode pembayaran Anda:
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-1">
+                          {/* OPTION 1: PAY ONLINE NOW (GATEWAY) */}
+                          <button
+                            onClick={() => {
+                              const mockId = 'pay-' + Math.floor(100 + Math.random() * 900);
+                              handleTriggerGatewayCheckout(450000, `Sesi Konseling Privat - ${selectedPsy.name}`, mockId, 'full', onCounselPaymentGatewaySuccess);
+                            }}
+                            className="p-3 bg-emerald-900 hover:bg-emerald-950 text-white rounded-xl text-center cursor-pointer transition-all hover:scale-102 flex flex-col justify-center items-center space-y-1"
+                            id="btn-counsel-pay-online"
+                          >
+                            <span className="text-[10px] font-mono tracking-widest font-black text-amber-300">ONLINE GATEWAY</span>
+                            <span className="text-xs font-extrabold leading-none mt-1">💳 Bayar Instan</span>
+                            <span className="text-[8.5px] opacity-75 mt-0.5 font-mono">Lunas Otomatis</span>
+                          </button>
+
+                          {/* OPTION 2: PAY LATER (CASH) */}
+                          <button
+                            onClick={handleCounselBookingCash}
+                            className="p-3 bg-white border border-gray-200 hover:border-gray-400 text-slate-700 hover:bg-slate-50 rounded-xl text-center cursor-pointer transition-all flex flex-col justify-center items-center space-y-1"
+                            id="btn-counsel-pay-later"
+                          >
+                            <span className="text-[10px] font-mono tracking-widest font-bold text-gray-400">TUNAI / CASH</span>
+                            <span className="text-xs font-extrabold leading-none mt-1">💵 Bayar di Lokasi</span>
+                            <span className="text-[8.5px] opacity-75 mt-0.5 font-mono">Hari H Konseling</span>
+                          </button>
+                        </div>
+
+                        <div className="text-center">
+                          <button
+                            onClick={() => { setShowCounselPaymentOptionModal(false); }}
+                            className="text-[9.5px] font-mono uppercase font-black tracking-widest text-gray-400 hover:text-red-600 block mx-auto py-1 cursor-pointer"
+                          >
+                            &times; Kembali Pilih Jadwal
+                          </button>
+                        </div>
+                      </div>
+                    )}
                     <p className="text-[9px] text-gray-400 mt-2 font-mono">*Sesi konseling diselenggarakan di kantor operasional {siteSettings?.brandName || 'Azta'}, {siteSettings?.address || 'Jl. Kawis Taman Madiun'}.</p>
                   </div>
                 </div>
@@ -852,14 +1065,22 @@ export default function DashboardClient({
                               <td className="p-3 text-gray-500 font-mono text-[10px]">{p.date}</td>
                               <td className="p-3 text-right">
                                 {p.status === 'pending' ? (
-                                  <button
-                                    onClick={() => setSelectedPayForReceipt(p)}
-                                    className="px-2.5 py-1 rounded bg-amber-400 hover:bg-amber-500 text-emerald-950 text-[10px] font-bold transition-colors"
-                                  >
-                                    Upload Slip Transfer
-                                  </button>
+                                  <div className="flex flex-col sm:flex-row justify-end items-stretch sm:items-center gap-1.5">
+                                    <button
+                                      onClick={() => handlePayExistingPendingPaymentOnline(p)}
+                                      className="px-2.5 py-1 rounded bg-emerald-905 hover:bg-emerald-950 text-white text-[10px] font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs"
+                                    >
+                                      💳 Bayar Online Instan
+                                    </button>
+                                    <button
+                                      onClick={() => setSelectedPayForReceipt(p)}
+                                      className="px-2.5 py-1 rounded bg-amber-400 hover:bg-amber-500 text-emerald-950 text-[10px] font-bold transition-all whitespace-nowrap"
+                                    >
+                                      Upload Slip
+                                    </button>
+                                  </div>
                                 ) : (
-                                  <span className="text-gray-400 text-[10px]">Tersimpan Aman</span>
+                                  <span className="text-gray-400 text-[10px]">&check; Terverifikasi Aman</span>
                                 )}
                               </td>
                             </tr>
@@ -1064,27 +1285,72 @@ export default function DashboardClient({
                       </div>
                     </div>
 
-                    <div className="p-4 bg-amber-50 rounded-xl border border-amber-300 text-[11px] text-amber-950 leading-relaxed font-sans">
-                      <strong>Pembayaran Transfer Rekening Azta Best Choice:</strong> <br />
-                      Transfer ATM/M-Banking Anda ke nomor rekening <strong>BCA: 177-300-8888 A/N Azta Best Choice Counseling</strong>. Setelah transfer, klik tombol simulasi bayar di bawah untuk mengirim bukti pendaftaran ke Admin agar dikonfirmasi aktif.
+                    <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-300 text-[11px] text-emerald-950 leading-relaxed font-sans text-left">
+                      <strong>💡 PILIHAN PEMBAYARAN:</strong> <br />
+                      Pilih <strong>Gerbang Pembayaran Online Otomatis</strong> untuk mengaktifkan program bimbel seketika (tanpa antre verifikasi manual Admin), atau lakukan <strong>Transfer Rekening Manual</strong> ke BCA: 177-300-8888 A/N Azta Best Choice dan unggah kuitansi slip bukti Anda secara mandiri di menu Pembayaran.
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {selectedProgram === 'cat_tni_polri' || selectedProgram === 'cat_bumn_pns' ? (
-                        <button
-                          onClick={() => handleSimulatePayment('dp')}
-                          className="py-3 bg-white border-2 border-emerald-900 hover:bg-emerald-50 text-emerald-905 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors text-center"
-                        >
-                          Simulasi Bayar Uang Muka (DP 30%)
-                        </button>
-                      ) : null}
+                    {/* METHOD DIVISION MAP */}
+                    <div className="space-y-4">
+                      {/* A. SECURE ONLINE GATEWAY OPTION */}
+                      <div className="bg-slate-50 p-5 rounded-2xl border-2 border-emerald-600 space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <ShieldCheck className="w-5 h-5 text-emerald-800" />
+                          <h5 className="font-extrabold text-xs text-emerald-950 uppercase tracking-wide">Rute 1: Gerbang Pembayaran Online Aman (Otomatis & Kilat)</h5>
+                        </div>
+                        <p className="text-[10.5px] text-slate-500 text-left">Gunakan Kode QRIS, Virtual Account BCA/BNI/Mandiri/BRI, Kartu Kredit Visa/Mastercard, atau E-Wallet (GoPay/OVO/DANA). Sistem mengonfirmasi lunas instan.</p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          {selectedProgram === 'cat_tni_polri' || selectedProgram === 'cat_bumn_pns' ? (
+                            <button
+                              onClick={() => {
+                                const parentReg = registrations.find(r => r.id === tempRegId);
+                                if (!parentReg) return;
+                                const dpAmount = parentReg.totalPrice * 0.3;
+                                handleTriggerGatewayCheckout(dpAmount, `Pendaftaran (Uang Muka 30%) - ${parentReg.programName}`, tempRegId, 'dp', onPaymentGatewaySuccessWizard);
+                              }}
+                              className="py-2.5 px-4 bg-emerald-900 hover:bg-emerald-950 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-xs whitespace-nowrap"
+                            >
+                              💳 Bayar Online DP (30%)
+                            </button>
+                          ) : null}
 
-                      <button
-                        onClick={() => handleSimulatePayment('full')}
-                        className="py-3 bg-emerald-900 hover:bg-emerald-950 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors text-center flex-grow"
-                      >
-                        Simulasi Bayar Pelunasan Penuh
-                      </button>
+                          <button
+                            onClick={() => {
+                              const parentReg = registrations.find(r => r.id === tempRegId);
+                              if (!parentReg) return;
+                              handleTriggerGatewayCheckout(parentReg.totalPrice, `Pendaftaran (Penuh) - ${parentReg.programName}`, tempRegId, 'full', onPaymentGatewaySuccessWizard);
+                            }}
+                            className="py-2.5 px-4 bg-emerald-900 hover:bg-emerald-950 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-xs"
+                          >
+                            💳 Bayar Online Penuh
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* B. MANUAL TRANSFER SIMULATION OPTION */}
+                      <div className="p-4 rounded-xl border border-gray-200 bg-white space-y-2">
+                        <h5 className="font-bold text-xs text-slate-700 text-left">Rute 2: Transfer Bank Manual (Butuh Unggah Kuitansi Pendukung)</h5>
+                        <p className="text-[10px] text-gray-400 text-left">Transfer manual ke BCA Rekening 177-300-8888. Admin akan memvalidasi bukti Anda dalam kurun waktu 1 jam.</p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          {selectedProgram === 'cat_tni_polri' || selectedProgram === 'cat_bumn_pns' ? (
+                            <button
+                              onClick={() => handleSimulatePayment('dp')}
+                              className="py-2 px-3 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-all text-center"
+                            >
+                              Simulasi Transfer Manual DP
+                            </button>
+                          ) : null}
+
+                          <button
+                            onClick={() => handleSimulatePayment('full')}
+                            className="py-2 px-3 bg-white border border-gray-300 hover:bg-slate-50 text-slate-705 font-bold text-xs uppercase tracking-wider rounded-xl transition-all text-center"
+                          >
+                            Simulasi Transfer Manual Penuh
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1129,6 +1395,23 @@ export default function DashboardClient({
 
         </div>
       </div>
+
+      {payGatewayOpen && (
+        <AztaPayGateway
+          amount={payGatewayAmount}
+          title={payGatewayTitle}
+          transactionId={payGatewayTxId}
+          customerName={currentUser.name}
+          customerPhone={currentUser.phone}
+          payType={payGatewayType}
+          onSuccess={(method, type) => {
+            if (payGatewayOnSuccess) {
+              payGatewayOnSuccess(method, type);
+            }
+          }}
+          onClose={() => setPayGatewayOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -27,8 +27,10 @@ import {
   Settings,
   Plus,
   Trash2,
-  GraduationCap
+  GraduationCap,
+  Bell
 } from 'lucide-react';
+import AdminNotifications from './AdminNotifications';
 
 interface DashboardAdminProps {
   currentUser: User;
@@ -48,7 +50,7 @@ interface DashboardAdminProps {
   onUpdateAlumni: (newAlumni: Alumni[]) => void;
 }
 
-type AdminSubTab = 'stats' | 'registrations' | 'payments' | 'results' | 'counseling' | 'students' | 'alumni' | 'settings';
+type AdminSubTab = 'stats' | 'registrations' | 'payments' | 'results' | 'counseling' | 'students' | 'alumni' | 'settings' | 'notifications';
 
 export default function DashboardAdmin({
   currentUser,
@@ -106,6 +108,104 @@ export default function DashboardAdmin({
   const [newProgramName, setNewProgramName] = useState('');
   const [editingProgramIndex, setEditingProgramIndex] = useState<number | null>(null);
   const [editingProgramText, setEditingProgramText] = useState('');
+
+  // Services management within Settings
+  const [newServiceTitle, setNewServiceTitle] = useState('');
+  const [newServiceInstruments, setNewServiceInstruments] = useState('');
+  const [editingServiceIndex, setEditingServiceIndex] = useState<number | null>(null);
+  const [editingServiceTitle, setEditingServiceTitle] = useState('');
+  const [editingServiceInstruments, setEditingServiceInstruments] = useState('');
+
+  // Benefits management within Settings
+  const [newBenefitText, setNewBenefitText] = useState('');
+  const [editingBenefitIndex, setEditingBenefitIndex] = useState<number | null>(null);
+  const [editingBenefitText, setEditingBenefitText] = useState('');
+
+  const handleAddService = () => {
+    if (!newServiceTitle.trim()) return;
+    const currentServices = settingsForm.services || [];
+    const instrumentsArray = newServiceInstruments
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+    
+    const newSrv = {
+      id: 'srv-' + Date.now(),
+      title: newServiceTitle.trim(),
+      instruments: instrumentsArray
+    };
+    
+    setSettingsForm(prev => ({
+      ...prev,
+      services: [...currentServices, newSrv]
+    }));
+    setNewServiceTitle('');
+    setNewServiceInstruments('');
+  };
+
+  const handleDeleteService = (index: number) => {
+    const currentServices = settingsForm.services || [];
+    const updated = currentServices.filter((_, i) => i !== index);
+    setSettingsForm(prev => ({ ...prev, services: updated }));
+  };
+
+  const handleStartEditService = (index: number, srv: any) => {
+    setEditingServiceIndex(index);
+    setEditingServiceTitle(srv.title);
+    setEditingServiceInstruments(srv.instruments.join(', '));
+  };
+
+  const handleSaveEditService = (index: number) => {
+    if (!editingServiceTitle.trim()) return;
+    const currentServices = settingsForm.services || [];
+    const instrumentsArray = editingServiceInstruments
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+
+    const updated = [...currentServices];
+    updated[index] = {
+      ...updated[index],
+      title: editingServiceTitle.trim(),
+      instruments: instrumentsArray
+    };
+
+    setSettingsForm(prev => ({ ...prev, services: updated }));
+    setEditingServiceIndex(null);
+    setEditingServiceTitle('');
+    setEditingServiceInstruments('');
+  };
+
+  const handleAddBenefit = () => {
+    if (!newBenefitText.trim()) return;
+    const currentBenefits = settingsForm.benefits || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      benefits: [...currentBenefits, newBenefitText.trim()]
+    }));
+    setNewBenefitText('');
+  };
+
+  const handleDeleteBenefit = (index: number) => {
+    const currentBenefits = settingsForm.benefits || [];
+    const updated = currentBenefits.filter((_, i) => i !== index);
+    setSettingsForm(prev => ({ ...prev, benefits: updated }));
+  };
+
+  const handleStartEditBenefit = (index: number, val: string) => {
+    setEditingBenefitIndex(index);
+    setEditingBenefitText(val);
+  };
+
+  const handleSaveEditBenefit = (index: number) => {
+    if (!editingBenefitText.trim()) return;
+    const currentBenefits = settingsForm.benefits || [];
+    const updated = [...currentBenefits];
+    updated[index] = editingBenefitText.trim();
+    setSettingsForm(prev => ({ ...prev, benefits: updated }));
+    setEditingBenefitIndex(null);
+    setEditingBenefitText('');
+  };
 
   // Alumni management state variables
   const [showAlumniModal, setShowAlumniModal] = useState(false);
@@ -573,6 +673,16 @@ export default function DashboardAdmin({
           >
             <GraduationCap className="w-3.5 h-3.5" />
             <span>Kelola Alumni ({alumni.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('notifications')}
+            className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors border flex items-center space-x-1 ${
+              activeTab === 'notifications' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-gray-650 hover:bg-slate-100 border-gray-155'
+            }`}
+            id="admin-tab-notifications"
+          >
+            <Bell className="w-3.5 h-3.5 text-amber-500" />
+            <span>Notifikasi Otomatis</span>
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -1568,6 +1678,224 @@ export default function DashboardAdmin({
                 </div>
               </div>
 
+              {/* Service Settings */}
+              <div className="space-y-4 pt-6 border-t" id="settings-services-block">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">9. Kelola Layanan & Alat Tes</h4>
+                <p className="text-[11px] text-gray-500">
+                  Tambah, ubah, atau hapus Layanan Asesmen Psikologi & alat tes khusus (seperti TEST IQ, TEST BAKAT, & TES MINAT) yang akan ditampilkan secara otomatis pada halaman katalog layanan situs.
+                </p>
+
+                <div className="space-y-4 bg-slate-50 p-4 rounded-2xl border" id="services-inner-editor">
+                  {/* Read List of Services */}
+                  <div className="space-y-3">
+                    {(settingsForm.services || []).map((srv, index) => (
+                      <div key={srv.id || index} className="p-3 bg-white border border-gray-200 rounded-xl shadow-xs space-y-2">
+                        {editingServiceIndex === index ? (
+                          <div className="space-y-2">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-gray-500 uppercase">Nama Layanan / Kategori:</label>
+                              <input
+                                type="text"
+                                value={editingServiceTitle}
+                                onChange={(e) => setEditingServiceTitle(e.target.value)}
+                                className="w-full p-2 text-xs border rounded-lg focus:border-emerald-800"
+                                placeholder="e.g. TEST IQ"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-gray-500 uppercase">Alat / Instrumen Tes (Pisahkan dengan tanda koma):</label>
+                              <textarea
+                                value={editingServiceInstruments}
+                                onChange={(e) => setEditingServiceInstruments(e.target.value)}
+                                className="w-full p-2 text-xs border rounded-lg focus:border-emerald-800 h-16"
+                                placeholder="e.g. CFIT Skala 3, WISC, IST"
+                              />
+                            </div>
+                            <div className="flex items-center space-x-2 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => handleSaveEditService(index)}
+                                className="px-3 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg text-[10px] font-bold cursor-pointer transition-colors"
+                              >
+                                Simpan
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingServiceIndex(null)}
+                                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-[10px] font-bold cursor-pointer transition-colors"
+                              >
+                                Batal
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-1.5 text-left">
+                              <span className="text-xs font-extrabold text-slate-800 tracking-wide uppercase block">
+                                #{index + 1}. {srv.title}
+                              </span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {srv.instruments.map((inst, iIdx) => (
+                                  <span key={iIdx} className="px-2 py-0.5 bg-emerald-50 text-emerald-850 border border-emerald-150 rounded-md text-[10px] font-medium font-sans">
+                                    • {inst}
+                                  </span>
+                                ))}
+                                {srv.instruments.length === 0 && (
+                                  <span className="text-[10px] text-gray-400 italic">Tidak ada rincian alat tes</span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center space-x-1 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditService(index, srv)}
+                                className="px-2 py-1 text-slate-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-md transition-all text-[10px] font-semibold cursor-pointer"
+                              >
+                                Ubah
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteService(index)}
+                                className="px-2 py-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-all cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {(settingsForm.services || []).length === 0 && (
+                      <p className="text-xs text-gray-400 text-center py-4">Belum ada kategori layanan kustom. Tambahkan di bawah.</p>
+                    )}
+                  </div>
+
+                  {/* Add Service Row */}
+                  <div className="bg-white p-3.5 rounded-xl border border-dashed border-gray-300 space-y-2.5">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-left">Tambah Layanan Baru</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-extrabold text-gray-400">NAMA LAYANAN:</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. TEST IQ"
+                          value={newServiceTitle}
+                          onChange={(e) => setNewServiceTitle(e.target.value)}
+                          className="w-full p-2 text-xs border bg-slate-50/50 rounded-lg focus:border-emerald-850"
+                        />
+                      </div>
+                      <div className="space-y-1 text-left">
+                        <label className="text-[9px] font-extrabold text-gray-400">ALAT TES (PISAHKAN DENGAN TANDA KOMA):</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. CFIT Skala 3, IST, PM"
+                          value={newServiceInstruments}
+                          onChange={(e) => setNewServiceInstruments(e.target.value)}
+                          className="w-full p-2 text-xs border bg-slate-50/50 rounded-lg focus:border-emerald-850"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end pt-1">
+                      <button
+                        type="button"
+                        onClick={handleAddService}
+                        className="px-4 py-2 bg-emerald-800 hover:bg-emerald-950 text-white font-bold text-xs rounded-lg transition-all flex items-center space-x-1 uppercase cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Tambah Layanan</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefits & Goals Settings */}
+              <div className="space-y-4 pt-6 border-t" id="settings-benefits-block">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">10. Kelola Manfaat & Tujuan Asesmen</h4>
+                <p className="text-[11px] text-gray-500">
+                  Ubah atau tambahkan poin-poin manfaat penting yang relevan untuk memberikan gambaran pemetaan potensi siswa di halaman utama maupun halaman informasi.
+                </p>
+
+                <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border" id="benefits-inner-editor">
+                  {/* Read List of Benefits */}
+                  <div className="space-y-2">
+                    {(settingsForm.benefits || []).map((benefit, index) => (
+                      <div key={index} className="flex items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-xs">
+                        {editingBenefitIndex === index ? (
+                          <div className="flex-grow flex items-center space-x-2">
+                            <input
+                              type="text"
+                              value={editingBenefitText}
+                              onChange={(e) => setEditingBenefitText(e.target.value)}
+                              className="flex-grow p-1.5 text-xs border rounded-lg focus:border-emerald-800"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleSaveEditBenefit(index)}
+                              className="px-2.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg text-[10px] font-bold cursor-pointer"
+                            >
+                              Simpan
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingBenefitIndex(null)}
+                              className="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-[10px] font-bold cursor-pointer"
+                            >
+                              Batal
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-xs text-slate-700 text-left leading-relaxed flex-grow pr-4">• {benefit}</span>
+                            <div className="flex items-center space-x-2 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditBenefit(index, benefit)}
+                                className="px-2 py-1 text-slate-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-md transition-colors text-[10px] font-semibold cursor-pointer"
+                              >
+                                Ubah
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteBenefit(index)}
+                                className="px-2 py-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+
+                    {(settingsForm.benefits || []).length === 0 && (
+                      <p className="text-xs text-gray-400 text-center py-4">Belum ada poin manfaat kustom. Tambahkan di bawah ini.</p>
+                    )}
+                  </div>
+
+                  {/* Add Benefit Row */}
+                  <div className="flex items-center space-x-2 pt-3 border-t">
+                    <input
+                      type="text"
+                      placeholder="e.g. Memberikan Gambaran / informasi mengenai potensi siswa..."
+                      value={newBenefitText}
+                      onChange={(e) => setNewBenefitText(e.target.value)}
+                      className="flex-grow p-2.5 text-xs border bg-white rounded-xl focus:border-emerald-850"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddBenefit}
+                      className="px-4 py-2.5 bg-emerald-800 hover:bg-emerald-950 text-white font-bold text-xs rounded-xl transition-all flex items-center space-x-1 uppercase cursor-pointer whitespace-nowrap"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tambah Poin</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Action Save button footer bar */}
               <div className="border-t pt-6 flex justify-end">
                 <button
@@ -2115,6 +2443,17 @@ export default function DashboardAdmin({
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* SCREEN: SISTEM NOTIFIKASI OTOMATIS */}
+          {activeTab === 'notifications' && (
+            <div className="animate-fade-in" id="notifications-tab-panel">
+              <AdminNotifications 
+                students={students} 
+                registrations={registrations} 
+                sessions={sessions} 
+              />
             </div>
           )}
 

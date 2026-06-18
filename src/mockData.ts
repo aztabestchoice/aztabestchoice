@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { User, ProgramRegistration, PaymentTransaction, PsychologicalResult, Psychologist, CounselingSession, BlogArticle, SiteSettings, Student, Alumni } from './types';
+import { User, ProgramRegistration, PaymentTransaction, PsychologicalResult, Psychologist, CounselingSession, BlogArticle, SiteSettings, Student, Alumni, NotificationLog, NotificationSetting } from './types';
 
 export const MOCK_USERS: User[] = [
   {
@@ -367,7 +367,36 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     'Persiapan Instansi Pemerintah/BUMN/Swasta',
     'Persiapan Perguruan Tinggi'
   ],
-  backgroundImageUrl: '/bg_azta_1781689948341.jpg'
+  backgroundImageUrl: '/bg_azta_1781689948341.jpg',
+  services: [
+    {
+      id: 'srv-1',
+      title: 'TEST IQ',
+      instruments: ['CFIT (Cultur Fair Intelligence Test) Skala 3']
+    },
+    {
+      id: 'srv-2',
+      title: 'TEST BAKAT',
+      instruments: [
+        'Tes Kemampuan Mekanik',
+        'Tes Berfikir Abstrak',
+        'Tes Relasi Ruang',
+        'Tes Kemampuan',
+        'KKK'
+      ]
+    },
+    {
+      id: 'srv-3',
+      title: 'TES MINAT',
+      instruments: ['Tes Minat Jabatan Lee-Thorpe']
+    }
+  ],
+  benefits: [
+    'Memberikan Gambaran / informasi mengenai potensi sebagai acuan penentuan jurusan pada Pendidikan',
+    'Membantu Siswa menghubungkan hasil evaluasi dengan pilihan Pendidikan dan karier yang sesuai dengan bakat, minat dan kepribadian',
+    'Membuat Keputusan yang penting bagi masa depan siswa dengan lebih tepat dan terarah.',
+    'Memprediksi Tingkat keberhasilan siswa'
+  ]
 };
 
 export const INITIAL_ALUMNI: Alumni[] = [
@@ -435,4 +464,52 @@ export const INITIAL_STUDENTS: Student[] = [
     registrationDate: '2026-06-14'
   }
 ];
+
+export const INITIAL_NOTIFICATION_SETTINGS: NotificationSetting = {
+  enableAutomatedEmail: true,
+  enableAutomatedSms: true,
+  emailSenderName: 'Azta Best Choice Madiun',
+  emailApiKey: 'SG.AztaSecretApiKeyPlaceholder34928347',
+  smsSenderId: 'AZTA_INFO',
+  smsApiKey: 'TXT-AZTA-KEY-9231804712497',
+  notifyOnBookingTimesBeforeHours: 24,
+  notifyOnDeadlineDaysBefore: 3
+};
+
+export const INITIAL_NOTIFICATION_LOGS: NotificationLog[] = [
+  {
+    id: 'notif-log-1',
+    recipientName: 'Dimas Anggara',
+    recipientContact: 'dimas@gmail.com',
+    type: 'counseling_reminder',
+    channel: 'email',
+    title: '⏰ Pengingat Sesi Konseling Psikologis Anda',
+    message: 'Halo Dimas Anggara, ini adalah pengingat sesi konseling psikologi TNI-POLRI Anda yang terjadwal besok pukul 09:00 WIB bersama Tim Psikolog Azta.',
+    status: 'sent',
+    timestamp: '2026-06-16T14:30:00Z'
+  },
+  {
+    id: 'notif-log-2',
+    recipientName: 'Lia Rahmawati',
+    recipientContact: '089876543210',
+    type: 'registration_deadline',
+    channel: 'sms',
+    title: 'Pemberitahuan Pendaftaran',
+    message: 'Halo Lia Rahmawati, batas akhir pelunasan pendaftaran program Bimbel CAT BUMN tinggal 3 hari lagi. Segera penuhi berkas pendaftaran Anda. Terimakasih.',
+    status: 'sent',
+    timestamp: '2026-06-15T09:00:00Z'
+  },
+  {
+    id: 'notif-log-3',
+    recipientName: 'Seluruh Siswa Terdaftar',
+    recipientContact: 'Mailing List (Siswa & Alumni)',
+    type: 'article_update',
+    channel: 'email',
+    title: '📚 Tips Psikotes Baru: Menguasai Tes EPPS & Wartegg',
+    message: 'Halo Siswa Azta, artikel blog instruksional baru mengenai tips melatih kepribadian EPPS dan menggambar Wartegg telah diterbitkan! Baca selengkapnya di portal.',
+    status: 'sent',
+    timestamp: '2026-06-14T10:15:00Z'
+  }
+];
+
 
