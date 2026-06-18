@@ -396,7 +396,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     'Membantu Siswa menghubungkan hasil evaluasi dengan pilihan Pendidikan dan karier yang sesuai dengan bakat, minat dan kepribadian',
     'Membuat Keputusan yang penting bagi masa depan siswa dengan lebih tepat dan terarah.',
     'Memprediksi Tingkat keberhasilan siswa'
-  ]
+  ],
+  showServicesOnHome: true,
+  showBenefitsOnHome: true
 };
 
 export const INITIAL_ALUMNI: Alumni[] = [

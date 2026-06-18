@@ -1685,6 +1685,19 @@ export default function DashboardAdmin({
                   Tambah, ubah, atau hapus Layanan Asesmen Psikologi & alat tes khusus (seperti TEST IQ, TEST BAKAT, & TES MINAT) yang akan ditampilkan secara otomatis pada halaman katalog layanan situs.
                 </p>
 
+                <div className="flex items-center space-x-2.5 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-150 text-left">
+                  <input
+                    type="checkbox"
+                    id="toggle_show_services_on_home"
+                    checked={!!settingsForm.showServicesOnHome}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, showServicesOnHome: e.target.checked }))}
+                    className="w-4 h-4 text-emerald-800 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <label htmlFor="toggle_show_services_on_home" className="text-xs font-semibold text-emerald-950 cursor-pointer select-none">
+                    Tampilkan "Layanan Tambahan & Alat Tes Khusus (Aktif)" di Beranda (di bawah Tiga Pilar)
+                  </label>
+                </div>
+
                 <div className="space-y-4 bg-slate-50 p-4 rounded-2xl border" id="services-inner-editor">
                   {/* Read List of Services */}
                   <div className="space-y-3">
@@ -1817,6 +1830,19 @@ export default function DashboardAdmin({
                 <p className="text-[11px] text-gray-500">
                   Ubah atau tambahkan poin-poin manfaat penting yang relevan untuk memberikan gambaran pemetaan potensi siswa di halaman utama maupun halaman informasi.
                 </p>
+
+                <div className="flex items-center space-x-2.5 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-150 text-left">
+                  <input
+                    type="checkbox"
+                    id="toggle_show_benefits_on_home"
+                    checked={!!settingsForm.showBenefitsOnHome}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, showBenefitsOnHome: e.target.checked }))}
+                    className="w-4 h-4 text-emerald-800 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <label htmlFor="toggle_show_benefits_on_home" className="text-xs font-semibold text-emerald-950 cursor-pointer select-none">
+                    Tampilkan "Manfaat & Tujuan Program Asesmen" di Beranda (di bawah Tiga Pilar)
+                  </label>
+                </div>
 
                 <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border" id="benefits-inner-editor">
                   {/* Read List of Benefits */}

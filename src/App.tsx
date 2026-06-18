@@ -62,6 +62,12 @@ export default function App() {
         if (!parsed.benefits) {
           parsed.benefits = DEFAULT_SITE_SETTINGS.benefits;
         }
+        if (parsed.showServicesOnHome === undefined) {
+          parsed.showServicesOnHome = true;
+        }
+        if (parsed.showBenefitsOnHome === undefined) {
+          parsed.showBenefitsOnHome = true;
+        }
         localStorage.setItem('azta_site_settings', JSON.stringify(parsed));
         return parsed;
       } catch (e) {

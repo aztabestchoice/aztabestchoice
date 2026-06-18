@@ -178,6 +178,8 @@ export interface SiteSettings {
   backgroundImageUrl?: string; // Changeable website background picture
   services?: ServiceItem[];
   benefits?: string[];
+  showServicesOnHome?: boolean;
+  showBenefitsOnHome?: boolean;
 }
 
 export interface ServiceItem {
