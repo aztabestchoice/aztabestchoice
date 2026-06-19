@@ -74,9 +74,53 @@ export default function DashboardClient({
   const myResults = results.filter(res => res.studentId === currentUser.id);
   const mySessions = sessions.filter(s => s.studentId === currentUser.id);
 
+  // Dynamic program & psychologist definitions
+  const defaultIntProgs = [
+    {
+      id: 'cat_tni_polri',
+      category: 'seleksi',
+      tag: 'PERSIPAN SELEKSI',
+      title: 'Bimbel Psikotes Terpadu TNI-POLRI / IPDN',
+      desc: 'Sistem Akurasi Presisi, Try out CAT terkomputerisasi, rekap grafik kepribadian.',
+      price: 4500000
+    },
+    {
+      id: 'cat_bumn_pns',
+      category: 'seleksi',
+      tag: 'PERSIPAN SELEKSI',
+      title: 'Persiapan Instansi Pemerintah/BUMN/Swasta',
+      desc: 'Pelatihan presentasi, STAR wawancara kerja, LGD, SKB CAT.',
+      price: 2500000
+    },
+    {
+      id: 'test_iq',
+      category: 'asesmen',
+      tag: 'ASESMEN PSIKOLOGI',
+      title: 'Tes IQ / Inteligensi Umum (Sertifikat Resmi)',
+      desc: 'IST / WAIS terstandar HIMPSI, laporan psikogram detail.',
+      price: 350000
+    },
+    {
+      id: 'counseling_mental',
+      category: 'konseling',
+      tag: 'LAYANAN KONSELING',
+      title: 'Sesi Counseling Privat 1-on-1 Sesi Psikolog',
+      desc: 'Pemulihan burnout stres, pengarahan potensi, coping stres.',
+      price: 455000
+    }
+  ];
+
+  const activeIntProgs = siteSettings?.interactivePrograms && siteSettings.interactivePrograms.length > 0
+    ? siteSettings.interactivePrograms
+    : defaultIntProgs;
+
+  const activePsychologists = siteSettings?.interactivePsychologists && siteSettings.interactivePsychologists.length > 0
+    ? siteSettings.interactivePsychologists
+    : MOCK_PSYCHOLOGISTS;
+
   // New Program Registration Wizard Form state
   const [newRegStep, setNewRegStep] = useState(1);
-  const [selectedProgram, setSelectedProgram] = useState<'cat_tni_polri' | 'cat_bumn_pns' | 'test_iq' | 'test_aptitude' | 'counseling_mental'>('cat_tni_polri');
+  const [selectedProgram, setSelectedProgram] = useState<string>('cat_tni_polri');
   const [selectedMethod, setSelectedMethod] = useState<'offline' | 'online'>('offline');
   const [tempRegId, setTempRegId] = useState('');
 
@@ -89,7 +133,7 @@ export default function DashboardClient({
   const [payGatewayOnSuccess, setPayGatewayOnSuccess] = useState<((method: string, payType?: string) => void) | null>(null);
 
   // Sesi Booking states
-  const [selectedPsy, setSelectedPsy] = useState<Psychologist>(MOCK_PSYCHOLOGISTS[0]);
+  const [selectedPsy, setSelectedPsy] = useState<Psychologist>(activePsychologists[0] || MOCK_PSYCHOLOGISTS[0]);
   const [selectedSlot, setSelectedSlot] = useState(MOCK_SLOTS[0]);
   const [bookingSuccessAlert, setBookingSuccessAlert] = useState(false);
   const [showCounselPaymentOptionModal, setShowCounselPaymentOptionModal] = useState(false);
@@ -103,13 +147,9 @@ export default function DashboardClient({
   const handleCreateRegistration = (e: React.FormEvent) => {
     e.preventDefault();
     
-    let pName = '';
-    let price = 0;
-    if (selectedProgram === 'cat_tni_polri') { pName = 'Bimbel Psikotes Terpadu TNI-POLRI (Akurasi Presisi)'; price = 4500000; }
-    else if (selectedProgram === 'cat_bumn_pns') { pName = 'Bimbel Intensif CAT & SKB BUMN / Swasta'; price = 2500000; }
-    else if (selectedProgram === 'test_iq') { pName = 'Tes Inteligensi Umum & IQ Individu'; price = 350000; }
-    else if (selectedProgram === 'test_aptitude') { pName = 'Asesmen Bakat Minat Studi Utama'; price = 300000; }
-    else if (selectedProgram === 'counseling_mental') { pName = 'Sesi Konseling Privat 1-on-1 dengan Psikolog'; price = 450000; }
+    const matchedProg = activeIntProgs.find(p => p.id === selectedProgram) || activeIntProgs[0];
+    const pName = matchedProg ? matchedProg.title : 'Program Pelatihan Bimbingan';
+    const price = matchedProg ? matchedProg.price : 1000000;
 
     const newRegId = 'reg-' + Math.floor(100 + Math.random() * 900);
     const newReg: ProgramRegistration = {
@@ -849,7 +889,7 @@ export default function DashboardClient({
                       <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">1. Pilih Psikolog Pendamping:</p>
                       
                       <div className="space-y-2">
-                        {MOCK_PSYCHOLOGISTS.map((psy) => (
+                        {activePsychologists.map((psy) => (
                           <div
                             key={psy.id}
                             onClick={() => setSelectedPsy(psy)}
@@ -1159,53 +1199,26 @@ export default function DashboardClient({
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-widest block">A. Pilih Pilar Program yang Diikuti:</label>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" id="program-wizard-selectors">
-                        <div 
-                          onClick={() => setSelectedProgram('cat_tni_polri')}
-                          className={`p-4 border rounded-2xl cursor-pointer transition-all ${
-                            selectedProgram === 'cat_tni_polri' ? 'border-emerald-700 bg-emerald-50/60' : 'border-gray-200 hover:border-emerald-250'
-                          }`}
-                        >
-                          <span className="px-1.5 py-0.5 rounded bg-amber-400 text-emerald-950 font-bold text-[8px] uppercase">PERSIPAN SELEKSI</span>
-                          <h4 className="text-xs font-extrabold text-slate-900 mt-1.5 leading-tight">Bimbel Psikotes Terpadu TNI-POLRI / IPDN</h4>
-                          <p className="text-[10px] text-slate-500 mt-1">Sistem Akurasi Presisi, Try out CAT terkomputerisasi, rekap grafik kepribadian.</p>
-                          <p className="text-xs font-bold text-emerald-900 font-mono mt-3">Biaya: Rp4.500.000</p>
-                        </div>
-
-                        <div 
-                          onClick={() => setSelectedProgram('cat_bumn_pns')}
-                          className={`p-4 border rounded-2xl cursor-pointer transition-all ${
-                            selectedProgram === 'cat_bumn_pns' ? 'border-emerald-700 bg-emerald-50/60' : 'border-gray-200 hover:border-emerald-250'
-                          }`}
-                        >
-                          <span className="px-1.5 py-0.5 rounded bg-amber-400 text-emerald-950 font-bold text-[8px] uppercase">PERSIPAN SELEKSI</span>
-                          <h4 className="text-xs font-extrabold text-slate-900 mt-1.5 leading-tight">Persiapan Instansi Pemerintah/BUMN/Swasta</h4>
-                          <p className="text-[10px] text-slate-500 mt-1">Pelatihan presentasi, STAR wawancara kerja, LGD, SKB CAT.</p>
-                          <p className="text-xs font-bold text-emerald-900 font-mono mt-3">Biaya: Rp2.500.000</p>
-                        </div>
-
-                        <div 
-                          onClick={() => setSelectedProgram('test_iq')}
-                          className={`p-4 border rounded-2xl cursor-pointer transition-all ${
-                            selectedProgram === 'test_iq' ? 'border-emerald-700 bg-emerald-50/60' : 'border-gray-200 hover:border-emerald-250'
-                          }`}
-                        >
-                          <span className="px-1.5 py-0.5 rounded bg-emerald-700 text-white font-bold text-[8px] uppercase">ASESMEN PSIKOLOGI</span>
-                          <h4 className="text-xs font-extrabold text-slate-900 mt-1.5 leading-tight">Tes IQ / Inteligensi Umum (Sertifikat Resmi)</h4>
-                          <p className="text-[10px] text-slate-500 mt-1">IST / WAIS terstandar HIMPSI, laporan psikogram detail.</p>
-                          <p className="text-xs font-bold text-emerald-900 font-mono mt-3">Biaya: Rp350.000</p>
-                        </div>
-
-                        <div 
-                          onClick={() => setSelectedProgram('counseling_mental')}
-                          className={`p-4 border rounded-2xl cursor-pointer transition-all ${
-                            selectedProgram === 'counseling_mental' ? 'border-emerald-700 bg-emerald-50/60' : 'border-gray-200 hover:border-emerald-250'
-                          }`}
-                        >
-                          <span className="px-1.5 py-0.5 rounded bg-rose-600 text-white font-bold text-[8px] uppercase">LAYANAN KONSELING</span>
-                          <h4 className="text-xs font-extrabold text-slate-900 mt-1.5 leading-tight">Sesi Konseling Privat 1-on-1 Sesi Psikolog</h4>
-                          <p className="text-[10px] text-slate-500 mt-1">Pemulihan burnout stres, pengarahan potensi, coping stres.</p>
-                          <p className="text-xs font-bold text-emerald-900 font-mono mt-3">Biaya: Rp450.000</p>
-                        </div>
+                        {activeIntProgs.map((prog) => (
+                          <div 
+                            key={prog.id}
+                            onClick={() => setSelectedProgram(prog.id)}
+                            className={`p-4 border rounded-2xl cursor-pointer transition-all ${
+                              selectedProgram === prog.id ? 'border-emerald-700 bg-emerald-50/60' : 'border-gray-200 hover:border-emerald-250'
+                            }`}
+                          >
+                            <span className={`px-1.5 py-0.5 rounded font-bold text-[8px] uppercase ${
+                              prog.category === 'asesmen' ? 'bg-emerald-700 text-white' :
+                              prog.category === 'konseling' ? 'bg-rose-600 text-white' :
+                              'bg-amber-400 text-emerald-950'
+                            }`}>
+                              {prog.tag || prog.category}
+                            </span>
+                            <h4 className="text-xs font-extrabold text-slate-900 mt-1.5 leading-tight">{prog.title}</h4>
+                            <p className="text-[10px] text-slate-500 mt-1">{prog.desc}</p>
+                            <p className="text-xs font-bold text-emerald-900 font-mono mt-3">Biaya: Rp{(prog.price || 0).toLocaleString('id-ID')}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -1261,10 +1274,7 @@ export default function DashboardClient({
                       <div className="flex justify-between">
                         <span className="text-gray-500 font-semibold">Program Pilihan:</span>
                         <span className="font-bold text-slate-800 text-right">
-                          {selectedProgram === 'cat_tni_polri' && 'Bimbel Psikotes Terpadu TNI-POLRI (Akurasi Presisi)'}
-                          {selectedProgram === 'cat_bumn_pns' && 'Bimbel Intensif CAT & SKB BUMN / Swasta'}
-                          {selectedProgram === 'test_iq' && 'Tes Inteligensi Umum & IQ Individu'}
-                          {selectedProgram === 'counseling_mental' && 'Sesi Konseling Privat 1-on-1 dengan Psikolog'}
+                          {registrations.find(r => r.id === tempRegId)?.programName || 'Program Layanan Terpadu'}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -1276,11 +1286,7 @@ export default function DashboardClient({
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-900 font-bold">TOTAL BIAYA UTAMA:</span>
                         <span className="font-bold text-emerald-900">
-                          Rp{
-                            selectedProgram === 'cat_tni_polri' ? '4.500.000' :
-                            selectedProgram === 'cat_bumn_pns' ? '2.500.000' :
-                            selectedProgram === 'test_iq' ? '350.000' : '450.000'
-                          }
+                          Rp{(registrations.find(r => r.id === tempRegId)?.totalPrice || 0).toLocaleString('id-ID')}
                         </span>
                       </div>
                     </div>
@@ -1301,7 +1307,7 @@ export default function DashboardClient({
                         <p className="text-[10.5px] text-slate-500 text-left">Gunakan Kode QRIS, Virtual Account BCA/BNI/Mandiri/BRI, Kartu Kredit Visa/Mastercard, atau E-Wallet (GoPay/OVO/DANA). Sistem mengonfirmasi lunas instan.</p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          {selectedProgram === 'cat_tni_polri' || selectedProgram === 'cat_bumn_pns' ? (
+                          {(registrations.find(r => r.id === tempRegId)?.totalPrice || 0) >= 1000000 ? (
                             <button
                               onClick={() => {
                                 const parentReg = registrations.find(r => r.id === tempRegId);
@@ -1334,7 +1340,7 @@ export default function DashboardClient({
                         <p className="text-[10px] text-gray-400 text-left">Transfer manual ke BCA Rekening 177-300-8888. Admin akan memvalidasi bukti Anda dalam kurun waktu 1 jam.</p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          {selectedProgram === 'cat_tni_polri' || selectedProgram === 'cat_bumn_pns' ? (
+                          {(registrations.find(r => r.id === tempRegId)?.totalPrice || 0) >= 1000000 ? (
                             <button
                               onClick={() => handleSimulatePayment('dp')}
                               className="py-2 px-3 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-all text-center"

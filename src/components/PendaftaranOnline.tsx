@@ -55,9 +55,11 @@ export default function PendaftaranOnline({
     'Persiapan Instansi Pemerintah/BUMN/Swasta',
     'Persiapan Perguruan Tinggi'
   ];
-  const availablePrograms = siteSettings.programs && siteSettings.programs.length > 0 
-    ? siteSettings.programs 
-    : defaultPrograms;
+  const availablePrograms = siteSettings.interactivePrograms && siteSettings.interactivePrograms.length > 0
+    ? siteSettings.interactivePrograms.map(item => item.title)
+    : (siteSettings.programs && siteSettings.programs.length > 0 
+       ? siteSettings.programs 
+       : defaultPrograms);
 
   // Initialize selected program once available
   useEffect(() => {

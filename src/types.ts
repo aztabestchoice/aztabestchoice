@@ -208,6 +208,20 @@ export interface SiteSettings {
   profilAkurasiItems?: ProfilAkurasiItem[];
   profilAkurasiLocation?: string;
   profilAkurasiBadge?: string;
+  showFormPendaftaranOnline?: boolean;
+  showReservasiKonseling?: boolean;
+  showReservasiLayoutOnHome?: boolean;
+  interactivePrograms?: InteractiveProgram[];
+  interactivePsychologists?: Psychologist[];
+}
+
+export interface InteractiveProgram {
+  id: string;
+  category: string;
+  tag: string;
+  title: string;
+  desc: string;
+  price: number;
 }
 
 export interface ProfilAkurasiItem {

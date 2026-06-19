@@ -150,15 +150,17 @@ export default function Header({
             )}
           </div>
 
-          <button
-            onClick={() => { setActiveTab('pendaftaran'); }}
-            className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
-              activeTab === 'pendaftaran' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
-            }`}
-            id="nav-pendaftaran"
-          >
-            Pendaftaran
-          </button>
+          {siteSettings?.showFormPendaftaranOnline !== false && (
+            <button
+              onClick={() => { setActiveTab('pendaftaran'); }}
+              className={`font-sans font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-lg transition-all ${
+                activeTab === 'pendaftaran' ? 'bg-emerald-50 text-emerald-900 font-bold' : 'text-slate-600 hover:bg-slate-50'
+              }`}
+              id="nav-pendaftaran"
+            >
+              Pendaftaran
+            </button>
+          )}
 
           <button
             onClick={() => { setActiveTab('tentang'); }}
@@ -304,14 +306,16 @@ export default function Header({
               </button>
             </div>
 
-            <button
-              onClick={() => { setActiveTab('pendaftaran'); setMobileMenuOpen(false); }}
-              className={`flex w-full px-3 py-2.5 text-base font-semibold rounded-lg ${
-                activeTab === 'pendaftaran' ? 'bg-emerald-50 text-emerald-900 border-l-4 border-emerald-700' : 'text-gray-600'
-              }`}
-            >
-              Pendaftaran Baru
-            </button>
+            {siteSettings?.showFormPendaftaranOnline !== false && (
+              <button
+                onClick={() => { setActiveTab('pendaftaran'); setMobileMenuOpen(false); }}
+                className={`flex w-full px-3 py-2.5 text-base font-semibold rounded-lg ${
+                  activeTab === 'pendaftaran' ? 'bg-emerald-50 text-emerald-900 border-l-4 border-emerald-700' : 'text-gray-600'
+                }`}
+              >
+                Pendaftaran Baru
+              </button>
+            )}
 
             <button
               onClick={() => { setActiveTab('tentang'); setMobileMenuOpen(false); }}

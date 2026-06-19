@@ -745,46 +745,50 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
       )}
 
       {/* 8. JADWAL & BOOKING PORTAL REFERRAL */}
-      <section className="py-20 px-4 max-w-7xl mx-auto" id="booking-referral-cta">
-        <div className="bg-emerald-900 rounded-3xl p-8 sm:p-12 text-white overflow-hidden relative shadow-xl" id="cta-referral-box">
-          <div className="absolute top-0 right-0 -mr-12 -mt-12 w-80 h-80 rounded-full bg-emerald-800 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 -ml-12 -mb-12 w-72 h-72 rounded-full bg-amber-500/10 pointer-events-none" />
-          
-          <div className="relative z-10 max-w-3xl space-y-6 text-left">
-            <span className="inline-flex px-2 py-0.5 rounded bg-amber-400 text-emerald-950 font-mono text-[10px] font-bold uppercase tracking-wider">
-              Akses Integrasi Terpadu
-            </span>
+      {siteSettings?.showReservasiLayoutOnHome !== false && (
+        <section className="py-20 px-4 max-w-7xl mx-auto" id="booking-referral-cta">
+          <div className="bg-emerald-900 rounded-3xl p-8 sm:p-12 text-white overflow-hidden relative shadow-xl" id="cta-referral-box">
+            <div className="absolute top-0 right-0 -mr-12 -mt-12 w-80 h-80 rounded-full bg-emerald-800 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -ml-12 -mb-12 w-72 h-72 rounded-full bg-amber-500/10 pointer-events-none" />
             
-            <h2 className="font-sans font-extrabold text-2xl sm:text-4xl leading-tight">
-              Ingin Mengetahui Jadwal Pelatihan & Reservasi Konseling?
-            </h2>
-            
-            <p className="font-sans text-xs sm:text-sm text-emerald-100 leading-relaxed max-w-2xl">
-              Kami merancang sistem pendaftaran online, portal laporan hasil akademik siswa privat, serta kalender reservasi konseling psikolog interaktif dalam satu portal tepadu. Silakan buat akun siswa atau login untuk memesan sesi secara instant.
-            </p>             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <button
-                onClick={handleRegisterFlow}
-                className="font-sans font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full bg-amber-400 hover:bg-amber-500 text-emerald-950 transition-colors flex items-center justify-center space-x-2 shadow-xs"
-                id="cta-schedule-login"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Buka Jadwal & Booking Sesi</span>
-              </button>
+            <div className="relative z-10 max-w-3xl space-y-6 text-left">
+              <span className="inline-flex px-2 py-0.5 rounded bg-amber-400 text-emerald-950 font-mono text-[10px] font-bold uppercase tracking-wider">
+                Akses Integrasi Terpadu
+              </span>
               
-              <a
-                href={`https://wa.me/${cleanPhone(siteSettings?.phone || '0811-3000-888')}?text=Halo%20Azta%20Best%20Choice%20Madiun%2C%20saya%20ingin%20tanya-tanya%2520mengenai%2520bimbingan...`}
-                target="_blank"
-                rel="noreferrer"
-                className="font-sans font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors flex items-center justify-center space-x-2"
-                id="cta-whatsapp-general"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>Konsultasi WA ({siteSettings?.phone || '0811-3000-888'})</span>
-              </a>
+              <h2 className="font-sans font-extrabold text-2xl sm:text-4xl leading-tight">
+                Ingin Mengetahui Jadwal Pelatihan & Reservasi Konseling?
+              </h2>
+              
+              <p className="font-sans text-xs sm:text-sm text-emerald-100 leading-relaxed max-w-2xl">
+                Kami merancang sistem pendaftaran online, portal laporan hasil akademik siswa privat, serta kalender reservasi konseling psikolog interaktif dalam satu portal tepadu. Silakan buat akun siswa atau login untuk memesan sesi secara instant.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <button
+                  onClick={handleRegisterFlow}
+                  className="font-sans font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full bg-amber-400 hover:bg-amber-500 text-emerald-950 transition-colors flex items-center justify-center space-x-2 shadow-xs"
+                  id="cta-schedule-login"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Buka Jadwal & Booking Sesi</span>
+                </button>
+                
+                <a
+                  href={`https://wa.me/${cleanPhone(siteSettings?.phone || '0811-3000-888')}?text=Halo%20Azta%20Best%20Choice%20Madiun%2C%20saya%20ingin%20tanya-tanya%2520mengenai%2520bimbingan...`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-sans font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full border border-white/20 hover:bg-white/10 text-white transition-colors flex items-center justify-center space-x-2"
+                  id="cta-whatsapp-general"
+                >
+                  <MessageCircle className="w-4 h-4 text-emerald-400" />
+                  <span>Konsultasi WA ({siteSettings?.phone || '0811-3000-888'})</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 9. KONTAK & LOKASI SEKILAS */}
       <section className="bg-slate-100 py-16 px-4" id="address-overview-section">

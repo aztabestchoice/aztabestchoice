@@ -422,6 +422,61 @@ const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
     { id: 'pa-1', title: 'Lab Komputer Simulasi CAT', status: 'Tersedia' },
     { id: 'pa-2', title: 'Ruang Konseling Kedap Nyaman', status: 'Tersedia' },
     { id: 'pa-3', title: 'Rapor Psikogram Kepribadian', status: 'Eksklusif' }
+  ],
+  showFormPendaftaranOnline: true,
+  showReservasiKonseling: true,
+  showReservasiLayoutOnHome: true,
+  interactivePrograms: [
+    {
+      id: 'cat_tni_polri',
+      category: 'seleksi',
+      tag: 'PERSIPAN SELEKSI',
+      title: 'Bimbel Psikotes Terpadu TNI-POLRI / IPDN',
+      desc: 'Sistem Akurasi Presisi, Try out CAT terkomputerisasi, rekap grafik kepribadian.',
+      price: 4500000
+    },
+    {
+      id: 'cat_bumn_pns',
+      category: 'seleksi',
+      tag: 'PERSIPAN SELEKSI',
+      title: 'Persiapan Instansi Pemerintah/BUMN/Swasta',
+      desc: 'Pelatihan presentasi, STAR wawancara kerja, LGD, SKB CAT.',
+      price: 2500000
+    },
+    {
+      id: 'test_iq',
+      category: 'asesmen',
+      tag: 'ASESMEN PSIKOLOGI',
+      title: 'Tes IQ / Inteligensi Umum (Sertifikat Resmi)',
+      desc: 'IST / WAIS terstandar HIMPSI, laporan psikogram detail.',
+      price: 350000
+    },
+    {
+      id: 'counseling_mental',
+      category: 'konseling',
+      tag: 'LAYANAN KONSELING',
+      title: 'Sesi Konseling Privat 1-on-1 Sesi Psikolog',
+      desc: 'Pemulihan burnout stres, pengarahan potensi, coping stres.',
+      price: 450000
+    }
+  ],
+  interactivePsychologists: [
+    {
+      id: 'psy-danur',
+      name: 'Danur Wijaya, M.Psi., Psikolog',
+      specialization: 'Psikologi Klinis Dewasa & Industri',
+      sip: '19.24.11-Psikolog-0831',
+      bio: 'Berpengalaman selama 12 tahun bidang asesmen TNI-POLRI, seleksi rekrutmen perusahaan swasta/BUMN, serta pendampingan kesehatan mental pasca-trauma.',
+      avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200'
+    },
+    {
+      id: 'psy-retno',
+      name: 'Dra. Retno Wulandari, M.Psi., Psikolog',
+      specialization: 'Psikologi Perkembangan Anak & Konseling Bakat Minat',
+      sip: '19.24.11-Psikolog-1049',
+      bio: 'Spesialis dalam pemetaan minat bakat anak dan remaja, konsultasi penjurusan PTN, dan pendampingan akademis/kesiapan belajar.',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200'
+    }
   ]
 };
 

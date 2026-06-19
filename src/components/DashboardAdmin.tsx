@@ -297,6 +297,220 @@ export default function DashboardAdmin({
     setEditingProfilAkurasiItemId(null);
   };
 
+  // State Variables for Interactive Registration Programs
+  const [newIntProgTag, setNewIntProgTag] = useState('');
+  const [newIntProgTitle, setNewIntProgTitle] = useState('');
+  const [newIntProgDesc, setNewIntProgDesc] = useState('');
+  const [newIntProgPrice, setNewIntProgPrice] = useState<number>(0);
+  const [newIntProgCategory, setNewIntProgCategory] = useState('seleksi');
+
+  const [editingIntProgId, setEditingIntProgId] = useState<string | null>(null);
+  const [editingIntProgTag, setEditingIntProgTag] = useState('');
+  const [editingIntProgTitle, setEditingIntProgTitle] = useState('');
+  const [editingIntProgDesc, setEditingIntProgDesc] = useState('');
+  const [editingIntProgPrice, setEditingIntProgPrice] = useState<number>(0);
+  const [editingIntProgCategory, setEditingIntProgCategory] = useState('seleksi');
+
+  // State Variables for Interactive Psychologists
+  const [newPsyName, setNewPsyName] = useState('');
+  const [newPsySpecialization, setNewPsySpecialization] = useState('');
+  const [newPsySip, setNewPsySip] = useState('');
+  const [newPsyBio, setNewPsyBio] = useState('');
+  const [newPsyAvatar, setNewPsyAvatar] = useState('');
+
+  const [editingPsyId, setEditingPsyId] = useState<string | null>(null);
+  const [editingPsyName, setEditingPsyName] = useState('');
+  const [editingPsySpecialization, setEditingPsySpecialization] = useState('');
+  const [editingPsySip, setEditingPsySip] = useState('');
+  const [editingPsyBio, setEditingPsyBio] = useState('');
+  const [editingPsyAvatar, setEditingPsyAvatar] = useState('');
+
+  // Handlers for Interactive registration programs
+  const handleAddIntProg = () => {
+    if (!newIntProgTitle.trim()) return;
+    const currentProgs = settingsForm.interactivePrograms || [
+      {
+        id: 'cat_tni_polri',
+        category: 'seleksi',
+        tag: 'PERSIPAN SELEKSI',
+        title: 'Bimbel Psikotes Terpadu TNI-POLRI / IPDN',
+        desc: 'Sistem Akurasi Presisi, Try out CAT terkomputerisasi, rekap grafik kepribadian.',
+        price: 4500000
+      },
+      {
+        id: 'cat_bumn_pns',
+        category: 'seleksi',
+        tag: 'PERSIPAN SELEKSI',
+        title: 'Persiapan Instansi Pemerintah/BUMN/Swasta',
+        desc: 'Pelatihan presentasi, STAR wawancara kerja, LGD, SKB CAT.',
+        price: 2500000
+      },
+      {
+        id: 'test_iq',
+        category: 'asesmen',
+        tag: 'ASESMEN PSIKOLOGI',
+        title: 'Tes IQ / Inteligensi Umum (Sertifikat Resmi)',
+        desc: 'IST / WAIS terstandar HIMPSI, laporan psikogram detail.',
+        price: 350000
+      },
+      {
+        id: 'counseling_mental',
+        category: 'konseling',
+        tag: 'LAYANAN KONSELING',
+        title: 'Sesi Konseling Privat 1-on-1 Sesi Psikolog',
+        desc: 'Pemulihan burnout stres, pengarahan potensi, coping stres.',
+        price: 450000
+      }
+    ];
+
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePrograms: [
+        ...currentProgs,
+        {
+          id: 'ip-' + Date.now(),
+          category: newIntProgCategory,
+          tag: newIntProgTag.trim() || 'PERSIPAN SELEKSI',
+          title: newIntProgTitle.trim(),
+          desc: newIntProgDesc.trim() || 'Deskripsi program bimbingan terintegrasi.',
+          price: newIntProgPrice || 0
+        }
+      ]
+    }));
+
+    setNewIntProgTag('');
+    setNewIntProgTitle('');
+    setNewIntProgDesc('');
+    setNewIntProgPrice(0);
+    setNewIntProgCategory('seleksi');
+  };
+
+  const handleDeleteIntProg = (id: string) => {
+    const currentProgs = settingsForm.interactivePrograms || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePrograms: currentProgs.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditIntProg = (id: string, tag: string, title: string, desc: string, price: number, category: string) => {
+    setEditingIntProgId(id);
+    setEditingIntProgTag(tag);
+    setEditingIntProgTitle(title);
+    setEditingIntProgDesc(desc);
+    setEditingIntProgPrice(price);
+    setEditingIntProgCategory(category);
+  };
+
+  const handleSaveIntProg = (id: string) => {
+    if (!editingIntProgTitle.trim()) return;
+    const currentProgs = settingsForm.interactivePrograms || [];
+    const updated = currentProgs.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          tag: editingIntProgTag.trim() || 'PERSIPAN SELEKSI',
+          title: editingIntProgTitle.trim(),
+          desc: editingIntProgDesc.trim(),
+          price: editingIntProgPrice || 0,
+          category: editingIntProgCategory
+        };
+      }
+      return item;
+    });
+
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePrograms: updated
+    }));
+    setEditingIntProgId(null);
+  };
+
+  // Handlers for Interactive Psychologists
+  const handleAddPsy = () => {
+    if (!newPsyName.trim()) return;
+    const currentPsys = settingsForm.interactivePsychologists || [
+      {
+        id: 'psy-danur',
+        name: 'Danur Wijaya, M.Psi., Psikolog',
+        specialization: 'Psikologi Klinis Dewasa & Industri',
+        sip: '19.24.11-Psikolog-0831',
+        bio: 'Berpengalaman selama 12 tahun bidang asesmen TNI-POLRI, seleksi rekrutmen perusahaan swasta/BUMN, serta pendampingan kesehatan mental pasca-trauma.',
+        avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200'
+      },
+      {
+        id: 'psy-retno',
+        name: 'Dra. Retno Wulandari, M.Psi., Psikolog',
+        specialization: 'Psikologi Perkembangan Anak & Konseling Bakat Minat',
+        sip: '19.24.11-Psikolog-1049',
+        bio: 'Spesialis dalam pemetaan minat bakat anak dan remaja, konsultasi penjurusan PTN, dan pendampingan akademis/kesiapan belajar.',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200'
+      }
+    ];
+
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePsychologists: [
+        ...currentPsys,
+        {
+          id: 'psy-' + Date.now(),
+          name: newPsyName.trim(),
+          specialization: newPsySpecialization.trim() || 'Psikolog Partner',
+          sip: newPsySip.trim() || 'Berlisensi HIMPSI',
+          bio: newPsyBio.trim() || 'Mitra psikolog terbaik untuk bimbingan konseling.',
+          avatar: newPsyAvatar.trim() || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200'
+        }
+      ]
+    }));
+
+    setNewPsyName('');
+    setNewPsySpecialization('');
+    setNewPsySip('');
+    setNewPsyBio('');
+    setNewPsyAvatar('');
+  };
+
+  const handleDeletePsy = (id: string) => {
+    const currentPsys = settingsForm.interactivePsychologists || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePsychologists: currentPsys.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditPsy = (id: string, name: string, specialization: string, sip: string, bio: string, avatar: string) => {
+    setEditingPsyId(id);
+    setEditingPsyName(name);
+    setEditingPsySpecialization(specialization);
+    setEditingPsySip(sip);
+    setEditingPsyBio(bio);
+    setEditingPsyAvatar(avatar);
+  };
+
+  const handleSavePsy = (id: string) => {
+    if (!editingPsyName.trim()) return;
+    const currentPsys = settingsForm.interactivePsychologists || [];
+    const updated = currentPsys.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          name: editingPsyName.trim(),
+          specialization: editingPsySpecialization.trim(),
+          sip: editingPsySip.trim(),
+          bio: editingPsyBio.trim(),
+          avatar: editingPsyAvatar.trim() || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200'
+        };
+      }
+      return item;
+    });
+
+    setSettingsForm(prev => ({
+      ...prev,
+      interactivePsychologists: updated
+    }));
+    setEditingPsyId(null);
+  };
+
   // 1. Sekilas Tentang Azta Paragraphs State
   const [newAboutAztaPara, setNewAboutAztaPara] = useState('');
   const [editingAboutAztaParaIdx, setEditingAboutAztaParaIdx] = useState<number | null>(null);
@@ -3000,6 +3214,448 @@ export default function DashboardAdmin({
                         >
                           <Plus className="w-3.5 h-3.5" />
                           <span>Tambah Fasilitas</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fitur: Form Pendaftaran Online Interaktif */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-form-pendaftaran-online">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2 text-left">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">📋 Fitur: Form Pendaftaran Online Interaktif</h4>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Kelola opsi pilar bimbingan yang terintegrasi langsung dengan wizard pendaftaran baru.</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <label className="text-[11px] font-bold text-gray-700 flex items-center space-x-2 cursor-pointer bg-white p-2 px-3.5 border rounded-xl shadow-sm hover:border-emerald-800 transition-all">
+                        <input
+                          type="checkbox"
+                          checked={settingsForm.showFormPendaftaranOnline !== false}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, showFormPendaftaranOnline: e.target.checked }))}
+                          className="accent-emerald-800 w-3.5 h-3.5 rounded"
+                        />
+                        <span>Aktifkan Fitur</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold text-slate-800 block text-left">📋 Daftar Program Pendaftaran (Tambah, Ubah, Hapus)</span>
+                    
+                    <div className="space-y-2">
+                      {(settingsForm.interactivePrograms || [
+                        { id: 'cat_tni_polri', category: 'seleksi', tag: 'PERSIPAN SELEKSI', title: 'Bimbel Psikotes Terpadu TNI-POLRI / IPDN', desc: 'Sistem Akurasi Presisi, Try out CAT terkomputerisasi, rekap grafik kepribadian.', price: 4500000 },
+                        { id: 'cat_bumn_pns', category: 'seleksi', tag: 'PERSIPAN SELEKSI', title: 'Persiapan Instansi Pemerintah/BUMN/Swasta', desc: 'Pelatihan presentasi, STAR wawancara kerja, LGD, SKB CAT.', price: 2500000 },
+                        { id: 'test_iq', category: 'asesmen', tag: 'ASESMEN PSIKOLOGI', title: 'Tes IQ / Inteligensi Umum (Sertifikat Resmi)', desc: 'IST / WAIS terstandar HIMPSI, laporan psikogram detail.', price: 350000 },
+                        { id: 'counseling_mental', category: 'konseling', tag: 'LAYANAN KONSELING', title: 'Sesi Counseling Privat 1-on-1 Sesi Psikolog', desc: 'Pemulihan burnout stres, pengarahan potensi, coping stres.', price: 450000 }
+                      ]).map((item) => (
+                        <div key={item.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left">
+                          {editingIntProgId === item.id ? (
+                            <div className="space-y-3 w-full pr-1">
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Judul Program:</label>
+                                  <input
+                                    type="text"
+                                    value={editingIntProgTitle}
+                                    onChange={(e) => setEditingIntProgTitle(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="Nama Program"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Tag Atas:</label>
+                                  <input
+                                    type="text"
+                                    value={editingIntProgTag}
+                                    onChange={(e) => setEditingIntProgTag(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="e.g. PERSIPAN SELEKSI"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Biaya (Rp):</label>
+                                  <input
+                                    type="number"
+                                    value={editingIntProgPrice}
+                                    onChange={(e) => setEditingIntProgPrice(Number(e.target.value))}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="Biaya dalam rupiah"
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <div className="sm:col-span-2 space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Deskripsi Singkat:</label>
+                                  <input
+                                    type="text"
+                                    value={editingIntProgDesc}
+                                    onChange={(e) => setEditingIntProgDesc(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="Penjelasan ringkas program"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Kategori Sub Tab:</label>
+                                  <select
+                                    value={editingIntProgCategory}
+                                    onChange={(e) => setEditingIntProgCategory(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                  >
+                                    <option value="seleksi">Persiapan Seleksi (Bimbel TNI/POLRI/Korp)</option>
+                                    <option value="asesmen">Asesmen Psikologi (Tes IQ/Sertifikasi)</option>
+                                    <option value="konseling">Layanan Konseling (Sesi Privat)</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-1.5 justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveIntProg(item.id)}
+                                  className="px-3 py-1.5 bg-emerald-800 text-white hover:bg-emerald-950 font-bold text-[10px] rounded cursor-pointer flex items-center space-x-1"
+                                >
+                                  <Save className="w-3 h-3" />
+                                  <span>Simpan</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingIntProgId(null)}
+                                  className="px-3 py-1.5 bg-gray-150 text-gray-750 font-bold text-[10px] rounded cursor-pointer"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                              <div className="space-y-1.5">
+                                <div className="flex items-center space-x-2 flex-wrap gap-1">
+                                  <span className="px-1.5 py-0.5 bg-amber-450 text-amber-950 bg-amber-200 font-bold text-[8px] uppercase tracking-wider rounded">{item.tag}</span>
+                                  <span className="px-1.5 py-0.5 bg-slate-100 text-slate-700 font-semibold text-[8px] uppercase tracking-wider rounded">{item.category}</span>
+                                  <h5 className="text-xs font-bold text-slate-900 leading-snug">{item.title}</h5>
+                                </div>
+                                <p className="text-[10px] text-gray-500 leading-relaxed max-w-2xl">{item.desc}</p>
+                                <p className="text-xs font-bold text-emerald-900 font-mono">Biaya: Rp{item.price.toLocaleString('id-ID')}</p>
+                              </div>
+                              <div className="flex space-x-1 shrink-0 self-end sm:self-center">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEditIntProg(item.id, item.tag, item.title, item.desc, item.price, item.category)}
+                                  className="p-1 px-2.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-lg flex items-center space-x-1 text-[10px] font-bold"
+                                  title="Edit Program"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                  <span>Ubah</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteIntProg(item.id)}
+                                  className="p-1 px-2 text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
+                                  title="Hapus Program"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add Interactive Program Form */}
+                    <div className="bg-white p-4 rounded-xl border border-dashed border-gray-300 space-y-4 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-550 uppercase tracking-widest block">➕ Tambah Program Pendaftaran Baru:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Nama Program:</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Pembekalan Jasmani AKPOL"
+                            value={newIntProgTitle}
+                            onChange={(e) => setNewIntProgTitle(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Tag Label:</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. PERSIPAN JASMANI"
+                            value={newIntProgTag}
+                            onChange={(e) => setNewIntProgTag(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Biaya (Rp):</label>
+                          <input
+                            type="number"
+                            placeholder="e.g. 1500000"
+                            value={newIntProgPrice || ''}
+                            onChange={(e) => setNewIntProgPrice(Number(e.target.value))}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-sans">
+                        <div className="sm:col-span-2 space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Deskripsi Singkat:</label>
+                          <input
+                            type="text"
+                            placeholder="Ringkasan porsi bimbingan"
+                            value={newIntProgDesc}
+                            onChange={(e) => setNewIntProgDesc(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Kategori Sub Tab:</label>
+                          <select
+                            value={newIntProgCategory}
+                            onChange={(e) => setNewIntProgCategory(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          >
+                            <option value="seleksi">Persiapan Seleksi</option>
+                            <option value="asesmen">Asesmen Psikologi</option>
+                            <option value="konseling">Layanan Konseling</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="flex justify-end pt-1">
+                        <button
+                          type="button"
+                          onClick={handleAddIntProg}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-lg uppercase cursor-pointer flex items-center space-x-1"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Program</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fitur: Reservasi Sesi Konseling Interaktif */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-reservasi-counseling">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2 text-left">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">💖 Fitur: Reservasi Sesi Konseling Interaktif</h4>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Kelola daftar psikolog utama pendamping yang dapat dipesan langsung oleh siswa.</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="text-[11px] font-bold text-gray-700 flex items-center space-x-2 cursor-pointer bg-white p-2 px-3.5 border rounded-xl shadow-sm hover:border-emerald-800 transition-all">
+                        <input
+                          type="checkbox"
+                          checked={settingsForm.showReservasiKonseling !== false}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, showReservasiKonseling: e.target.checked }))}
+                          className="accent-emerald-800 w-3.5 h-3.5 rounded"
+                        />
+                        <span>Aktifkan Fitur</span>
+                      </label>
+                      <label className="text-[11px] font-bold text-gray-700 flex items-center space-x-2 cursor-pointer bg-white p-2 px-3.5 border rounded-xl shadow-sm hover:border-emerald-800 transition-all">
+                        <input
+                          type="checkbox"
+                          checked={settingsForm.showReservasiLayoutOnHome !== false}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, showReservasiLayoutOnHome: e.target.checked }))}
+                          className="accent-emerald-800 w-3.5 h-3.5 rounded"
+                        />
+                        <span>Tampilkan di Beranda</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold text-slate-800 block text-left">📋 Daftar Psikolog Pendamping (Tambah, Ubah, Hapus)</span>
+                    
+                    <div className="space-y-2">
+                      {(settingsForm.interactivePsychologists || [
+                        { id: 'psy-danur', name: 'Danur Wijaya, M.Psi., Psikolog', specialization: 'Psikologi Klinis Dewasa & Industri', sip: '19.24.11-Psikolog-0831', bio: 'Berpengalaman selama 12 tahun bidang asesmen TNI-POLRI, seleksi rekrutmen perusahaan swasta/BUMN, serta pendampingan kesehatan mental pasca-trauma.', avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200' },
+                        { id: 'psy-retno', name: 'Dra. Retno Wulandari, M.Psi., Psikolog', specialization: 'Psikologi Perkembangan Anak & Konseling Bakat Minat', sip: '19.24.11-Psikolog-1049', bio: 'Spesialis dalam pemetaan minat bakat anak dan remaja, konsultasi penjurusan PTN, dan pendampingan akademis/kesiapan belajar.', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200' }
+                      ]).map((item) => (
+                        <div key={item.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left">
+                          {editingPsyId === item.id ? (
+                            <div className="space-y-3 w-full pr-1">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Nama Lengkap Psikolog & Gelar:</label>
+                                  <input
+                                    type="text"
+                                    value={editingPsyName}
+                                    onChange={(e) => setEditingPsyName(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="e.g. Danur Wijaya, M.Psi., Psikolog"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Spesialisasi / Keahlian:</label>
+                                  <input
+                                    type="text"
+                                    value={editingPsySpecialization}
+                                    onChange={(e) => setEditingPsySpecialization(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="e.g. Psikologi Klinis Dewasa"
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-500">Surat Izin Praktik (SIP):</label>
+                                  <input
+                                    type="text"
+                                    value={editingPsySip}
+                                    onChange={(e) => setEditingPsySip(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                    placeholder="e.g. 19.24.11-Psikolog-0831"
+                                  />
+                                </div>
+                                <div className="space-y-1 sm:col-span-2">
+                                  <label className="text-[10px] font-bold text-gray-500">URL Foto:</label>
+                                  <input
+                                    type="text"
+                                    value={editingPsyAvatar}
+                                    onChange={(e) => setEditingPsyAvatar(e.target.value)}
+                                    className="w-full p-2 text-xs border rounded-lg bg-neutral-50 font-mono text-[10px] shadow-xs outline-none"
+                                    placeholder="https://images.unsplash.com/..."
+                                  />
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-gray-500">Bio Singkat & Pengalaman:</label>
+                                <textarea
+                                  value={editingPsyBio}
+                                  onChange={(e) => setEditingPsyBio(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded-lg bg-neutral-50 shadow-xs outline-none"
+                                  rows={2}
+                                />
+                              </div>
+                              <div className="flex items-center space-x-1.5 justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSavePsy(item.id)}
+                                  className="px-3 py-1.5 bg-emerald-800 text-white hover:bg-emerald-950 font-bold text-[10px] rounded cursor-pointer flex items-center space-x-1"
+                                >
+                                  <Save className="w-3 h-3" />
+                                  <span>Simpan</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingPsyId(null)}
+                                  className="px-3 py-1.5 bg-gray-150 text-gray-755 font-bold text-[10px] rounded cursor-pointer"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                              <div className="flex items-start space-x-3">
+                                <img
+                                  src={item.avatar}
+                                  alt={item.name}
+                                  className="w-12 h-12 rounded-lg object-cover border bg-slate-100 mt-0.5 shrink-0"
+                                  referrerPolicy="no-referrer"
+                                />
+                                <div className="space-y-1">
+                                  <h5 className="text-xs font-bold text-slate-900 leading-tight">{item.name}</h5>
+                                  <div className="flex items-center space-x-2 text-[10px] font-bold text-rose-600">
+                                    <span>{item.specialization}</span>
+                                    <span>•</span>
+                                    <span className="text-gray-400 font-normal">SIP: {item.sip}</span>
+                                  </div>
+                                  <p className="text-[10px] text-gray-500 leading-relaxed max-w-xl">{item.bio}</p>
+                                </div>
+                              </div>
+                              <div className="flex space-x-1 shrink-0 self-end sm:self-center">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEditPsy(item.id, item.name, item.specialization, item.sip, item.bio, item.avatar)}
+                                  className="p-1 px-2.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-lg flex items-center space-x-1 text-[10px] font-bold"
+                                  title="Edit Psikolog"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                  <span>Ubah</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeletePsy(item.id)}
+                                  className="p-1 px-2 text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
+                                  title="Hapus Psikolog"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add Interactive Psychologist Form */}
+                    <div className="bg-white p-4 rounded-xl border border-dashed border-gray-300 space-y-4 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-550 uppercase tracking-widest block">➕ Tambah Psikolog Pendamping Baru:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Nama Lengkap Psikolog & Gelar:</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Amanda Putri, M.Psi., Psikolog"
+                            value={newPsyName}
+                            onChange={(e) => setNewPsyName(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Spesialisasi / Keahlian:</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Konseling Anak & Tumbuh Kembang"
+                            value={newPsySpecialization}
+                            onChange={(e) => setNewPsySpecialization(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-gray-550">Surat Izin Praktik (SIP):</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 19.24.11-Psikolog-2580"
+                            value={newPsySip}
+                            onChange={(e) => setNewPsySip(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1 sm:col-span-2">
+                          <label className="text-[10px] font-bold text-gray-550">URL Link Foto:</label>
+                          <input
+                            type="text"
+                            placeholder="https://images.unsplash.com/photo-..."
+                            value={newPsyAvatar}
+                            onChange={(e) => setNewPsyAvatar(e.target.value)}
+                            className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg font-mono text-[10px] shadow-sm outline-none"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-550">Bio Singkat & Rekam Jejak Pengalaman:</label>
+                        <textarea
+                          placeholder="Tuliskan ringkasan pengalaman dan kredibilitas di sini..."
+                          value={newPsyBio}
+                          onChange={(e) => setNewPsyBio(e.target.value)}
+                          className="w-full p-2.5 text-xs border bg-slate-50 rounded-lg shadow-sm outline-none"
+                          rows={2}
+                        />
+                      </div>
+                      <div className="flex justify-end pt-1">
+                        <button
+                          type="button"
+                          onClick={handleAddPsy}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-lg uppercase cursor-pointer flex items-center space-x-1"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Psikolog</span>
                         </button>
                       </div>
                     </div>
