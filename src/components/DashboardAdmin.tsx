@@ -2055,11 +2055,32 @@ export default function DashboardAdmin({
                 </div>
               </div>
 
+              {/* Partner Settings */}
+              <div className="space-y-4 pt-6 border-t" id="settings-partners-block">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">11. Kelola Mitra Kerja Sama & Klien Instansi</h4>
+                <p className="text-[11px] text-gray-500">
+                  Tentukan apakah logo dan daftar "Mitra Kerja Sama & Klien Instansi Terkait" ditampilkan pada halaman beranda utama atau disembunyikan.
+                </p>
+
+                <div className="flex items-center space-x-2.5 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-150 text-left">
+                  <input
+                    type="checkbox"
+                    id="toggle_show_partners_on_home"
+                    checked={settingsForm.showPartnersOnHome !== false}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, showPartnersOnHome: e.target.checked }))}
+                    className="w-4 h-4 text-emerald-800 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <label htmlFor="toggle_show_partners_on_home" className="text-xs font-semibold text-emerald-950 cursor-pointer select-none">
+                    Tampilkan "Mitra Kerja Sama & Klien Instansi Terkait" di Beranda
+                  </label>
+                </div>
+              </div>
+
               {/* Data Portability (Backup / Export / Import) block */}
               <div className="space-y-4 pt-6 border-t" id="settings-backup-block">
                 <div className="flex items-center space-x-2">
                   <span className="p-1 px-2.5 bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono text-[10px] font-bold rounded-lg uppercase">Portability</span>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-900 font-sans">11. Pencadangan, Ekspor, & Impor Data Lintas Perangkat</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-900 font-sans">12. Pencadangan, Ekspor, & Impor Data Lintas Perangkat</h4>
                 </div>
                 <p className="text-[11px] text-gray-500">
                   Karena database aplikasi saat ini berjalan secara lokal (Local Browser Storage), data kustomisasi/24 alumni Anda tersimpan di komputer/hp yang sedang Anda gunakan saat ini. Jika Anda membuka link Vercel di Hp atau perangkat lain, data akan kembali ke default. Gunakan alat di bawah ini untuk mentransfer data Anda dengan mudah atau mengirimkannya ke asisten AI untuk ditanam permanen ke dalam file GitHub/Vercel berikutnya!

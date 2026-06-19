@@ -559,30 +559,32 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
       </section>
 
       {/* 7. MITRA / KLIEN INSTANSI */}
-      <section className="py-16 bg-white border-y border-gray-100 px-4" id="partners-institutions-grid">
-        <div className="max-w-7xl mx-auto text-center" id="partners-container">
-          <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-8">
-            Mitra Kerja Sama & Klien Instansi Terkait
-          </p>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 items-center">
-            {partners.map((partner, index) => (
-              <div 
-                key={index} 
-                className="p-4 bg-slate-50 border border-gray-100 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 transition-all flex flex-col justify-center items-center h-24"
-                id={`partner-logo-${index}`}
-              >
-                <span className="font-mono text-emerald-900 font-bold text-xs leading-tight text-center">
-                  {partner.name}
-                </span>
-                <span className="text-[9px] font-semibold text-amber-600 block text-center uppercase tracking-wider mt-1 leading-none">
-                  {partner.type}
-                </span>
-              </div>
-            ))}
+      {siteSettings?.showPartnersOnHome !== false && (
+        <section className="py-16 bg-white border-y border-gray-100 px-4" id="partners-institutions-grid">
+          <div className="max-w-7xl mx-auto text-center" id="partners-container">
+            <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-8">
+              Mitra Kerja Sama & Klien Instansi Terkait
+            </p>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 items-center">
+              {partners.map((partner, index) => (
+                <div 
+                  key={index} 
+                  className="p-4 bg-slate-50 border border-gray-100 rounded-xl hover:bg-emerald-50 hover:border-emerald-200 transition-all flex flex-col justify-center items-center h-24"
+                  id={`partner-logo-${index}`}
+                >
+                  <span className="font-mono text-emerald-900 font-bold text-xs leading-tight text-center">
+                    {partner.name}
+                  </span>
+                  <span className="text-[9px] font-semibold text-amber-600 block text-center uppercase tracking-wider mt-1 leading-none">
+                    {partner.type}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 8. JADWAL & BOOKING PORTAL REFERRAL */}
       <section className="py-20 px-4 max-w-7xl mx-auto" id="booking-referral-cta">

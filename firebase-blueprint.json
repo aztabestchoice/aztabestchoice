@@ -1,0 +1,161 @@
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Website customizable themes, values and configuration parameters",
+      "type": "object",
+      "properties": {
+        "brandName": { "type": "string" },
+        "brandSuffix": { "type": "string" },
+        "subTitle": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "operationalHours": { "type": "string" },
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "heroCtaPrimary": { "type": "string" },
+        "heroCtaSecondary": { "type": "string" },
+        "stat1Value": { "type": "string" },
+        "stat1Label": { "type": "string" },
+        "stat2Value": { "type": "string" },
+        "stat2Label": { "type": "string" },
+        "stat3Value": { "type": "string" },
+        "stat3Label": { "type": "string" },
+        "showServicesOnHome": { "type": "boolean" },
+        "showBenefitsOnHome": { "type": "boolean" },
+        "showPartnersOnHome": { "type": "boolean" }
+      },
+      "required": ["brandName"]
+    },
+    "Student": {
+      "title": "Student Info",
+      "description": "Detailed register credentials and bio-data about a registered student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentNumber": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "password": { "type": "string" },
+        "birthPlace": { "type": "string" },
+        "birthDate": { "type": "string" },
+        "gender": { "type": "string" },
+        "address": { "type": "string" },
+        "lastEducation": { "type": "string" },
+        "programJoined": { "type": "string" },
+        "registrationDate": { "type": "string" }
+      },
+      "required": ["id", "fullName", "email"]
+    },
+    "Alumni": {
+      "title": "Alumni",
+      "description": "Records and achievements of bimbel alumni tarunas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "graduationYear": { "type": "string" },
+        "achievement": { "type": "string" },
+        "photoUrl": { "type": "string" }
+      },
+      "required": ["id", "fullName"]
+    },
+    "ProgramRegistration": {
+      "title": "Program Registration",
+      "description": "Records of courses, assessments, and tests registrations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "programType": { "type": "string" },
+        "programName": { "type": "string" },
+        "status": { "type": "string" },
+        "registrationDate": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "totalPrice": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "method": { "type": "string" }
+      },
+      "required": ["id", "studentId", "programType"]
+    },
+    "PaymentTransaction": {
+      "title": "Payment Transaction",
+      "description": "Cash or online payment transactions matching a registration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "registrationId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "programName": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentType": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "registrationId", "amount"]
+    },
+    "PsychologicalResult": {
+      "title": "Psychological Result",
+      "description": "Psychological assessment results, IQ score and clinical feedback details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "testDate": { "type": "string" },
+        "iqScore": { "type": "number" },
+        "iqCategory": { "type": "string" }
+      },
+      "required": ["id", "studentId", "iqScore"]
+    },
+    "CounselingSession": {
+      "title": "Counseling Session",
+      "description": "Individual counseling records with scheduled dates and timeslots",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "psychologistName": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "studentId", "psychologistName"]
+    }
+  },
+  "firestore": {
+    "siteSettings/config": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global customizable website configurations"
+    },
+    "students/{studentId}": {
+      "schema": { "$ref": "#/entities/Student" },
+      "description": "Registered students roster profiles"
+    },
+    "alumni/{alumniId}": {
+      "schema": { "$ref": "#/entities/Alumni" },
+      "description": "Successful alumni database reference"
+    },
+    "registrations/{registrationId}": {
+      "schema": { "$ref": "#/entities/ProgramRegistration" },
+      "description": "Registered program rosters"
+    },
+    "payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/PaymentTransaction" },
+      "description": "Recorded program payment transitions"
+    },
+    "results/{resultId}": {
+      "schema": { "$ref": "#/entities/PsychologicalResult" },
+      "description": "Psychological IQ test results records"
+    },
+    "sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/CounselingSession" },
+      "description": "Scheduled counseling sessions rosters"
+    }
+  }
+}

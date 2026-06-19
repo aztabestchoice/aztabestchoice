@@ -399,7 +399,8 @@ const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
     'Memprediksi Tingkat keberhasilan siswa'
   ],
   showServicesOnHome: true,
-  showBenefitsOnHome: true
+  showBenefitsOnHome: true,
+  showPartnersOnHome: true
 };
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = (persistentData && persistentData.siteSettings)

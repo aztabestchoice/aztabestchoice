@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper: Is Signed In
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Site Settings: Allow public read, authenticated write
+    match /siteSettings/{configId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Students: Allow authenticated read/write
+    match /students/{studentId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Alumni: Allow public read, authenticated write
+    match /alumni/{alumniId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Registrations: Allow authenticated read/write
+    match /registrations/{registrationId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Payments: Allow authenticated read/write
+    match /payments/{paymentId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Results: Allow authenticated read/write
+    match /results/{resultId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Sessions: Allow authenticated read/write
+    match /sessions/{sessionId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

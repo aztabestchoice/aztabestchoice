@@ -281,7 +281,15 @@ app.get('/api/workspace-data', (req, res) => {
       const data = fs.readFileSync(filePath, 'utf8');
       res.json(JSON.parse(data));
     } else {
-      res.json({ siteSettings: null, students: null, alumni: null });
+      res.json({ 
+        siteSettings: null, 
+        students: null, 
+        alumni: null,
+        registrations: null,
+        payments: null,
+        results: null,
+        sessions: null
+      });
     }
   } catch (error) {
     console.error('Error reading persistent data:', error);
@@ -292,14 +300,26 @@ app.get('/api/workspace-data', (req, res) => {
 app.post('/api/workspace-data', (req, res) => {
   const filePath = path.join(process.cwd(), 'src', 'persistentData.json');
   try {
-    const { siteSettings, students, alumni } = req.body;
+    const { siteSettings, students, alumni, registrations, payments, results, sessions } = req.body;
     const currentData = fs.existsSync(filePath) 
       ? JSON.parse(fs.readFileSync(filePath, 'utf8')) 
-      : { siteSettings: null, students: null, alumni: null };
+      : { 
+          siteSettings: null, 
+          students: null, 
+          alumni: null,
+          registrations: null,
+          payments: null,
+          results: null,
+          sessions: null
+        };
 
     if (siteSettings !== undefined) currentData.siteSettings = siteSettings;
     if (students !== undefined) currentData.students = students;
     if (alumni !== undefined) currentData.alumni = alumni;
+    if (registrations !== undefined) currentData.registrations = registrations;
+    if (payments !== undefined) currentData.payments = payments;
+    if (results !== undefined) currentData.results = results;
+    if (sessions !== undefined) currentData.sessions = sessions;
 
     fs.writeFileSync(filePath, JSON.stringify(currentData, null, 2), 'utf8');
     res.json({ success: true, data: currentData });

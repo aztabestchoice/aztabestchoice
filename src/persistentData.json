@@ -58,7 +58,8 @@
       "Memprediksi Tingkat keberhasilan siswa"
     ],
     "showServicesOnHome": true,
-    "showBenefitsOnHome": true
+    "showBenefitsOnHome": true,
+    "showPartnersOnHome": true
   },
   "students": [
     {

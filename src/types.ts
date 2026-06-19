@@ -180,6 +180,7 @@ export interface SiteSettings {
   benefits?: string[];
   showServicesOnHome?: boolean;
   showBenefitsOnHome?: boolean;
+  showPartnersOnHome?: boolean;
 }
 
 export interface ServiceItem {

@@ -32,14 +32,16 @@ import {
 } from './types';
 
 import { 
-  INITIAL_REGISTRATIONS, 
-  INITIAL_PAYMENTS, 
-  INITIAL_RESULTS, 
-  INITIAL_SESSIONS,
-  DEFAULT_SITE_SETTINGS,
-  INITIAL_STUDENTS,
-  INITIAL_ALUMNI
-} from './mockData';
+  fetchAllData,
+  saveSiteSettings,
+  saveStudents,
+  saveAlumni,
+  saveRegistrations,
+  savePayments,
+  saveResults,
+  saveSessions
+} from './database';
+import { DEFAULT_SITE_SETTINGS } from './mockData';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
@@ -47,132 +49,75 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Persistent Website Settings State
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => {
-    const saved = localStorage.getItem('azta_site_settings');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.backgroundImageUrl === '/src/assets/images/bg_azta_1781689948341.jpg') {
-          parsed.backgroundImageUrl = '/bg_azta_1781689948341.jpg';
-        }
-        if (!parsed.services) {
-          parsed.services = DEFAULT_SITE_SETTINGS.services;
-        }
-        if (!parsed.benefits) {
-          parsed.benefits = DEFAULT_SITE_SETTINGS.benefits;
-        }
-        if (parsed.showServicesOnHome === undefined) {
-          parsed.showServicesOnHome = true;
-        }
-        if (parsed.showBenefitsOnHome === undefined) {
-          parsed.showBenefitsOnHome = true;
-        }
-        localStorage.setItem('azta_site_settings', JSON.stringify(parsed));
-        return parsed;
-      } catch (e) {
-        // use default
-      }
-    }
-    return DEFAULT_SITE_SETTINGS;
-  });
-
-  const handleUpdateSettings = (newSettings: SiteSettings) => {
-    setSiteSettings(newSettings);
-    try {
-      localStorage.setItem('azta_site_settings', JSON.stringify(newSettings));
-    } catch (e) {
-      console.error("Gagal menyimpan kustomisasi tampilan:", e);
-      alert("Penyimpanan browser penuh. Mohon kompres beberapa gambar latar belakang/logo Anda.");
-    }
-  };
-
-
-  // Core application database tables (Simulated)
+  // Core application states loaded from database
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [alumni, setAlumni] = useState<Alumni[]>([]);
   const [registrations, setRegistrations] = useState<ProgramRegistration[]>([]);
   const [payments, setPayments] = useState<PaymentTransaction[]>([]);
   const [results, setResults] = useState<PsychologicalResult[]>([]);
   const [sessions, setSessions] = useState<CounselingSession[]>([]);
-  const [students, setStudents] = useState<Student[]>(() => {
-    const saved = localStorage.getItem('azta_students');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        // use default
-      }
-    }
-    return INITIAL_STUDENTS;
-  });
+
+  // Individual persistence updater functions
+  const handleUpdateSettings = (newSettings: SiteSettings) => {
+    setSiteSettings(newSettings);
+    saveSiteSettings(newSettings);
+  };
 
   const handleUpdateStudents = (newStudents: Student[]) => {
     setStudents(newStudents);
-    try {
-      localStorage.setItem('azta_students', JSON.stringify(newStudents));
-    } catch (e) {
-      console.error("Gagal menyimpan data siswa:", e);
-      alert("Penyimpanan browser penuh. Sebagian data siswa mungkin tidak tersimpan permanen.");
-    }
+    saveStudents(newStudents);
   };
-
-  const [alumni, setAlumni] = useState<Alumni[]>(() => {
-    const saved = localStorage.getItem('azta_alumni');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        // use default
-      }
-    }
-    return INITIAL_ALUMNI;
-  });
 
   const handleUpdateAlumni = (newAlumni: Alumni[]) => {
     setAlumni(newAlumni);
-    try {
-      localStorage.setItem('azta_alumni', JSON.stringify(newAlumni));
-    } catch (e) {
-      console.error("Gagal menyimpan data alumni:", e);
-      alert("⚠️ Gagal menyimpan permanen ke browser Anda karena penyimpanan lokal penuh (Local Storage Quota Exceeded). Mohon kompres foto/gambar alumni yang Anda ulas!");
-    }
+    saveAlumni(newAlumni);
   };
 
-  // Seed mock data table once on startup
+  const handleUpdateRegistrations = (newRegs: ProgramRegistration[]) => {
+    setRegistrations(newRegs);
+    saveRegistrations(newRegs);
+  };
+
+  const handleUpdatePayments = (newPayments: PaymentTransaction[]) => {
+    setPayments(newPayments);
+    savePayments(newPayments);
+  };
+
+  const handleUpdateResults = (newResults: PsychologicalResult[]) => {
+    setResults(newResults);
+    saveResults(newResults);
+  };
+
+  const handleUpdateSessions = (newSessions: CounselingSession[]) => {
+    setSessions(newSessions);
+    saveSessions(newSessions);
+  };
+
+  // On initial mount, hydrate all data states precisely from persistent store database
   useEffect(() => {
-    setRegistrations(INITIAL_REGISTRATIONS);
-    setPayments(INITIAL_PAYMENTS);
-    setResults(INITIAL_RESULTS);
-    setSessions(INITIAL_SESSIONS);
+    fetchAllData().then(data => {
+      setSiteSettings(data.siteSettings);
+      setStudents(data.students);
+      setAlumni(data.alumni);
+      setRegistrations(data.registrations);
+      setPayments(data.payments);
+      setResults(data.results);
+      setSessions(data.sessions);
+    }).catch(err => {
+      console.error("Gagal memuat basis data utama:", err);
+    });
 
-    // Fetch latest persistent data from dev server workspace if available
-    fetch('/api/workspace-data')
-      .then(res => res.json())
-      .then(data => {
-        if (data) {
-          if (data.siteSettings) {
-            setSiteSettings(data.siteSettings);
-            localStorage.setItem('azta_site_settings', JSON.stringify(data.siteSettings));
-          }
-          if (data.students) {
-            setStudents(data.students);
-            localStorage.setItem('azta_students', JSON.stringify(data.students));
-          }
-          if (data.alumni) {
-            setAlumni(data.alumni);
-            localStorage.setItem('azta_alumni', JSON.stringify(data.alumni));
-          }
-        }
-      })
-      .catch(err => console.log('Notice: Dev-sync server not reachable, using static bundle fallbacks.'));
-
-    // Clean initial scroll
     window.scrollTo(0, 0);
 
     // Automatically optimize existing alumni base64 photos to free up raw storage bytes
     async function optimizeAlumniStorage() {
       let changed = false;
+      const currentAlumni = JSON.parse(localStorage.getItem('azta_alumni') || '[]');
+      if (!currentAlumni || currentAlumni.length === 0) return;
+
       const optimizedAlumni = await Promise.all(
-        alumni.map(async (item) => {
+        (currentAlumni as Alumni[]).map(async (item) => {
           if (item.photoUrl && item.photoUrl.startsWith('data:image/') && item.photoUrl.length > 80000) {
             try {
               const compressed = await compressImage(item.photoUrl, 200, 260, 0.7);
@@ -190,18 +135,12 @@ export default function App() {
 
       if (changed) {
         setAlumni(optimizedAlumni);
-        try {
-          localStorage.setItem('azta_alumni', JSON.stringify(optimizedAlumni));
-          console.log("Penyimpanan alumni sukses dioptimalkan (Free Space recovered)!");
-        } catch (e) {
-          console.error("Gagal menyimpan optimasi alumni ke localStorage", e);
-        }
+        saveAlumni(optimizedAlumni);
+        console.log("Penyimpanan alumni sukses dioptimalkan (Free Space recovered)!");
       }
     }
 
-    if (alumni && alumni.length > 0) {
-      setTimeout(optimizeAlumniStorage, 800);
-    }
+    setTimeout(optimizeAlumniStorage, 1500);
   }, []);
 
   // Set page scroll to topmost offset instantly during navigation
@@ -321,13 +260,13 @@ export default function App() {
               <DashboardAdmin
                 currentUser={currentUser}
                 registrations={registrations}
-                setRegistrations={setRegistrations}
+                setRegistrations={handleUpdateRegistrations}
                 payments={payments}
-                setPayments={setPayments}
+                setPayments={handleUpdatePayments}
                 results={results}
-                setResults={setResults}
+                setResults={handleUpdateResults}
                 sessions={sessions}
-                setSessions={setSessions}
+                setSessions={handleUpdateSessions}
                 siteSettings={siteSettings}
                 onUpdateSettings={handleUpdateSettings}
                 students={students}
@@ -339,12 +278,12 @@ export default function App() {
               <DashboardClient
                 currentUser={currentUser}
                 registrations={registrations}
-                setRegistrations={setRegistrations}
+                setRegistrations={handleUpdateRegistrations}
                 payments={payments}
-                setPayments={setPayments}
+                setPayments={handleUpdatePayments}
                 results={results}
                 sessions={sessions}
-                setSessions={setSessions}
+                setSessions={handleUpdateSessions}
                 siteSettings={siteSettings}
               />
             )}
