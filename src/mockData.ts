@@ -400,7 +400,15 @@ const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
   ],
   showServicesOnHome: true,
   showBenefitsOnHome: true,
-  showPartnersOnHome: true
+  showPartnersOnHome: true,
+  partners: [
+    { id: 'partner-1', name: 'Polda Jawa Timur', type: 'Instansi Seleksi' },
+    { id: 'partner-2', name: 'Kodam Brawijaya', type: 'Instansi Seleksi' },
+    { id: 'partner-3', name: 'PT Kereta Api Indonesia', type: 'BUMN' },
+    { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
+    { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
+    { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+  ]
 };
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = (persistentData && persistentData.siteSettings)

@@ -181,6 +181,13 @@ export interface SiteSettings {
   showServicesOnHome?: boolean;
   showBenefitsOnHome?: boolean;
   showPartnersOnHome?: boolean;
+  partners?: PartnerItem[];
+}
+
+export interface PartnerItem {
+  id: string;
+  name: string;
+  type: string;
 }
 
 export interface ServiceItem {

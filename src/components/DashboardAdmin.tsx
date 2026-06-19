@@ -227,6 +227,13 @@ export default function DashboardAdmin({
   const [editingBenefitIndex, setEditingBenefitIndex] = useState<number | null>(null);
   const [editingBenefitText, setEditingBenefitText] = useState('');
 
+  // Partners (Mitra) management within Settings
+  const [newPartnerName, setNewPartnerName] = useState('');
+  const [newPartnerType, setNewPartnerType] = useState('');
+  const [editingPartnerId, setEditingPartnerId] = useState<string | null>(null);
+  const [editingPartnerName, setEditingPartnerName] = useState('');
+  const [editingPartnerType, setEditingPartnerType] = useState('');
+
   const handleAddService = () => {
     if (!newServiceTitle.trim()) return;
     const currentServices = settingsForm.services || [];
@@ -311,6 +318,65 @@ export default function DashboardAdmin({
     setSettingsForm(prev => ({ ...prev, benefits: updated }));
     setEditingBenefitIndex(null);
     setEditingBenefitText('');
+  };
+
+  const handleAddPartner = () => {
+    if (!newPartnerName.trim() || !newPartnerType.trim()) return;
+    const currentPartners = settingsForm.partners || [
+      { id: 'partner-1', name: 'Polda Jawa Timur', type: 'Instansi Seleksi' },
+      { id: 'partner-2', name: 'Kodam Brawijaya', type: 'Instansi Seleksi' },
+      { id: 'partner-3', name: 'PT Kereta Api Indonesia', type: 'BUMN' },
+      { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
+      { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
+      { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+    ];
+    const newPartner = {
+      id: 'partner-' + Date.now(),
+      name: newPartnerName.trim(),
+      type: newPartnerType.trim()
+    };
+    setSettingsForm(prev => ({
+      ...prev,
+      partners: [...currentPartners, newPartner]
+    }));
+    setNewPartnerName('');
+    setNewPartnerType('');
+  };
+
+  const handleDeletePartner = (id: string) => {
+    const currentPartners = settingsForm.partners || [
+      { id: 'partner-1', name: 'Polda Jawa Timur', type: 'Instansi Seleksi' },
+      { id: 'partner-2', name: 'Kodam Brawijaya', type: 'Instansi Seleksi' },
+      { id: 'partner-3', name: 'PT Kereta Api Indonesia', type: 'BUMN' },
+      { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
+      { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
+      { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+    ];
+    const updated = currentPartners.filter(p => p.id !== id);
+    setSettingsForm(prev => ({ ...prev, partners: updated }));
+  };
+
+  const handleStartEditPartner = (id: string, name: string, type: string) => {
+    setEditingPartnerId(id);
+    setEditingPartnerName(name);
+    setEditingPartnerType(type);
+  };
+
+  const handleSaveEditPartner = (id: string) => {
+    if (!editingPartnerName.trim() || !editingPartnerType.trim()) return;
+    const currentPartners = settingsForm.partners || [
+      { id: 'partner-1', name: 'Polda Jawa Timur', type: 'Instansi Seleksi' },
+      { id: 'partner-2', name: 'Kodam Brawijaya', type: 'Instansi Seleksi' },
+      { id: 'partner-3', name: 'PT Kereta Api Indonesia', type: 'BUMN' },
+      { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
+      { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
+      { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+    ];
+    const updated = currentPartners.map(p => p.id === id ? { ...p, name: editingPartnerName.trim(), type: editingPartnerType.trim() } : p);
+    setSettingsForm(prev => ({ ...prev, partners: updated }));
+    setEditingPartnerId(null);
+    setEditingPartnerName('');
+    setEditingPartnerType('');
   };
 
   // Alumni management state variables
@@ -2059,7 +2125,7 @@ export default function DashboardAdmin({
               <div className="space-y-4 pt-6 border-t" id="settings-partners-block">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">11. Kelola Mitra Kerja Sama & Klien Instansi</h4>
                 <p className="text-[11px] text-gray-500">
-                  Tentukan apakah logo dan daftar "Mitra Kerja Sama & Klien Instansi Terkait" ditampilkan pada halaman beranda utama atau disembunyikan.
+                  Tentukan apakah logo dan daftar "Mitra Kerja Sama & Klien Instansi Terkait" ditampilkan pada halaman beranda utama atau disembunyikan, serta kelola nama dan kategorinya.
                 </p>
 
                 <div className="flex items-center space-x-2.5 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-150 text-left">
@@ -2073,6 +2139,107 @@ export default function DashboardAdmin({
                   <label htmlFor="toggle_show_partners_on_home" className="text-xs font-semibold text-emerald-950 cursor-pointer select-none">
                     Tampilkan "Mitra Kerja Sama & Klien Instansi Terkait" di Beranda
                   </label>
+                </div>
+
+                <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border animate-fadeIn" id="partners-inner-editor">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Daftar Mitra Saat Ini</span>
+                  {/* Read List of Partners */}
+                  <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                    {(settingsForm.partners || [
+                      { id: 'partner-1', name: 'Polda Jawa Timur', type: 'Instansi Seleksi' },
+                      { id: 'partner-2', name: 'Kodam Brawijaya', type: 'Instansi Seleksi' },
+                      { id: 'partner-3', name: 'PT Kereta Api Indonesia', type: 'BUMN' },
+                      { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
+                      { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
+                      { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+                    ]).map((partner, index) => (
+                      <div key={partner.id || index} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-white border border-gray-200 rounded-xl shadow-xs gap-2">
+                        {editingPartnerId === partner.id ? (
+                          <div className="flex-grow flex flex-col sm:flex-row items-center gap-2 w-full">
+                            <input
+                              type="text"
+                              value={editingPartnerName}
+                              onChange={(e) => setEditingPartnerName(e.target.value)}
+                              placeholder="Nama Mitra/Instansi"
+                              className="w-full sm:w-1/2 p-1.5 text-xs border rounded-lg focus:border-emerald-800"
+                            />
+                            <input
+                              type="text"
+                              value={editingPartnerType}
+                              onChange={(e) => setEditingPartnerType(e.target.value)}
+                              placeholder="Jenis (e.g. BUMN, Kedinasan)"
+                              className="w-full sm:w-1/2 p-1.5 text-xs border rounded-lg focus:border-emerald-800"
+                            />
+                            <div className="flex items-center space-x-1 whitespace-nowrap self-end sm:self-center">
+                              <button
+                                type="button"
+                                onClick={() => handleSaveEditPartner(partner.id)}
+                                className="px-2.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg text-[10px] font-bold cursor-pointer"
+                              >
+                                Simpan
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingPartnerId(null)}
+                                className="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-[10px] font-bold cursor-pointer"
+                              >
+                                Batal
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="text-left">
+                              <span className="text-xs font-bold text-slate-850 block">{partner.name}</span>
+                              <span className="text-[9px] font-semibold text-amber-600 uppercase tracking-wide leading-none">{partner.type}</span>
+                            </div>
+                            <div className="flex items-center space-x-2 shrink-0 self-end sm:self-center">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditPartner(partner.id, partner.name, partner.type)}
+                                className="px-2 py-1 text-slate-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-md transition-colors text-[10px] font-semibold cursor-pointer"
+                              >
+                                Ubah
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeletePartner(partner.id)}
+                                className="px-2 py-1 text-slate-400 hover:text-rose-605 hover:bg-rose-50 rounded-md transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add Partner Row */}
+                  <div className="flex flex-col sm:flex-row items-center gap-2 pt-3 border-t">
+                    <input
+                      type="text"
+                      placeholder="Nama Mitra Baru (e.g. Polres Madiun)"
+                      value={newPartnerName}
+                      onChange={(e) => setNewPartnerName(e.target.value)}
+                      className="w-full sm:w-1/2 p-2.5 text-xs border bg-white rounded-xl focus:border-emerald-850"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Kategori (e.g. Kepolisian)"
+                      value={newPartnerType}
+                      onChange={(e) => setNewPartnerType(e.target.value)}
+                      className="w-full sm:w-1/2 p-2.5 text-xs border bg-white rounded-xl focus:border-emerald-850"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddPartner}
+                      className="w-full sm:w-auto px-4 py-2.5 bg-emerald-800 hover:bg-emerald-950 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center space-x-1 uppercase cursor-pointer whitespace-nowrap"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tambah</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 

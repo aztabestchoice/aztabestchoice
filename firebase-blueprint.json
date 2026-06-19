@@ -24,7 +24,19 @@
         "stat3Label": { "type": "string" },
         "showServicesOnHome": { "type": "boolean" },
         "showBenefitsOnHome": { "type": "boolean" },
-        "showPartnersOnHome": { "type": "boolean" }
+        "showPartnersOnHome": { "type": "boolean" },
+        "partners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "type": { "type": "string" }
+            },
+            "required": ["id", "name", "type"]
+          }
+        }
       },
       "required": ["brandName"]
     },
