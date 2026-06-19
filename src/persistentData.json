@@ -1,5 +1,220 @@
 {
-  "siteSettings": null,
-  "students": null,
-  "alumni": null
+  "siteSettings": {
+    "logoUrl": "",
+    "brandName": "Azta",
+    "brandSuffix": "Best Choice",
+    "subTitle": "Counseling & Psychology",
+    "address": "Jl. Kawis Gg.1, No.1B, Taman, Kota Madiun 63131",
+    "phone": "0852-3504-6755 / 0813-1160-1785",
+    "email": "aztabestchoice@gmail.com",
+    "operationalHours": "Senin - Sabtu: 08.00 - 17.00 WIB",
+    "heroTitle": "Wujudkan Impian Masa Depan Anda",
+    "heroSubtitle": "Lembaga bimbingan psikotes dan konseling terpercaya di Madiun. Kami melatih kesiapan mental TNI-POLRI, Kedinasan, BUMN, serta menyediakan tes IQ & Minat Bakat resmi terakreditasi Psikolog.",
+    "heroCtaPrimary": "Daftar Sekarang",
+    "heroCtaSecondary": "Konsultasi Gratis",
+    "stat1Value": "94.8%",
+    "stat1Label": "Lulus Seleksi",
+    "stat2Value": "1,500+",
+    "stat2Label": "Alumni Taruna",
+    "stat3Value": "Psikolog",
+    "stat3Label": "HIMPSI Resmi",
+    "feature1Title": "Bimbel CAT & Psikotes Terpadu",
+    "feature1Desc": "Latihan intensif berbasis komputer interaktif (CAT) terkomputerisasi yang disesuaikan dengan kurikulum ujian terbaru TNI, POLRI, Kedinasan, dan BUMN.",
+    "feature2Title": "Tes IQ & Asesmen Kognitif",
+    "feature2Desc": "Pengukuran kecerdasan umum, minat bakat, kestabilan emosi, dan tipe kepribadian bersertifikat resmi serta ditandatangani oleh Psikolog HIMPSI.",
+    "feature3Title": "Konseling & Terapi Mental",
+    "feature3Desc": "Layanan 1-on-1 bersama Psikolog klinis berwenang untuk meredakan kecemasan akademik, melatih coping stress, dan optimalisasi potensi psikologis.",
+    "services": [
+      {
+        "id": "srv-1",
+        "title": "TEST IQ",
+        "instruments": [
+          "CFIT (Cultur Fair Intelligence Test) Skala 3"
+        ]
+      },
+      {
+        "id": "srv-2",
+        "title": "TEST BAKAT",
+        "instruments": [
+          "Tes Kemampuan Mekanik",
+          "Tes Berfikir Abstrak",
+          "Tes Relasi Ruang",
+          "Tes Kemampuan",
+          "KKK"
+        ]
+      },
+      {
+        "id": "srv-3",
+        "title": "TES MINAT",
+        "instruments": [
+          "Tes Minat Jabatan Lee-Thorpe"
+        ]
+      }
+    ],
+    "benefits": [
+      "Memberikan Gambaran / informasi mengenai potensi sebagai acuan penentuan jurusan pada Pendidikan",
+      "Membantu Siswa menghubungkan hasil evaluasi dengan pilihan Pendidikan dan karier yang sesuai dengan bakat, minat dan kepribadian",
+      "Membuat Keputusan yang penting bagi masa depan siswa dengan lebih tepat dan terarah.",
+      "Memprediksi Tingkat keberhasilan siswa"
+    ],
+    "showServicesOnHome": true,
+    "showBenefitsOnHome": true
+  },
+  "students": [
+    {
+      "id": "stud-001",
+      "studentNumber": "AST-2026-001",
+      "photoUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120",
+      "fullName": "Dimas Anggara",
+      "email": "dimas@gmail.com",
+      "phone": "081234567890",
+      "password": "password123",
+      "birthPlace": "Madiun",
+      "birthDate": "2004-03-15",
+      "gender": "Laki-laki",
+      "address": "Jl. Diponegoro No. 12, Oro-oro Ombo, Kartoharjo, Madiun",
+      "lastEducation": "SMA",
+      "programJoined": "Pelatihan Psikotes TNI-POLRI",
+      "registrationDate": "2026-06-10"
+    },
+    {
+      "id": "stud-002",
+      "studentNumber": "AST-2026-002",
+      "photoUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120",
+      "fullName": "Lia Rahmawati",
+      "email": "lia@gmail.com",
+      "phone": "089876543210",
+      "password": "password123",
+      "birthPlace": "Surabaya",
+      "birthDate": "2002-08-22",
+      "gender": "Perempuan",
+      "address": "Perumahan Taman Asri Blok C-5, Kelurahan Klegen, Madiun",
+      "lastEducation": "S1",
+      "programJoined": "Persiapan Instansi Pemerintah/BUMN/Swasta",
+      "registrationDate": "2026-06-14"
+    },
+    {
+      "id": "stud-1781689574925",
+      "studentNumber": "AST-2026-003",
+      "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120",
+      "fullName": "dimas",
+      "email": "dimas@gmail.com",
+      "phone": "081215484515",
+      "password": "123123",
+      "birthPlace": "madiun",
+      "birthDate": "2000-07-31",
+      "gender": "Laki-laki",
+      "address": "jl kawis 50",
+      "lastEducation": "SMA / Sederajat",
+      "programJoined": "Pelatihan Psikotes TNI-POLRI",
+      "registrationDate": "2026-06-17"
+    }
+  ],
+  "alumni": [
+    {
+      "id": "ALUM_1781773071231",
+      "fullName": "alumni 26",
+      "graduationYear": "2026",
+      "achievement": "alumni 26",
+      "photoUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781773056391",
+      "fullName": "alumni 25",
+      "graduationYear": "2026",
+      "achievement": "alumni 25",
+      "photoUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781773039647",
+      "fullName": "alumni 24",
+      "graduationYear": "2026",
+      "achievement": "alumni 24",
+      "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781773025343",
+      "fullName": "alumni 23",
+      "graduationYear": "2026",
+      "achievement": "alumni 23",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772997175",
+      "fullName": "alumni 21",
+      "graduationYear": "2026",
+      "achievement": "alumni 21",
+      "photoUrl": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772981527",
+      "fullName": "alumni 20",
+      "graduationYear": "2026",
+      "achievement": "alumni 20",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772962663",
+      "fullName": "alumni 19",
+      "graduationYear": "2026",
+      "achievement": "alumni 19",
+      "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772941344",
+      "fullName": "alumni 18",
+      "graduationYear": "2026",
+      "achievement": "alumni 18",
+      "photoUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772921151",
+      "fullName": "alumni 17",
+      "graduationYear": "2026",
+      "achievement": "alumni 17",
+      "photoUrl": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "ALUM_1781772900288",
+      "fullName": "alumni 16",
+      "graduationYear": "2026",
+      "achievement": "alumni 16",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "alum-5",
+      "fullName": "Dian Sasmita, S.Psi.",
+      "graduationYear": "2024",
+      "achievement": "Lolos Bintara Bakomsus Kehumasan POLRI Polda Metro Jaya",
+      "photoUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "alum-4",
+      "fullName": "Ananda Putri Setyawan",
+      "graduationYear": "2025",
+      "achievement": "Lolos Bintara PTU POLRI Polda Jatim",
+      "photoUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "alum-3",
+      "fullName": "Fahreezi Akbar",
+      "graduationYear": "2024",
+      "achievement": "Lulus Akademi Kepolisian (AKPOL) Rangking 3 Jawa Timur",
+      "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "alum-2",
+      "fullName": "Muhammad Fauzan Al Madany",
+      "graduationYear": "2026",
+      "achievement": "Lolos Masinis DAOP 8 Surabaya PT. Kereta Api Indonesia (Persero)",
+      "photoUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150"
+    },
+    {
+      "id": "alum-1",
+      "fullName": "Enggar Satria Pratama",
+      "graduationYear": "2026",
+      "achievement": "Lolos Taruna Akademi Kepolisian (AKPOL)",
+      "photoUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150"
+    }
+  ]
 }
