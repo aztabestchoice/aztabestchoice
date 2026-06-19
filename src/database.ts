@@ -19,7 +19,13 @@ import {
 } from './types';
 
 import { 
-  DEFAULT_SITE_SETTINGS
+  DEFAULT_SITE_SETTINGS,
+  INITIAL_STUDENTS,
+  INITIAL_ALUMNI,
+  INITIAL_REGISTRATIONS,
+  INITIAL_PAYMENTS,
+  INITIAL_RESULTS,
+  INITIAL_SESSIONS
 } from './mockData';
 
 // Initialize Firebase
@@ -100,12 +106,12 @@ export async function syncToWorkspaceBackend(data: {
 // 1. Initialize data store
 export function setupDataStore() {
   initLocalStorageKey('azta_site_settings', DEFAULT_SITE_SETTINGS);
-  initLocalStorageKey('azta_students', []);
-  initLocalStorageKey('azta_alumni', []);
-  initLocalStorageKey('azta_registrations', []);
-  initLocalStorageKey('azta_payments', []);
-  initLocalStorageKey('azta_results', []);
-  initLocalStorageKey('azta_sessions', []);
+  initLocalStorageKey('azta_students', INITIAL_STUDENTS);
+  initLocalStorageKey('azta_alumni', INITIAL_ALUMNI);
+  initLocalStorageKey('azta_registrations', INITIAL_REGISTRATIONS);
+  initLocalStorageKey('azta_payments', INITIAL_PAYMENTS);
+  initLocalStorageKey('azta_results', INITIAL_RESULTS);
+  initLocalStorageKey('azta_sessions', INITIAL_SESSIONS);
 }
 
 // 2. Fetch all collections
@@ -185,7 +191,7 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         await setDoc(doc(db, 'siteSettings', 'config'), data.siteSettings);
       }
 
-      // Load Students
+      // Load/Seed Students
       const studentsSnap = await getDocs(collection(db, 'students'));
       if (!studentsSnap.empty) {
         const list: Student[] = [];
@@ -194,12 +200,13 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.students = list;
         localStorage.setItem('azta_students', JSON.stringify(list));
-      } else {
-        data.students = [];
-        localStorage.setItem('azta_students', '[]');
+      } else if (data.students && data.students.length > 0) {
+        for (const item of data.students) {
+          await setDoc(doc(db, 'students', item.id), item);
+        }
       }
 
-      // Load Alumni
+      // Load/Seed Alumni
       const alumniSnap = await getDocs(collection(db, 'alumni'));
       if (!alumniSnap.empty) {
         const list: Alumni[] = [];
@@ -208,12 +215,13 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.alumni = list;
         localStorage.setItem('azta_alumni', JSON.stringify(list));
-      } else {
-        data.alumni = [];
-        localStorage.setItem('azta_alumni', '[]');
+      } else if (data.alumni && data.alumni.length > 0) {
+        for (const item of data.alumni) {
+          await setDoc(doc(db, 'alumni', item.id), item);
+        }
       }
 
-      // Load Registrations
+      // Load/Seed Registrations
       const registrationsSnap = await getDocs(collection(db, 'registrations'));
       if (!registrationsSnap.empty) {
         const list: ProgramRegistration[] = [];
@@ -222,12 +230,13 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.registrations = list;
         localStorage.setItem('azta_registrations', JSON.stringify(list));
-      } else {
-        data.registrations = [];
-        localStorage.setItem('azta_registrations', '[]');
+      } else if (data.registrations && data.registrations.length > 0) {
+        for (const item of data.registrations) {
+          await setDoc(doc(db, 'registrations', item.id), item);
+        }
       }
 
-      // Load Payments
+      // Load/Seed Payments
       const paymentsSnap = await getDocs(collection(db, 'payments'));
       if (!paymentsSnap.empty) {
         const list: PaymentTransaction[] = [];
@@ -236,12 +245,13 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.payments = list;
         localStorage.setItem('azta_payments', JSON.stringify(list));
-      } else {
-        data.payments = [];
-        localStorage.setItem('azta_payments', '[]');
+      } else if (data.payments && data.payments.length > 0) {
+        for (const item of data.payments) {
+          await setDoc(doc(db, 'payments', item.id), item);
+        }
       }
 
-      // Load Results
+      // Load/Seed Results
       const resultsSnap = await getDocs(collection(db, 'results'));
       if (!resultsSnap.empty) {
         const list: PsychologicalResult[] = [];
@@ -250,12 +260,13 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.results = list;
         localStorage.setItem('azta_results', JSON.stringify(list));
-      } else {
-        data.results = [];
-        localStorage.setItem('azta_results', '[]');
+      } else if (data.results && data.results.length > 0) {
+        for (const item of data.results) {
+          await setDoc(doc(db, 'results', item.id), item);
+        }
       }
 
-      // Load Sessions
+      // Load/Seed Sessions
       const sessionsSnap = await getDocs(collection(db, 'sessions'));
       if (!sessionsSnap.empty) {
         const list: CounselingSession[] = [];
@@ -264,9 +275,10 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.sessions = list;
         localStorage.setItem('azta_sessions', JSON.stringify(list));
-      } else {
-        data.sessions = [];
-        localStorage.setItem('azta_sessions', '[]');
+      } else if (data.sessions && data.sessions.length > 0) {
+        for (const item of data.sessions) {
+          await setDoc(doc(db, 'sessions', item.id), item);
+        }
       }
     } catch (err) {
       console.warn('Firestore read/write bypassed or pending rules activation:', err);
