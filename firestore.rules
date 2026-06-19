@@ -2,51 +2,44 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Global Safety Net Default Deny Catch-All
+    // Global Safety Net (allow public operations since anyone can register, fill forms, and save data)
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if true;
     }
 
-    // Helper: Is Signed In
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    // Site Settings: Allow public read, authenticated write
+    // Site Settings: Allow public read/write
     match /siteSettings/{configId} {
-      allow read: if true;
-      allow write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Students: Allow authenticated read/write
+    // Students: Allow public read/write
     match /students/{studentId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Alumni: Allow public read, authenticated write
+    // Alumni: Allow public read/write
     match /alumni/{alumniId} {
-      allow read: if true;
-      allow write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Registrations: Allow authenticated read/write
+    // Registrations: Allow public read/write
     match /registrations/{registrationId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Payments: Allow authenticated read/write
+    // Payments: Allow public read/write
     match /payments/{paymentId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Results: Allow authenticated read/write
+    // Results: Allow public read/write
     match /results/{resultId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if true;
     }
 
-    // Sessions: Allow authenticated read/write
+    // Sessions: Allow public read/write
     match /sessions/{sessionId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if true;
     }
   }
 }

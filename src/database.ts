@@ -19,13 +19,7 @@ import {
 } from './types';
 
 import { 
-  DEFAULT_SITE_SETTINGS, 
-  INITIAL_STUDENTS, 
-  INITIAL_ALUMNI, 
-  INITIAL_REGISTRATIONS, 
-  INITIAL_PAYMENTS, 
-  INITIAL_RESULTS, 
-  INITIAL_SESSIONS 
+  DEFAULT_SITE_SETTINGS
 } from './mockData';
 
 // Initialize Firebase
@@ -106,12 +100,12 @@ export async function syncToWorkspaceBackend(data: {
 // 1. Initialize data store
 export function setupDataStore() {
   initLocalStorageKey('azta_site_settings', DEFAULT_SITE_SETTINGS);
-  initLocalStorageKey('azta_students', INITIAL_STUDENTS);
-  initLocalStorageKey('azta_alumni', INITIAL_ALUMNI);
-  initLocalStorageKey('azta_registrations', INITIAL_REGISTRATIONS);
-  initLocalStorageKey('azta_payments', INITIAL_PAYMENTS);
-  initLocalStorageKey('azta_results', INITIAL_RESULTS);
-  initLocalStorageKey('azta_sessions', INITIAL_SESSIONS);
+  initLocalStorageKey('azta_students', []);
+  initLocalStorageKey('azta_alumni', []);
+  initLocalStorageKey('azta_registrations', []);
+  initLocalStorageKey('azta_payments', []);
+  initLocalStorageKey('azta_results', []);
+  initLocalStorageKey('azta_sessions', []);
 }
 
 // 2. Fetch all collections
@@ -130,12 +124,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
 
   const data: AztaDataStructure = {
     siteSettings: JSON.parse(localStorage.getItem('azta_site_settings') || 'null') || DEFAULT_SITE_SETTINGS,
-    students: JSON.parse(localStorage.getItem('azta_students') || '[]') || INITIAL_STUDENTS,
-    alumni: JSON.parse(localStorage.getItem('azta_alumni') || '[]') || INITIAL_ALUMNI,
-    registrations: JSON.parse(localStorage.getItem('azta_registrations') || '[]') || INITIAL_REGISTRATIONS,
-    payments: JSON.parse(localStorage.getItem('azta_payments') || '[]') || INITIAL_PAYMENTS,
-    results: JSON.parse(localStorage.getItem('azta_results') || '[]') || INITIAL_RESULTS,
-    sessions: JSON.parse(localStorage.getItem('azta_sessions') || '[]') || INITIAL_SESSIONS,
+    students: JSON.parse(localStorage.getItem('azta_students') || '[]'),
+    alumni: JSON.parse(localStorage.getItem('azta_alumni') || '[]'),
+    registrations: JSON.parse(localStorage.getItem('azta_registrations') || '[]'),
+    payments: JSON.parse(localStorage.getItem('azta_payments') || '[]'),
+    results: JSON.parse(localStorage.getItem('azta_results') || '[]'),
+    sessions: JSON.parse(localStorage.getItem('azta_sessions') || '[]'),
   };
 
   // Hydrate from back-end server if reachable
@@ -181,17 +175,17 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
   // Double-sync active Firestore records if dynamic credentials are real and loaded
   if (!isConfigDummy) {
     try {
-      // Load/Seed Site Settings
+      // Load Site Settings
       const settingsDoc = await getDoc(doc(db, 'siteSettings', 'config'));
       if (settingsDoc.exists()) {
         data.siteSettings = settingsDoc.data() as SiteSettings;
         localStorage.setItem('azta_site_settings', JSON.stringify(data.siteSettings));
       } else {
-        // Seed Firestore since it is empty
+        // Seed blank default settings since it is empty
         await setDoc(doc(db, 'siteSettings', 'config'), data.siteSettings);
       }
 
-      // Load/Seed Students
+      // Load Students
       const studentsSnap = await getDocs(collection(db, 'students'));
       if (!studentsSnap.empty) {
         const list: Student[] = [];
@@ -200,14 +194,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.students = list;
         localStorage.setItem('azta_students', JSON.stringify(list));
-      } else if (data.students.length > 0) {
-        // Seed Firestore
-        for (const item of data.students) {
-          await setDoc(doc(db, 'students', item.id), item);
-        }
+      } else {
+        data.students = [];
+        localStorage.setItem('azta_students', '[]');
       }
 
-      // Load/Seed Alumni
+      // Load Alumni
       const alumniSnap = await getDocs(collection(db, 'alumni'));
       if (!alumniSnap.empty) {
         const list: Alumni[] = [];
@@ -216,14 +208,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.alumni = list;
         localStorage.setItem('azta_alumni', JSON.stringify(list));
-      } else if (data.alumni.length > 0) {
-        // Seed Firestore
-        for (const item of data.alumni) {
-          await setDoc(doc(db, 'alumni', item.id), item);
-        }
+      } else {
+        data.alumni = [];
+        localStorage.setItem('azta_alumni', '[]');
       }
 
-      // Load/Seed Registrations
+      // Load Registrations
       const registrationsSnap = await getDocs(collection(db, 'registrations'));
       if (!registrationsSnap.empty) {
         const list: ProgramRegistration[] = [];
@@ -232,14 +222,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.registrations = list;
         localStorage.setItem('azta_registrations', JSON.stringify(list));
-      } else if (data.registrations.length > 0) {
-        // Seed Firestore
-        for (const item of data.registrations) {
-          await setDoc(doc(db, 'registrations', item.id), item);
-        }
+      } else {
+        data.registrations = [];
+        localStorage.setItem('azta_registrations', '[]');
       }
 
-      // Load/Seed Payments
+      // Load Payments
       const paymentsSnap = await getDocs(collection(db, 'payments'));
       if (!paymentsSnap.empty) {
         const list: PaymentTransaction[] = [];
@@ -248,14 +236,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.payments = list;
         localStorage.setItem('azta_payments', JSON.stringify(list));
-      } else if (data.payments.length > 0) {
-        // Seed Firestore
-        for (const item of data.payments) {
-          await setDoc(doc(db, 'payments', item.id), item);
-        }
+      } else {
+        data.payments = [];
+        localStorage.setItem('azta_payments', '[]');
       }
 
-      // Load/Seed Results
+      // Load Results
       const resultsSnap = await getDocs(collection(db, 'results'));
       if (!resultsSnap.empty) {
         const list: PsychologicalResult[] = [];
@@ -264,14 +250,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.results = list;
         localStorage.setItem('azta_results', JSON.stringify(list));
-      } else if (data.results.length > 0) {
-        // Seed Firestore
-        for (const item of data.results) {
-          await setDoc(doc(db, 'results', item.id), item);
-        }
+      } else {
+        data.results = [];
+        localStorage.setItem('azta_results', '[]');
       }
 
-      // Load/Seed Sessions
+      // Load Sessions
       const sessionsSnap = await getDocs(collection(db, 'sessions'));
       if (!sessionsSnap.empty) {
         const list: CounselingSession[] = [];
@@ -280,11 +264,9 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
         });
         data.sessions = list;
         localStorage.setItem('azta_sessions', JSON.stringify(list));
-      } else if (data.sessions.length > 0) {
-        // Seed Firestore
-        for (const item of data.sessions) {
-          await setDoc(doc(db, 'sessions', item.id), item);
-        }
+      } else {
+        data.sessions = [];
+        localStorage.setItem('azta_sessions', '[]');
       }
     } catch (err) {
       console.warn('Firestore read/write bypassed or pending rules activation:', err);

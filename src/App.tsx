@@ -59,39 +59,95 @@ export default function App() {
   const [sessions, setSessions] = useState<CounselingSession[]>([]);
 
   // Individual persistence updater functions
-  const handleUpdateSettings = (newSettings: SiteSettings) => {
-    setSiteSettings(newSettings);
-    saveSiteSettings(newSettings);
+  const handleUpdateSettings = (newSettings: SiteSettings | ((prev: SiteSettings) => SiteSettings)) => {
+    if (typeof newSettings === 'function') {
+      setSiteSettings(prev => {
+        const next = newSettings(prev);
+        saveSiteSettings(next);
+        return next;
+      });
+    } else {
+      setSiteSettings(newSettings);
+      saveSiteSettings(newSettings);
+    }
   };
 
-  const handleUpdateStudents = (newStudents: Student[]) => {
-    setStudents(newStudents);
-    saveStudents(newStudents);
+  const handleUpdateStudents = (newStudents: Student[] | ((prev: Student[]) => Student[])) => {
+    if (typeof newStudents === 'function') {
+      setStudents(prev => {
+        const next = newStudents(prev);
+        saveStudents(next);
+        return next;
+      });
+    } else {
+      setStudents(newStudents);
+      saveStudents(newStudents);
+    }
   };
 
-  const handleUpdateAlumni = (newAlumni: Alumni[]) => {
-    setAlumni(newAlumni);
-    saveAlumni(newAlumni);
+  const handleUpdateAlumni = (newAlumni: Alumni[] | ((prev: Alumni[]) => Alumni[])) => {
+    if (typeof newAlumni === 'function') {
+      setAlumni(prev => {
+        const next = newAlumni(prev);
+        saveAlumni(next);
+        return next;
+      });
+    } else {
+      setAlumni(newAlumni);
+      saveAlumni(newAlumni);
+    }
   };
 
-  const handleUpdateRegistrations = (newRegs: ProgramRegistration[]) => {
-    setRegistrations(newRegs);
-    saveRegistrations(newRegs);
+  const handleUpdateRegistrations = (newRegs: ProgramRegistration[] | ((prev: ProgramRegistration[]) => ProgramRegistration[])) => {
+    if (typeof newRegs === 'function') {
+      setRegistrations(prev => {
+        const next = newRegs(prev);
+        saveRegistrations(next);
+        return next;
+      });
+    } else {
+      setRegistrations(newRegs);
+      saveRegistrations(newRegs);
+    }
   };
 
-  const handleUpdatePayments = (newPayments: PaymentTransaction[]) => {
-    setPayments(newPayments);
-    savePayments(newPayments);
+  const handleUpdatePayments = (newPayments: PaymentTransaction[] | ((prev: PaymentTransaction[]) => PaymentTransaction[])) => {
+    if (typeof newPayments === 'function') {
+      setPayments(prev => {
+        const next = newPayments(prev);
+        savePayments(next);
+        return next;
+      });
+    } else {
+      setPayments(newPayments);
+      savePayments(newPayments);
+    }
   };
 
-  const handleUpdateResults = (newResults: PsychologicalResult[]) => {
-    setResults(newResults);
-    saveResults(newResults);
+  const handleUpdateResults = (newResults: PsychologicalResult[] | ((prev: PsychologicalResult[]) => PsychologicalResult[])) => {
+    if (typeof newResults === 'function') {
+      setResults(prev => {
+        const next = newResults(prev);
+        saveResults(next);
+        return next;
+      });
+    } else {
+      setResults(newResults);
+      saveResults(newResults);
+    }
   };
 
-  const handleUpdateSessions = (newSessions: CounselingSession[]) => {
-    setSessions(newSessions);
-    saveSessions(newSessions);
+  const handleUpdateSessions = (newSessions: CounselingSession[] | ((prev: CounselingSession[]) => CounselingSession[])) => {
+    if (typeof newSessions === 'function') {
+      setSessions(prev => {
+        const next = newSessions(prev);
+        saveSessions(next);
+        return next;
+      });
+    } else {
+      setSessions(newSessions);
+      saveSessions(newSessions);
+    }
   };
 
   // On initial mount, hydrate all data states precisely from persistent store database
