@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { User, SiteSettings } from '../types';
+import { User, SiteSettings, Student, ProgramRegistration } from '../types';
 import { compressImage } from '../utils/imageCompressor';
 import { IdCard, Upload, Printer, Check, Sparkles, Smile } from 'lucide-react';
+import CircularLogo from './CircularLogo';
 
 interface StudentCardProps {
   currentUser: User;
@@ -14,6 +15,25 @@ export default function StudentCard({ currentUser, siteSettings }: StudentCardPr
   );
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Parse students and registrations from local storage dynamically
+  const savedStudents: Student[] = JSON.parse(localStorage.getItem('azta_students') || '[]');
+  const matchedStudent = savedStudents.find(
+    s => s.email?.toLowerCase() === currentUser.email?.toLowerCase() || s.id === currentUser.id
+  );
+
+  const savedRegs: ProgramRegistration[] = JSON.parse(localStorage.getItem('azta_registrations') || '[]');
+  const matchedReg = savedRegs.find(
+    r => (r.studentId === currentUser.id || r.studentName === currentUser.name) && r.status === 'approved'
+  ) || savedRegs.find(
+    r => r.studentId === currentUser.id || r.studentName === currentUser.name
+  );
+
+  // Dynamic Academic Focus based on registered program or profile target career
+  const academicFocus = matchedStudent?.programJoined 
+    || matchedReg?.programName 
+    || currentUser.targetCareer 
+    || 'Pelatihan Psikotes TNI-POLRI';
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -66,14 +86,19 @@ export default function StudentCard({ currentUser, siteSettings }: StudentCardPr
     printWindow.document.close();
   };
 
+  const studentNoDigits = currentUser.id.replace(/[^0-9]/g, '');
+  const fallbackSeq = studentNoDigits ? String(studentNoDigits).slice(-3).padStart(3, '0') : '001';
+  const currentYear = new Date().getFullYear();
+  const defaultAutoNo = `AST-${currentYear}-${fallbackSeq}`;
+
+  const studentNumber = matchedStudent?.studentNumber 
+    || defaultAutoNo;
+
   const handleCopyId = () => {
-    const studentNumber = `AZTA-${currentUser.id.padStart(4, '0')}-2026`;
     navigator.clipboard.writeText(studentNumber);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const studentNumber = `AZTA-${currentUser.id.padStart(4, '0')}-2026`;
 
   return (
     <div className="space-y-6 animate-fade-in" id="student-card-screen">
@@ -129,14 +154,28 @@ export default function StudentCard({ currentUser, siteSettings }: StudentCardPr
             <div className="absolute -bottom-12 -left-12 w-32 h-32 rounded-full bg-emerald-500/15 blur-xl pointer-events-none" />
 
             {/* Card Header */}
-            <div className="flex justify-between items-start border-b border-white/10 pb-2.5 relative z-10">
-              <div className="text-left leading-none">
-                <span className="text-xs uppercase font-extrabold tracking-widest text-amber-300">
-                  {siteSettings.brandName || 'AZTA BEST CHOICE'}
-                </span>
-                <p className="text-[8px] text-emerald-300 tracking-wide font-mono mt-1">Counseling & Psychology</p>
+            <div className="flex justify-between items-center border-b border-white/10 pb-2.5 relative z-10">
+              <div className="flex items-center space-x-2 text-left">
+                {siteSettings?.logoUrl ? (
+                  <img 
+                    referrerPolicy="no-referrer"
+                    src={siteSettings.logoUrl} 
+                    alt={siteSettings?.brandName || 'Logo'} 
+                    className="w-8 h-8 rounded-full object-cover border border-amber-300 shrink-0"
+                  />
+                ) : (
+                  <CircularLogo className="w-8 h-8 shrink-0" />
+                )}
+                <div className="leading-none">
+                  <span className="text-xs uppercase font-extrabold tracking-widest text-amber-305">
+                    {siteSettings.brandName || 'AZTA BEST CHOICE'}
+                  </span>
+                  <p className="text-[7px] text-emerald-300 tracking-wide font-mono mt-0.5">
+                    {siteSettings.subTitle || 'Counseling & Psychology'}
+                  </p>
+                </div>
               </div>
-              <span className="px-2.5 py-0.5 bg-amber-400 text-emerald-990 text-[8px] font-black uppercase tracking-wider rounded font-mono">
+              <span className="px-2 py-0.5 bg-amber-400 text-emerald-950 text-[7px] font-black uppercase tracking-wider rounded font-mono">
                 KARTU SISWA BIMBEL
               </span>
             </div>
@@ -173,7 +212,7 @@ export default function StudentCard({ currentUser, siteSettings }: StudentCardPr
                   </div>
                   <div>
                     <span className="text-[7px] text-emerald-300/80 font-mono block tracking-wider uppercase">FOKUS AKADEMIK</span>
-                    <p className="text-[10px] font-bold text-emerald-100 truncate">{currentUser.targetCareer || 'TNI-POLRI Seleksi'}</p>
+                    <p className="text-[10px] font-bold text-emerald-100 truncate" title={academicFocus}>{academicFocus}</p>
                   </div>
                 </div>
 

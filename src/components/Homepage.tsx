@@ -40,6 +40,60 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
     return cleaned || '628113000888';
   };
 
+  const getCategoryStyles = (cat: string) => {
+    if (cat === 'seleksi') return {
+      bg: 'bg-emerald-50 border-emerald-100',
+      iconBg: 'bg-emerald-500/10',
+      text: 'text-emerald-950',
+      subText: 'text-emerald-700/80',
+      btnText: 'text-emerald-800',
+      btnHover: 'hover:bg-emerald-100/50',
+      btnBorder: 'border-emerald-250/80',
+      bulletText: 'text-emerald-800',
+      bulletIcon: 'text-emerald-650'
+    };
+    if (cat === 'asesmen') return {
+      bg: 'bg-sky-50 border-sky-100',
+      iconBg: 'bg-sky-500/10',
+      text: 'text-sky-950',
+      subText: 'text-sky-705/85',
+      btnText: 'text-sky-850',
+      btnHover: 'hover:bg-sky-100/50',
+      btnBorder: 'border-sky-250/80',
+      bulletText: 'text-sky-800',
+      bulletIcon: 'text-sky-600'
+    };
+    if (cat === 'konseling') return {
+      bg: 'bg-rose-50 border-rose-100',
+      iconBg: 'bg-rose-500/10',
+      text: 'text-rose-950',
+      subText: 'text-rose-705/85',
+      btnText: 'text-rose-850',
+      btnHover: 'hover:bg-rose-100/50',
+      btnBorder: 'border-rose-250/80',
+      bulletText: 'text-rose-800',
+      bulletIcon: 'text-rose-600'
+    };
+    return {
+      bg: 'bg-amber-50 border-amber-100',
+      iconBg: 'bg-amber-500/10',
+      text: 'text-amber-950',
+      subText: 'text-amber-705/85',
+      btnText: 'text-amber-850',
+      btnHover: 'hover:bg-amber-100/50',
+      btnBorder: 'border-amber-250/80',
+      bulletText: 'text-amber-805',
+      bulletIcon: 'text-amber-600'
+    };
+  };
+
+  const getCategoryIcon = (cat: string) => {
+    if (cat === 'seleksi') return <GraduationCap className="w-5 h-5 text-emerald-700" />;
+    if (cat === 'asesmen') return <FileText className="w-5 h-5 text-sky-700" />;
+    if (cat === 'konseling') return <Heart className="w-5 h-5 text-rose-600" />;
+    return <Award className="w-5 h-5 text-amber-755" />;
+  };
+
   const handleServiceNavigate = (subTab: ServiceTab) => {
     setActiveTab('layanan');
     setServiceSubTab(subTab);
@@ -47,7 +101,7 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
   };
 
   const handleRegisterFlow = () => {
-    setActiveTab('portal');
+    setActiveTab('pendaftaran');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -104,6 +158,16 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
                   {siteSettings?.heroCtaSecondary || 'Konsultasi Gratis'}
                 </button>
               </div>
+
+              {/* Legal Credentials Badge Row */}
+              <div className="flex flex-wrap gap-2 pt-3">
+                <span className="inline-flex items-center space-x-1 px-3 py-1 bg-emerald-950/40 border border-emerald-850 rounded-full text-[10px] text-emerald-100/95 font-mono">
+                  <span>NIB: <strong>{siteSettings?.nib || '2712230283639'}</strong></span>
+                </span>
+                <span className="inline-flex items-center space-x-1 px-3 py-1 bg-emerald-950/40 border border-emerald-850 rounded-full text-[10px] text-emerald-100/95 font-mono">
+                  <span>No. Tester: <strong>{siteSettings?.noTester || '0507/lz.Pr/PP-IIBKIN/VI/2017'}</strong></span>
+                </span>
+              </div>
             </div>
 
             {/* Micro details counter inline */}
@@ -147,7 +211,7 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
 
             <div className="space-y-3 my-6">
               <button 
-                onClick={handleRegisterFlow}
+                onClick={() => { setActiveTab('portal'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="w-full flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors text-left group cursor-pointer"
               >
                 <span className="font-semibold text-xs text-slate-700 group-hover:text-slate-950 transition-colors">Portal Siswa & Pendaftar</span>
@@ -201,20 +265,30 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
           <div>
             <span className="text-xs text-emerald-800 font-bold uppercase tracking-widest block mb-1">Sekilas Tentang Azta</span>
             <h2 className="font-sans font-extrabold text-2xl sm:text-4xl text-emerald-950 tracking-tight leading-tight">
-              Pusat Pengembangan Potensi Unggul & Kesiapan Mental Taruna di Madiun
+              {siteSettings?.aboutAztaTitle || 'Pusat Pengembangan Potensi Unggul & Kesiapan Mental Taruna di Madiun'}
             </h2>
             <div className="h-1 w-20 bg-amber-400 rounded-full my-6" />
             
-            <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              Didirikan dengan visi melahirkan talenta-talenta luar biasa Jawa Timur yang tangguh, cerdas, dan siap mengabdi pada bangsa. <strong>Azta Best Choice</strong> memadukan ilmu psikologi kognitif modern dengan strategi pengerjaan taktis untuk membentuk profil unggul peserta didik.
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed mb-6">
-              Lembaga kami tidak hanya menekankan pada keahlian mekanis ("menghafal pola soal"), tetapi melatih daya konsentrasi, kekuatan fokus mental, serta pengendalian emosi yang menjadi pilar keguguran terbesar peserta bintara, tamtama, maupun taruna akademi.
-            </p>
+            {siteSettings?.aboutAztaParas && siteSettings.aboutAztaParas.length > 0 ? (
+              siteSettings.aboutAztaParas.map((para, idx) => (
+                <p key={idx} className="text-sm text-gray-600 leading-relaxed mb-4">
+                  {para}
+                </p>
+              ))
+            ) : (
+              <>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  Didirikan dengan visi melahirkan talenta-talenta luar biasa Jawa Timur yang tangguh, cerdas, dan siap mengabdi pada bangsa. <strong>Azta Best Choice</strong> memadukan ilmu psikologi kognitif modern dengan strategi pengerjaan taktis untuk membentuk profil unggul peserta didik.
+                </p>
+                <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                  Lembaga kami tidak hanya menekankan pada keahlian mekanis ("menghafal pola soal"), tetapi melatih daya konsentrasi, kekuatan fokus mental, serta pengendalian emosi yang menjadi pilar keguguran terbesar peserta bintara, tamtama, maupun taruna akademi.
+                </p>
+              </>
+            )}
 
             <button
               onClick={() => setActiveTab('tentang')}
-              className="inline-flex items-center space-x-2 text-sm text-emerald-800 hover:text-amber-600 font-bold transition-colors"
+              className="inline-flex items-center space-x-2 text-sm text-emerald-800 hover:text-amber-600 font-bold transition-colors mt-2"
               id="about-learn-more"
             >
               <span>Pelajari Profil Azta Selengkapnya</span>
@@ -230,15 +304,19 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
               <span>Visi Utama Azta</span>
             </h3>
             <p className="font-sans italic text-base sm:text-lg text-emerald-100 leading-relaxed">
-              "Menjadi pusat bimbingan psikotes, asesmen psikologi, dan layanan konseling terdepan di wilayah Madiun dan sekitarnya, yang berkomitmen tinggi mengantarkan calon-calon abdi negara, siswa, dan karyawan swasta meraih puncak karier terbaiknya didasari keselarasan mental serta potensi sejati diri."
+              {siteSettings?.visionText || '"Menjadi pusat bimbingan psikotes, asesmen psikologi, dan layanan konseling terdepan di wilayah Madiun dan sekitarnya, yang berkomitmen tinggi mengantarkan calon-calon abdi negara, siswa, dan karyawan swasta meraih puncak karier terbaiknya didasari keselarasan mental serta potensi sejati diri."'}
             </p>
             <div className="mt-8 pt-6 border-t border-emerald-800 flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-emerald-800 flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <p className="text-xs font-bold text-white leading-none">Akurasi Presisi Berizin Resmi</p>
-                <p className="text-[10px] text-emerald-300 mt-1">Azta Best Choice Counseling & Psychology</p>
+                <p className="text-xs font-bold text-white leading-none">
+                  {siteSettings?.visionSubtitle || 'Akurasi Presisi Berizin Resmi'}
+                </p>
+                <p className="text-[10px] text-emerald-300 mt-1">
+                  {siteSettings?.visionFootnote || 'Azta Best Choice Counseling & Psychology'}
+                </p>
               </div>
             </div>
           </div>
@@ -257,104 +335,139 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Pilar 1: Persiapan Seleksi */}
-            <div className="bg-emerald-50 rounded-[2rem] p-8 border border-emerald-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-seleksi">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6">
-                  <GraduationCap className="w-5 h-5 text-emerald-700" />
+            {siteSettings?.portfolioPillars && siteSettings.portfolioPillars.length > 0 ? (
+              siteSettings.portfolioPillars.map((pillar) => {
+                const styles = getCategoryStyles(pillar.category);
+                return (
+                  <div key={pillar.id} className={`${styles.bg} rounded-[2rem] p-8 border flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative`}>
+                    <div>
+                      <div className={`w-10 h-10 rounded-xl ${styles.iconBg} flex items-center justify-center mb-6`}>
+                        {getCategoryIcon(pillar.category)}
+                      </div>
+                      <h3 className={`font-sans font-extrabold text-lg ${styles.text} mb-2`}>{pillar.title}</h3>
+                      <p className={`text-xs ${styles.subText} leading-relaxed mb-6`}>{pillar.desc}</p>
+                      
+                      <ul className="space-y-3 mb-8 text-left">
+                        {pillar.bullets.map((bullet, bIdx) => (
+                          <li key={bIdx} className={`flex items-center space-x-2 text-xs ${styles.bulletText}`}>
+                            <CheckCircle className={`w-4 h-4 ${styles.bulletIcon} shrink-0`} />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <button
+                      onClick={() => handleServiceNavigate(pillar.category as ServiceTab)}
+                      className={`w-full text-center py-2.5 rounded-xl bg-white border ${styles.btnBorder} ${styles.btnHover} ${styles.btnText} font-bold text-xs transition-colors cursor-pointer`}
+                    >
+                      {pillar.category === 'seleksi' ? 'Pelajari Program' : pillar.category === 'asesmen' ? 'Cek Jadwal Tes' : 'Booking Sesi'}
+                    </button>
+                  </div>
+                );
+              })
+            ) : (
+              <>
+                {/* Pilar 1: Persiapan Seleksi */}
+                <div className="bg-emerald-50 rounded-[2rem] p-8 border border-emerald-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-seleksi">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6">
+                      <GraduationCap className="w-5 h-5 text-emerald-700" />
+                    </div>
+                    <h3 className="font-sans font-extrabold text-lg text-emerald-900 mb-2">{siteSettings?.feature1Title || 'Persiapan Seleksi'}</h3>
+                    <p className="text-xs text-emerald-700/80 leading-relaxed mb-6">{siteSettings?.feature1Desc || 'Pelatihan intensif Psikotes TNI-POLRI, BUMN, & Kedinasan dengan simulasi fisik dan mental akurat.'}</p>
+                    
+                    <ul className="space-y-3 mb-8">
+                      <li className="flex items-center space-x-2 text-xs text-emerald-700">
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span>Bimbel Psikotes Terpadu TNI-POLRI</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-emerald-700">
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span>Latihan Simulasi CAT Terkomputerisasi</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-emerald-700">
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <span>Persiapan Wawancara Kerja & SKB</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleServiceNavigate('seleksi')}
+                    className="w-full text-center py-2.5 rounded-xl bg-white border border-emerald-200/80 hover:bg-emerald-100/50 text-emerald-800 font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Pelajari Program
+                  </button>
                 </div>
-                <h3 className="font-sans font-extrabold text-lg text-emerald-900 mb-2">{siteSettings?.feature1Title || 'Persiapan Seleksi'}</h3>
-                <p className="text-xs text-emerald-700/80 leading-relaxed mb-6">{siteSettings?.feature1Desc || 'Pelatihan intensif Psikotes TNI-POLRI, BUMN, & Kedinasan dengan simulasi fisik dan mental akurat.'}</p>
-                
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center space-x-2 text-xs text-emerald-700">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Bimbel Psikotes Terpadu TNI-POLRI</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-emerald-700">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Latihan Simulasi CAT Terkomputerisasi</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-emerald-700">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                    <span>Persiapan Wawancara Kerja & SKB</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <button
-                onClick={() => handleServiceNavigate('seleksi')}
-                className="w-full text-center py-2.5 rounded-xl bg-white border border-emerald-200/80 hover:bg-emerald-100/50 text-emerald-800 font-bold text-xs transition-colors cursor-pointer"
-              >
-                Pelajari Program
-              </button>
-            </div>
 
-            {/* Pilar 2: Asesmen Psikologi */}
-            <div className="bg-sky-50 rounded-[2rem] p-8 border border-sky-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-asesmen">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center mb-6">
-                  <FileText className="w-5 h-5 text-sky-700" />
+                {/* Pilar 2: Asesmen Psikologi */}
+                <div className="bg-sky-50 rounded-[2rem] p-8 border border-sky-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-asesmen">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center mb-6">
+                      <FileText className="w-5 h-5 text-sky-700" />
+                    </div>
+                    <h3 className="font-sans font-extrabold text-lg text-sky-900 mb-2">{siteSettings?.feature2Title || 'Asesmen Psikologi'}</h3>
+                    <p className="text-xs text-sky-700/80 leading-relaxed mb-6 font-medium">{siteSettings?.feature2Desc || 'Tes IQ, Minat & Bakat untuk pemetaan karier dan penjurusan sekolah menggunakan instrumen standar nasional.'}</p>
+                    
+                    <ul className="space-y-3 mb-8">
+                      <li className="flex items-center space-x-2 text-xs text-sky-700">
+                        <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
+                        <span>Tes IQ / Inteligensi Anak & Dewasa</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-sky-700">
+                        <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
+                        <span>Tes Penjurus Karier & Bakat Minat</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-sky-700">
+                        <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
+                        <span>Pengukuran Kognitif Akademik Taruna</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleServiceNavigate('asesmen')}
+                    className="w-full text-center py-2.5 rounded-xl bg-white border border-sky-200/80 hover:bg-sky-100/50 text-sky-850 font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Cek Jadwal Tes
+                  </button>
                 </div>
-                <h3 className="font-sans font-extrabold text-lg text-sky-900 mb-2">{siteSettings?.feature2Title || 'Asesmen Psikologi'}</h3>
-                <p className="text-xs text-sky-700/80 leading-relaxed mb-6 font-medium">{siteSettings?.feature2Desc || 'Tes IQ, Minat & Bakat untuk pemetaan karier dan penjurusan sekolah menggunakan instrumen standar nasional.'}</p>
-                
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center space-x-2 text-xs text-sky-700">
-                    <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span>Tes IQ / Inteligensi Anak & Dewasa</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-sky-700">
-                    <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span>Tes Penjurus Karier & Bakat Minat</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-sky-700">
-                    <CheckCircle className="w-4 h-4 text-sky-500 shrink-0" />
-                    <span>Pengukuran Kognitif Akademik Taruna</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <button
-                onClick={() => handleServiceNavigate('asesmen')}
-                className="w-full text-center py-2.5 rounded-xl bg-white border border-sky-200/80 hover:bg-sky-100/50 text-sky-850 font-bold text-xs transition-colors cursor-pointer"
-              >
-                Cek Jadwal Tes
-              </button>
-            </div>
 
-            {/* Pilar 3: Layanan Konseling */}
-            <div className="bg-rose-50 rounded-[2rem] p-8 border border-rose-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-konseling">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center mb-6">
-                  <Heart className="w-5 h-5 text-rose-600" />
+                {/* Pilar 3: Layanan Konseling */}
+                <div className="bg-rose-50 rounded-[2rem] p-8 border border-rose-100 flex flex-col justify-between hover:shadow-md hover:translate-y-[-2px] transition-all duration-300 relative" id="pilar-card-konseling">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center mb-6">
+                      <Heart className="w-5 h-5 text-rose-600" />
+                    </div>
+                    <h3 className="font-sans font-extrabold text-lg text-rose-900 mb-2">{siteSettings?.feature3Title || 'Layanan Konseling'}</h3>
+                    <p className="text-xs text-rose-700/80 leading-relaxed mb-6">{siteSettings?.feature3Desc || 'Pendampingan psikologis klinis & pengembangan potensi diri bersama tim psikolog profesional berizin.'}</p>
+                    
+                    <ul className="space-y-3 mb-8">
+                      <li className="flex items-center space-x-2 text-xs text-rose-700">
+                        <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                        <span>Konseling Gangguan Stres, Depresi & Panic</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-rose-700">
+                        <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                        <span>Sesi Konsultasi Eksklusif Potensi Diri</span>
+                      </li>
+                      <li className="flex items-center space-x-2 text-xs text-rose-700">
+                        <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                        <span>Post-Assessment Counseling Terarah</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleServiceNavigate('konseling')}
+                    className="w-full text-center py-2.5 rounded-xl bg-white border border-rose-200/80 hover:bg-rose-100/50 text-rose-850 font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    Booking Sesi
+                  </button>
                 </div>
-                <h3 className="font-sans font-extrabold text-lg text-rose-900 mb-2">{siteSettings?.feature3Title || 'Layanan Konseling'}</h3>
-                <p className="text-xs text-rose-700/80 leading-relaxed mb-6">{siteSettings?.feature3Desc || 'Pendampingan psikologis klinis & pengembangan potensi diri bersama tim psikolog profesional berizin.'}</p>
-                
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center space-x-2 text-xs text-rose-700">
-                    <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                    <span>Konseling Gangguan Stres, Depresi & Panic</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-rose-700">
-                    <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                    <span>Sesi Konsultasi Eksklusif Potensi Diri</span>
-                  </li>
-                  <li className="flex items-center space-x-2 text-xs text-rose-700">
-                    <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                    <span>Post-Assessment Counseling Terarah</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <button
-                onClick={() => handleServiceNavigate('konseling')}
-                className="w-full text-center py-2.5 rounded-xl bg-white border border-rose-200/80 hover:bg-rose-100/50 text-rose-850 font-bold text-xs transition-colors cursor-pointer"
-              >
-                Booking Sesi
-              </button>
-            </div>
+              </>
+            )}
           </div>
 
           {/* Layanan Tambahan (Aktif) */}
@@ -431,83 +544,128 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
 
       {/* 5. MENGAPA MEMILIH KAMI */}
       <section className="py-20 px-4 max-w-7xl mx-auto" id="why-choose-us-section">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className={`grid grid-cols-1 ${siteSettings?.showProfilAkurasiOnHome !== false ? 'lg:grid-cols-2' : ''} gap-12 items-center`}>
           
-          <div className="space-y-6">
+          <div className={`space-y-6 text-left ${siteSettings?.showProfilAkurasiOnHome !== false ? '' : 'lg:max-w-3xl mx-auto w-full'}`}>
             <span className="text-xs text-emerald-800 font-bold uppercase tracking-widest block">Keunggulan Lembaga</span>
             <h2 className="font-sans font-extrabold text-2xl sm:text-4xl text-emerald-950 tracking-tight leading-tight">
-              Mengapa Azta Best Choice Menjadi Lembaga Terdepan?
+              {siteSettings?.keunggulanTitle || 'Mengapa Azta Best Choice Menjadi Lembaga Terdepan?'}
             </h2>
             <div className="h-1 w-20 bg-amber-400 rounded-full" />
             <p className="text-sm text-gray-600 leading-relaxed">
-              Kami menetapkan standar bimbingan tinggi yang membedakan Azta dari bimbingan tes biasa. Melalui pengawasan langsung para psikolog senior, kami menjamin kualitas kurikulum bimbingan yang ilmiah, terstandarisasi, dan berkredibilitas tinggi.
+              {siteSettings?.keunggulanDesc || 'Kami menetapkan standar bimbingan tinggi yang membedakan Azta dari bimbingan tes biasa. Melalui pengawasan langsung para psikolog senior, kami menjamin kualitas kurikulum bimbingan yang ilmiah, terstandarisasi, dan berkredibilitas tinggi.'}
             </p>
 
             <div className="space-y-4 pt-2">
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5 text-emerald-800" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Tim Psikolog Utama Berizin Resmi</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Seluruh asesmen dan konseling diawasi oleh Psikolog yang memiliki SIP (Surat Izin Praktik) resmi dari HIMPSI (Himpunan Psikologi Indonesia).</p>
-                </div>
-              </div>
+              {siteSettings?.keunggulanList && siteSettings.keunggulanList.length > 0 ? (
+                siteSettings.keunggulanList.map((item, idx) => (
+                  <div key={item.id || idx} className="flex items-start space-x-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                      {idx % 3 === 0 ? (
+                        <ShieldCheck className="w-5 h-5 text-emerald-800" />
+                      ) : idx % 3 === 1 ? (
+                        <CheckCircle className="w-5 h-5 text-emerald-800" />
+                      ) : (
+                        <Users className="w-5 h-5 text-emerald-800" />
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">{item.title}</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-5 h-5 text-emerald-800" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">Tim Psikolog Utama Berizin Resmi</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">Seluruh asesmen dan konseling diawasi oleh Psikolog yang memiliki SIP (Surat Izin Praktik) resmi dari HIMPSI (Himpunan Psikologi Indonesia).</p>
+                    </div>
+                  </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-5 h-5 text-emerald-800" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Materi Akurat Selaras (Akurasi Presisi)</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Sistem simulasi dan psikotes kami diperbaharui berulang kali agar sesuai dengan pola soal asasi penerimaan TNI-POLRI maupun SKB BUMN terbaru.</p>
-                </div>
-              </div>
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                      <CheckCircle className="w-5 h-5 text-emerald-800" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">Materi Akurat Selaras (Akurasi Presisi)</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">Sistem simulasi dan psikotes kami diperbaharui berulang kali agar sesuai dengan pola soal asasi penerimaan TNI-POLRI maupun SKB BUMN terbaru.</p>
+                    </div>
+                  </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <Users className="w-5 h-5 text-emerald-800" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Pendekatan Personal Terstruktur</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Aspek kognitif, motorik kasar, stamina mental, dan emosi diuji dan dinilai secara individual. Siswa memiliki rapor nilai perkembangan berkala.</p>
-                </div>
-              </div>
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                      <Users className="w-5 h-5 text-emerald-800" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">Pendekatan Personal Terstruktur</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">Aspek kognitif, motorik kasar, stamina mental, dan emosi diuji dan dinilai secara individual. Siswa memiliki rapor nilai perkembangan berkala.</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           {/* Visual Illustration Collage of Azta Prep */}
-          <div className="relative flex justify-center" id="collager-illustration">
-            <div className="relative w-full max-w-md p-2 bg-white border border-gray-100 shadow-md rounded-2xl">
-              <div className="bg-emerald-950 rounded-xl overflow-hidden text-white p-6 sm:p-8 space-y-6">
-                <div className="text-amber-400 font-mono text-xs uppercase tracking-widest font-bold">PROFIL AKURASI</div>
-                <div className="space-y-2">
-                  <h3 className="font-sans font-bold text-lg sm:text-xl">Fasilitas Bimbingan Azta</h3>
-                  <p className="text-xs text-emerald-200 leading-relaxed">Suasana bimbingan nyaman dan representatif di pusat kota Madiun, menjamin fokus terbaik selama pengerjaan.</p>
-                </div>
+          {siteSettings?.showProfilAkurasiOnHome !== false && (
+            <div className="relative flex justify-center" id="collager-illustration">
+              <div className="relative w-full max-w-md p-2 bg-white border border-gray-100 shadow-md rounded-2xl">
+                <div className="bg-emerald-950 rounded-xl overflow-hidden text-white p-6 sm:p-8 space-y-6">
+                  <div className="text-amber-400 font-mono text-xs uppercase tracking-widest font-bold">
+                    {siteSettings?.profilAkurasiLabel || 'PROFIL AKURASI'}
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-sans font-bold text-lg sm:text-xl">
+                      {siteSettings?.profilAkurasiTitle || 'Fasilitas Bimbingan Azta'}
+                    </h3>
+                    <p className="text-xs text-emerald-200 leading-relaxed">
+                      {siteSettings?.profilAkurasiDesc || 'Suasana bimbingan nyaman dan representatif di pusat kota Madiun, menjamin fokus terbaik selama pengerjaan.'}
+                    </p>
+                  </div>
 
-                <div className="bg-emerald-900/60 p-4 rounded-xl border border-emerald-800 space-y-3.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-emerald-300">Lab Komputer Simulasi CAT</span>
-                    <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Tersedia</span>
+                  <div className="bg-emerald-900/60 p-4 rounded-xl border border-emerald-800 space-y-3.5">
+                    {siteSettings?.profilAkurasiItems && siteSettings.profilAkurasiItems.length > 0 ? (
+                      siteSettings.profilAkurasiItems.map((item, idx) => (
+                        <div key={item.id || idx} className="flex justify-between items-center text-xs">
+                          <span className="text-emerald-300">{item.title}</span>
+                          <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">
+                            {item.status}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-emerald-300">Lab Komputer Simulasi CAT</span>
+                          <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Tersedia</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-emerald-300">Ruang Konseling Kedap Nyaman</span>
+                          <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Tersedia</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-emerald-300">Rapor Psikogram Kepribadian</span>
+                          <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Eksklusif</span>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-emerald-300">Ruang Konseling Kedap Nyaman</span>
-                    <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Tersedia</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-emerald-300">Rapor Psikogram Kepribadian</span>
-                    <span className="px-2 py-0.5 bg-emerald-800 rounded font-semibold text-[10px] text-amber-300">Eksklusif</span>
-                  </div>
-                </div>
 
-                <div className="flex justify-between items-center text-xs font-mono pt-2 text-slate-400">
-                  <span>Madiun, Jawa Timur</span>
-                  <span className="text-amber-400 font-bold">⭐ Terakreditasi</span>
+                  <div className="flex justify-between items-center text-xs font-mono pt-2 text-slate-400">
+                    <span>{siteSettings?.profilAkurasiLocation || 'Madiun, Jawa Timur'}</span>
+                    <span className="text-amber-400 font-bold">
+                      {siteSettings?.profilAkurasiBadge || '⭐ Terakreditasi'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
         </div>
       </section>
@@ -659,6 +817,15 @@ export default function Homepage({ setActiveTab, setServiceSubTab, onOpenAuth, s
                 <div>
                   <p><strong>Hotline Bimbingan:</strong></p>
                   <p>WhatsApp: {siteSettings?.phone || '0811-3000-888'}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3 pt-2.5 border-t border-slate-200">
+                <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
+                <div>
+                  <p><strong>Legalitas & Kredensial Lembaga:</strong></p>
+                  <p className="font-mono text-[11px] mt-0.5">NIB: {siteSettings?.nib || '2712230283639'}</p>
+                  <p className="font-mono text-[11px]">No. Tester: {siteSettings?.noTester || '0507/lz.Pr/PP-IIBKIN/VI/2017'}</p>
                 </div>
               </div>
             </div>

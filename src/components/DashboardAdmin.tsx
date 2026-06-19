@@ -234,6 +234,547 @@ export default function DashboardAdmin({
   const [editingPartnerName, setEditingPartnerName] = useState('');
   const [editingPartnerType, setEditingPartnerType] = useState('');
 
+  // Profil Akurasi States & Management
+  const [newProfilAkurasiItemTitle, setNewProfilAkurasiItemTitle] = useState('');
+  const [newProfilAkurasiItemStatus, setNewProfilAkurasiItemStatus] = useState('');
+  const [editingProfilAkurasiItemId, setEditingProfilAkurasiItemId] = useState<string | null>(null);
+  const [editingProfilAkurasiItemTitle, setEditingProfilAkurasiItemTitle] = useState('');
+  const [editingProfilAkurasiItemStatus, setEditingProfilAkurasiItemStatus] = useState('');
+
+  const handleAddProfilAkurasiItem = () => {
+    if (!newProfilAkurasiItemTitle.trim()) return;
+    const currentItems = settingsForm.profilAkurasiItems || [
+      { id: 'pa-1', title: 'Lab Komputer Simulasi CAT', status: 'Tersedia' },
+      { id: 'pa-2', title: 'Ruang Counseling Kedap Nyaman', status: 'Tersedia' },
+      { id: 'pa-3', title: 'Rapor Psikogram Kepribadian', status: 'Eksklusif' }
+    ];
+    setSettingsForm(prev => ({
+      ...prev,
+      profilAkurasiItems: [
+        ...currentItems,
+        {
+          id: 'pa-' + Date.now(),
+          title: newProfilAkurasiItemTitle.trim(),
+          status: newProfilAkurasiItemStatus.trim() || 'Tersedia'
+        }
+      ]
+    }));
+    setNewProfilAkurasiItemTitle('');
+    setNewProfilAkurasiItemStatus('');
+  };
+
+  const handleDeleteProfilAkurasiItem = (id: string) => {
+    const currentItems = settingsForm.profilAkurasiItems || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      profilAkurasiItems: currentItems.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditProfilAkurasiItem = (id: string, title: string, status: string) => {
+    setEditingProfilAkurasiItemId(id);
+    setEditingProfilAkurasiItemTitle(title);
+    setEditingProfilAkurasiItemStatus(status);
+  };
+
+  const handleSaveProfilAkurasiItem = (id: string) => {
+    if (!editingProfilAkurasiItemTitle.trim()) return;
+    const currentItems = [...(settingsForm.profilAkurasiItems || [])];
+    const updated = currentItems.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: editingProfilAkurasiItemTitle.trim(),
+          status: editingProfilAkurasiItemStatus.trim() || 'Tersedia'
+        };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({
+      ...prev,
+      profilAkurasiItems: updated
+    }));
+    setEditingProfilAkurasiItemId(null);
+  };
+
+  // 1. Sekilas Tentang Azta Paragraphs State
+  const [newAboutAztaPara, setNewAboutAztaPara] = useState('');
+  const [editingAboutAztaParaIdx, setEditingAboutAztaParaIdx] = useState<number | null>(null);
+  const [editingAboutAztaParaText, setEditingAboutAztaParaText] = useState('');
+
+  const handleAddAboutAztaPara = () => {
+    if (!newAboutAztaPara.trim()) return;
+    const currentParas = settingsForm.aboutAztaParas || [
+      'Azta Best Choice Counseling & Psychology Madiun hadir sebagai wujud nyata dedikasi layanan profesional yang mengintegrasikan kesiapan mental, kognitif, fisik, dan kejiwaan bagi segenap calon bintara TNI-POLRI, instansi kedinasan, calon pegawai BUMN, serta pendampingan klinis psikologis anak dan dewasa di wilayah Jawa Timur.',
+      'Didirikan di Jl. Kawis, Kecamatan Taman, Madiun, lembaga kami memadukan bimbingan akademik tervalidasi menggunakan Computer Assisted Test (CAT) mandiri di laboratorium komputer rahasia kami, latihan jasmani taktis luar ruangan, dan bimbingan konseling profesional tatap muka bersama psikolog utama berlisensi SIPP / HIMPSI.'
+    ];
+    setSettingsForm(prev => ({
+      ...prev,
+      aboutAztaParas: [...currentParas, newAboutAztaPara.trim()]
+    }));
+    setNewAboutAztaPara('');
+  };
+
+  const handleDeleteAboutAztaPara = (idx: number) => {
+    const currentParas = settingsForm.aboutAztaParas || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      aboutAztaParas: currentParas.filter((_, i) => i !== idx)
+    }));
+  };
+
+  const handleStartEditAboutAztaPara = (idx: number, text: string) => {
+    setEditingAboutAztaParaIdx(idx);
+    setEditingAboutAztaParaText(text);
+  };
+
+  const handleSaveAboutAztaPara = (idx: number) => {
+    if (!editingAboutAztaParaText.trim()) return;
+    const currentParas = [...(settingsForm.aboutAztaParas || [])];
+    currentParas[idx] = editingAboutAztaParaText.trim();
+    setSettingsForm(prev => ({
+      ...prev,
+      aboutAztaParas: currentParas
+    }));
+    setEditingAboutAztaParaIdx(null);
+  };
+
+  // 2. Keunggulan Lembaga List State
+  const [newKeunggulanItemTitle, setNewKeunggulanItemTitle] = useState('');
+  const [newKeunggulanItemDesc, setNewKeunggulanItemDesc] = useState('');
+  const [editingKeunggulanId, setEditingKeunggulanId] = useState<string | null>(null);
+  const [editingKeunggulanTitle, setEditingKeunggulanTitle] = useState('');
+  const [editingKeunggulanDesc, setEditingKeunggulanDesc] = useState('');
+
+  const handleAddKeunggulan = () => {
+    if (!newKeunggulanItemTitle.trim()) return;
+    const currentList = settingsForm.keunggulanList || [
+      { id: 'k-1', title: 'Psikolog Berlisensi Resmi SIPP', desc: 'Tes langsung diawasi dan laporan psikogram resmi ditandatangani oleh Psikolog Utama anggota HIMPSI Wilayah Jawa Timur.' },
+      { id: 'k-2', title: 'Laboratorium CAT Mandiri & Rahasia', desc: 'Latihan simulasi psikotes terkomputerisasi yang mirip dengan aslinya untuk mengurangi kecemasan ujian.' },
+      { id: 'k-3', title: 'Pendekatan Klinis 1-on-1', desc: 'Setiap siswa mendapatkan porsi bimbingan privasi 100% untuk mengatasi stres kognitif dan porsi kegagalan ujian sebelumnya.' }
+    ];
+    setSettingsForm(prev => ({
+      ...prev,
+      keunggulanList: [
+        ...currentList,
+        {
+          id: 'k-' + Date.now(),
+          title: newKeunggulanItemTitle.trim(),
+          desc: newKeunggulanItemDesc.trim()
+        }
+      ]
+    }));
+    setNewKeunggulanItemTitle('');
+    setNewKeunggulanItemDesc('');
+  };
+
+  const handleDeleteKeunggulan = (id: string) => {
+    const currentList = settingsForm.keunggulanList || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      keunggulanList: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditKeunggulan = (id: string, t: string, d: string) => {
+    setEditingKeunggulanId(id);
+    setEditingKeunggulanTitle(t);
+    setEditingKeunggulanDesc(d);
+  };
+
+  const handleSaveKeunggulan = (id: string) => {
+    if (!editingKeunggulanTitle.trim()) return;
+    const currentList = (settingsForm.keunggulanList || []).map(item => {
+      if (item.id === id) {
+        return { ...item, title: editingKeunggulanTitle.trim(), desc: editingKeunggulanDesc.trim() };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, keunggulanList: currentList }));
+    setEditingKeunggulanId(null);
+  };
+
+  // 3. Portopolio Layanan (Pillars) State
+  const [newPillarTitle, setNewPillarTitle] = useState('');
+  const [newPillarCategory, setNewPillarCategory] = useState('seleksi');
+  const [newPillarDesc, setNewPillarDesc] = useState('');
+  const [newPillarBulletsText, setNewPillarBulletsText] = useState('');
+  const [editingPillarId, setEditingPillarId] = useState<string | null>(null);
+  const [editingPillarTitle, setEditingPillarTitle] = useState('');
+  const [editingPillarCategory, setEditingPillarCategory] = useState('');
+  const [editingPillarDesc, setEditingPillarDesc] = useState('');
+  const [editingPillarBulletsText, setEditingPillarBulletsText] = useState('');
+
+  const handleAddPillar = () => {
+    if (!newPillarTitle.trim()) return;
+    const currentList = settingsForm.portfolioPillars || [
+      { id: 'pil-1', category: 'seleksi', title: 'Pilar A: Seleksi & Akurasi CAT', desc: 'Bimbingan intensif tumpuan persiapan ujian bintara kepolisian, akademi militer, kedinasan IPDN, STIS, STAN, dan CPNS/BUMN.', bullets: ['Simulasi Software CAT Mandiri', 'Latihan Postur Jasmani & Pembinaan Stamina', 'Ratusan Paket Evaluasi Soal Terkini', 'Mental Ideologi & Pengetahuna Umum'] },
+      { id: 'pil-2', category: 'asesmen', title: 'Pilar B: Asesmen Psikometri', desc: 'Pengukuran orisinil kognitif IQ umum, penjurusan bakat minat anak, serta rekrutmen pegawai bersertifikasi resmi.', bullets: ['Tes IQ (CFIT, IST, WAIS)', 'Pemetaan Karir Holland RIASEC', 'Sertifikat Psikogram Resmi', 'Evaluasi Validitas Alat Ukur'] },
+      { id: 'pil-3', category: 'konseling', title: 'Pilar C: Konseling & Klinis', desc: 'Pendampingan langsung kesehatan mental, stress coping management, pasca-kegagalan seleksi, serta tumbuh kembang.', bullets: ['Terapi Burnout Belajar', 'Konseling Rahasia Tatap Muka', 'Deteksi Potensi Luka Jiwa', 'Coping Management Ujian'] }
+    ];
+    const bulletsArr = newPillarBulletsText.split(',').map(b => b.trim()).filter(Boolean);
+    setSettingsForm(prev => ({
+      ...prev,
+      portfolioPillars: [
+        ...currentList,
+        {
+          id: 'pil-' + Date.now(),
+          category: newPillarCategory,
+          title: newPillarTitle.trim(),
+          desc: newPillarDesc.trim(),
+          bullets: bulletsArr
+        }
+      ]
+    }));
+    setNewPillarTitle('');
+    setNewPillarDesc('');
+    setNewPillarBulletsText('');
+  };
+
+  const handleDeletePillar = (id: string) => {
+    const currentList = settingsForm.portfolioPillars || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      portfolioPillars: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditPillar = (id: string, t: string, cat: string, d: string, bulls: string[]) => {
+    setEditingPillarId(id);
+    setEditingPillarTitle(t);
+    setEditingPillarCategory(cat);
+    setEditingPillarDesc(d);
+    setEditingPillarBulletsText(bulls.join(', '));
+  };
+
+  const handleSavePillar = (id: string) => {
+    if (!editingPillarTitle.trim()) return;
+    const bulletsArr = editingPillarBulletsText.split(',').map(b => b.trim()).filter(Boolean);
+    const currentList = (settingsForm.portfolioPillars || []).map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: editingPillarTitle.trim(),
+          category: editingPillarCategory,
+          desc: editingPillarDesc.trim(),
+          bullets: bulletsArr
+        };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, portfolioPillars: currentList }));
+    setEditingPillarId(null);
+  };
+
+  // 4. Layanan Sub-programs State
+  const [newSubProgTitle, setNewSubProgTitle] = useState('');
+  const [newSubProgDesc, setNewSubProgDesc] = useState('');
+  const [newSubProgCategory, setNewSubProgCategory] = useState<'seleksi' | 'asesmen' | 'konseling'>('seleksi');
+  const [newSubProgLabel1, setNewSubProgLabel1] = useState('Materi Utama');
+  const [newSubProgVal1, setNewSubProgVal1] = useState('');
+  const [newSubProgLabel2, setNewSubProgLabel2] = useState('Detail Sesi');
+  const [newSubProgVal2, setNewSubProgVal2] = useState('');
+
+  const [editingSubProgId, setEditingSubProgId] = useState<string | null>(null);
+  const [editingSubProgTitle, setEditingSubProgTitle] = useState('');
+  const [editingSubProgDesc, setEditingSubProgDesc] = useState('');
+  const [editingSubProgCategory, setEditingSubProgCategory] = useState<'seleksi' | 'asesmen' | 'konseling'>('seleksi');
+  const [editingSubProgLabel1, setEditingSubProgLabel1] = useState('');
+  const [editingSubProgVal1, setEditingSubProgVal1] = useState('');
+  const [editingSubProgLabel2, setEditingSubProgLabel2] = useState('');
+  const [editingSubProgVal2, setEditingSubProgVal2] = useState('');
+
+  const handleAddSubProg = () => {
+    if (!newSubProgTitle.trim()) return;
+    const currentList = settingsForm.servicesSubPrograms || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      servicesSubPrograms: [
+        ...currentList,
+        {
+          id: 'subp-' + Date.now(),
+          title: newSubProgTitle.trim(),
+          desc: newSubProgDesc.trim(),
+          category: newSubProgCategory,
+          materiLabel1: newSubProgLabel1,
+          materiVal1: newSubProgVal1.trim(),
+          materiLabel2: newSubProgLabel2,
+          materiVal2: newSubProgVal2.trim()
+        }
+      ]
+    }));
+    setNewSubProgTitle('');
+    setNewSubProgDesc('');
+    setNewSubProgVal1('');
+    setNewSubProgVal2('');
+  };
+
+  const handleDeleteSubProg = (id: string) => {
+    const currentList = settingsForm.servicesSubPrograms || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      servicesSubPrograms: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditSubProg = (item: any) => {
+    setEditingSubProgId(item.id);
+    setEditingSubProgTitle(item.title);
+    setEditingSubProgDesc(item.desc);
+    setEditingSubProgCategory(item.category);
+    setEditingSubProgLabel1(item.materiLabel1 || 'Materi Utama');
+    setEditingSubProgVal1(item.materiVal1 || '');
+    setEditingSubProgLabel2(item.materiLabel2 || 'Detail Sesi');
+    setEditingSubProgVal2(item.materiVal2 || '');
+  };
+
+  const handleSaveSubProg = (id: string) => {
+    if (!editingSubProgTitle.trim()) return;
+    const currentList = (settingsForm.servicesSubPrograms || []).map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: editingSubProgTitle.trim(),
+          desc: editingSubProgDesc.trim(),
+          category: editingSubProgCategory,
+          materiLabel1: editingSubProgLabel1,
+          materiVal1: editingSubProgVal1.trim(),
+          materiLabel2: editingSubProgLabel2,
+          materiVal2: editingSubProgVal2.trim()
+        };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, servicesSubPrograms: currentList }));
+    setEditingSubProgId(null);
+  };
+
+  // 5. Tentang Kami (Values) State
+  const [newKamiValueTitle, setNewKamiValueTitle] = useState('');
+  const [newKamiValueDesc, setNewKamiValueDesc] = useState('');
+  const [editingKamiValueId, setEditingKamiValueId] = useState<string | null>(null);
+  const [editingKamiValueTitle, setEditingKamiValueTitle] = useState('');
+  const [editingKamiValueDesc, setEditingKamiValueDesc] = useState('');
+
+  const handleAddKamiValue = () => {
+    if (!newKamiValueTitle.trim()) return;
+    const currentList = settingsForm.tentangKamiValues || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      tentangKamiValues: [
+        ...currentList,
+        {
+          id: 'v-' + Date.now(),
+          title: newKamiValueTitle.trim(),
+          desc: newKamiValueDesc.trim()
+        }
+      ]
+    }));
+    setNewKamiValueTitle('');
+    setNewKamiValueDesc('');
+  };
+
+  const handleDeleteKamiValue = (id: string) => {
+    const currentList = settingsForm.tentangKamiValues || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      tentangKamiValues: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditKamiValue = (id: string, t: string, d: string) => {
+    setEditingKamiValueId(id);
+    setEditingKamiValueTitle(t);
+    setEditingKamiValueDesc(d);
+  };
+
+  const handleSaveKamiValue = (id: string) => {
+    if (!editingKamiValueTitle.trim()) return;
+    const currentList = (settingsForm.tentangKamiValues || []).map(item => {
+      if (item.id === id) {
+        return { ...item, title: editingKamiValueTitle.trim(), desc: editingKamiValueDesc.trim() };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, tentangKamiValues: currentList }));
+    setEditingKamiValueId(null);
+  };
+
+  // 6. Tentang Kami (Mentors) State
+  const [newKamiMentorName, setNewKamiMentorName] = useState('');
+  const [newKamiMentorRole, setNewKamiMentorRole] = useState('');
+  const [newKamiMentorSpecial, setNewKamiMentorSpecial] = useState('');
+  const [newKamiMentorBio, setNewKamiMentorBio] = useState('');
+  const [newKamiMentorAvatar, setNewKamiMentorAvatar] = useState('');
+
+  const [editingKamiMentorId, setEditingKamiMentorId] = useState<string | null>(null);
+  const [editingKamiMentorName, setEditingKamiMentorName] = useState('');
+  const [editingKamiMentorRole, setEditingKamiMentorRole] = useState('');
+  const [editingKamiMentorSpecial, setEditingKamiMentorSpecial] = useState('');
+  const [editingKamiMentorBio, setEditingKamiMentorBio] = useState('');
+  const [editingKamiMentorAvatar, setEditingKamiMentorAvatar] = useState('');
+
+  const handleAddKamiMentor = () => {
+    if (!newKamiMentorName.trim()) return;
+    const currentList = settingsForm.tentangKamiMentors || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      tentangKamiMentors: [
+        ...currentList,
+        {
+          id: 'm-' + Date.now(),
+          name: newKamiMentorName.trim(),
+          role: newKamiMentorRole.trim(),
+          special: newKamiMentorSpecial.trim(),
+          bio: newKamiMentorBio.trim(),
+          avatar: newKamiMentorAvatar.trim() || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200'
+        }
+      ]
+    }));
+    setNewKamiMentorName('');
+    setNewKamiMentorRole('');
+    setNewKamiMentorSpecial('');
+    setNewKamiMentorBio('');
+    setNewKamiMentorAvatar('');
+  };
+
+  const handleDeleteKamiMentor = (id: string) => {
+    const currentList = settingsForm.tentangKamiMentors || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      tentangKamiMentors: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditKamiMentor = (m: any) => {
+    setEditingKamiMentorId(m.id);
+    setEditingKamiMentorName(m.name);
+    setEditingKamiMentorRole(m.role);
+    setEditingKamiMentorSpecial(m.special);
+    setEditingKamiMentorBio(m.bio);
+    setEditingKamiMentorAvatar(m.avatar);
+  };
+
+  const handleSaveKamiMentor = (id: string) => {
+    if (!editingKamiMentorName.trim()) return;
+    const currentList = (settingsForm.tentangKamiMentors || []).map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          name: editingKamiMentorName.trim(),
+          role: editingKamiMentorRole.trim(),
+          special: editingKamiMentorSpecial.trim(),
+          bio: editingKamiMentorBio.trim(),
+          avatar: editingKamiMentorAvatar.trim()
+        };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, tentangKamiMentors: currentList }));
+    setEditingKamiMentorId(null);
+  };
+
+  // 7. Artikel (Blog) State
+  const [newBlogTitle, setNewBlogTitle] = useState('');
+  const [newBlogExcerpt, setNewBlogExcerpt] = useState('');
+  const [newBlogContent, setNewBlogContent] = useState('');
+  const [newBlogCategory, setNewBlogCategory] = useState<'Tips Psikotes' | 'Kesehatan Mental' | 'Informasi Seleksi'>('Tips Psikotes');
+  const [newBlogAuthor, setNewBlogAuthor] = useState('Admin Azta');
+  const [newBlogImage, setNewBlogImage] = useState('');
+  const [newBlogTagsText, setNewBlogTagsText] = useState('');
+
+  const [editingBlogId, setEditingBlogId] = useState<string | null>(null);
+  const [editingBlogTitle, setEditingBlogTitle] = useState('');
+  const [editingBlogExcerpt, setEditingBlogExcerpt] = useState('');
+  const [editingBlogContent, setEditingBlogContent] = useState('');
+  const [editingBlogCategory, setEditingBlogCategory] = useState<'Tips Psikotes' | 'Kesehatan Mental' | 'Informasi Seleksi'>('Tips Psikotes');
+  const [editingBlogAuthor, setEditingBlogAuthor] = useState('');
+  const [editingBlogImage, setEditingBlogImage] = useState('');
+  const [editingBlogTagsText, setEditingBlogTagsText] = useState('');
+
+  const handleAddBlog = () => {
+    if (!newBlogTitle.trim()) return;
+    const currentList = settingsForm.blogs || [];
+    const colorMap = {
+      'Tips Psikotes': 'bg-emerald-100 text-emerald-800 border-emerald-250',
+      'Kesehatan Mental': 'bg-rose-100 text-rose-800 border-rose-250',
+      'Informasi Seleksi': 'bg-amber-100 text-amber-800 border-amber-250'
+    };
+    const tagArr = newBlogTagsText.split(',').map(t => t.trim()).filter(Boolean);
+    setSettingsForm(prev => ({
+      ...prev,
+      blogs: [
+        ...currentList,
+        {
+          id: 'b-' + Date.now(),
+          title: newBlogTitle.trim(),
+          excerpt: newBlogExcerpt.trim(),
+          content: newBlogContent.trim(),
+          category: newBlogCategory,
+          categoryColor: colorMap[newBlogCategory] || 'bg-slate-100 text-slate-800',
+          author: newBlogAuthor.trim() || 'Admin Azta',
+          date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+          readTime: `${Math.max(2, Math.ceil(newBlogContent.length / 500))} Menit Baca`,
+          image: newBlogImage.trim() || 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600',
+          tags: tagArr
+        }
+      ]
+    }));
+    setNewBlogTitle('');
+    setNewBlogExcerpt('');
+    setNewBlogContent('');
+    setNewBlogImage('');
+    setNewBlogTagsText('');
+  };
+
+  const handleDeleteBlog = (id: string) => {
+    const currentList = settingsForm.blogs || [];
+    setSettingsForm(prev => ({
+      ...prev,
+      blogs: currentList.filter(item => item.id !== id)
+    }));
+  };
+
+  const handleStartEditBlog = (b: any) => {
+    setEditingBlogId(b.id);
+    setEditingBlogTitle(b.title);
+    setEditingBlogExcerpt(b.excerpt);
+    setEditingBlogContent(b.content);
+    setEditingBlogCategory(b.category);
+    setEditingBlogAuthor(b.author);
+    setEditingBlogImage(b.image);
+    setEditingBlogTagsText((b.tags || []).join(', '));
+  };
+
+  const handleSaveBlog = (id: string) => {
+    if (!editingBlogTitle.trim()) return;
+    const colorMap = {
+      'Tips Psikotes': 'bg-emerald-100 text-emerald-800 border-emerald-250',
+      'Kesehatan Mental': 'bg-rose-100 text-rose-800 border-rose-250',
+      'Informasi Seleksi': 'bg-amber-100 text-amber-800 border-amber-250'
+    };
+    const tagArr = editingBlogTagsText.split(',').map(t => t.trim()).filter(Boolean);
+    const currentList = (settingsForm.blogs || []).map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: editingBlogTitle.trim(),
+          excerpt: editingBlogExcerpt.trim(),
+          content: editingBlogContent.trim(),
+          category: editingBlogCategory,
+          categoryColor: colorMap[editingBlogCategory] || 'bg-slate-100 text-slate-800',
+          author: editingBlogAuthor.trim() || 'Admin Azta',
+          image: editingBlogImage.trim(),
+          tags: tagArr,
+          readTime: `${Math.max(2, Math.ceil(editingBlogContent.length / 500))} Menit Baca`
+        };
+      }
+      return item;
+    });
+    setSettingsForm(prev => ({ ...prev, blogs: currentList }));
+    setEditingBlogId(null);
+  };
+
   const handleAddService = () => {
     if (!newServiceTitle.trim()) return;
     const currentServices = settingsForm.services || [];
@@ -1792,6 +2333,33 @@ export default function DashboardAdmin({
                 </div>
               </div>
 
+              {/* Legalitas & Perizinan Settings */}
+              <div className="space-y-4 pt-4 border-t">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">Legalitas Lembaga (NIB & No Tester)</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-500">Nomor Induk Berusaha (NIB):</label>
+                    <input 
+                      type="text"
+                      value={settingsForm.nib || ''}
+                      onChange={(e) => setSettingsForm(prev => ({ ...prev, nib: e.target.value }))}
+                      className="w-full p-2.5 text-xs border border-gray-255 rounded-lg"
+                      placeholder="e.g. 2712230283639"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-gray-500">No. Tester / Izin Praktek:</label>
+                    <input 
+                      type="text"
+                      value={settingsForm.noTester || ''}
+                      onChange={(e) => setSettingsForm(prev => ({ ...prev, noTester: e.target.value }))}
+                      className="w-full p-2.5 text-xs border border-gray-255 rounded-lg"
+                      placeholder="e.g. 0507/lz.Pr/PP-IIBKIN/VI/2017"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Program Settings */}
               <div className="space-y-4 pt-6 border-t" id="settings-programs-block">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">8. Kelola Program Bimbingan (Kategori Pendaftaran)</h4>
@@ -2243,6 +2811,1101 @@ export default function DashboardAdmin({
                 </div>
               </div>
 
+              {/* DYNAMIC CONTENT MANAGEMENT SECTION FOR 7 FITUR UTAMA */}
+              <div className="space-y-6 pt-6 border-t" id="settings-dynamic-content-section">
+                <div className="bg-emerald-50/50 border border-emerald-150 p-4 rounded-2xl">
+                  <h3 className="text-sm font-extrabold text-emerald-900 uppercase tracking-wider">🛠️ Editor Konten Dinamis (7 Fitur Website)</h3>
+                  <p className="text-[11px] text-gray-600 mt-1">
+                    Tambahkan, ubah, dan hapus konten pada 7 fitur utama Azta secara instan. Pastikan untuk menekan tombol <strong>"Simpan Semua Perubahan"</strong> di bagian bawah halaman setelah Anda selesai mengedit!
+                  </p>
+                </div>
+
+                {/* Fitur: Profil Akurasi */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-profil-akurasi">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">🎯 Fitur: Profil Akurasi (Homepage)</h4>
+                      <p className="text-[10px] text-gray-500 mt-0.5">Kelola informasi fasilitas & status bimbingan presisi (Ilustrasi samping seksi Keunggulan).</p>
+                    </div>
+                    <div className="flex items-center">
+                      <label className="text-[11px] font-bold text-gray-700 flex items-center space-x-2 cursor-pointer bg-white p-2 px-3.5 border rounded-xl shadow-sm hover:border-emerald-800 transition-all">
+                        <input
+                          type="checkbox"
+                          checked={settingsForm.showProfilAkurasiOnHome !== false}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, showProfilAkurasiOnHome: e.target.checked }))}
+                          className="accent-emerald-800 w-3.5 h-3.5 rounded"
+                        />
+                        <span>Tampilkan di Beranda</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Header/Footer Meta Inputs */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-gray-550 block">Ubah Label Atas (Caps):</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.profilAkurasiLabel || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, profilAkurasiLabel: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg focus:ring-1 focus:ring-emerald-800 outline-none"
+                        placeholder="PROFIL AKURASI"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-gray-550 block">Judul Profil:</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.profilAkurasiTitle || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, profilAkurasiTitle: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg focus:ring-1 focus:ring-emerald-800 outline-none"
+                        placeholder="Fasilitas Bimbingan Azta"
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-1">
+                      <label className="text-[11px] font-bold text-gray-550 block">Deskripsi Profil:</label>
+                      <textarea 
+                        value={settingsForm.profilAkurasiDesc || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, profilAkurasiDesc: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg focus:ring-1 focus:ring-emerald-800 outline-none"
+                        rows={2}
+                        placeholder="Suasana bimbingan nyaman dan representatif di pusat kota Madiun, menjamin fokus terbaik selama pengerjaan."
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-gray-550 block">Lokasi Footer:</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.profilAkurasiLocation || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, profilAkurasiLocation: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg focus:ring-1 focus:ring-emerald-800 outline-none"
+                        placeholder="Madiun, Jawa Timur"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-bold text-gray-550 block">Keterangan Akreditasi/Badge:</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.profilAkurasiBadge || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, profilAkurasiBadge: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg focus:ring-1 focus:ring-emerald-800 outline-none"
+                        placeholder="⭐ Terakreditasi"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Profil Akurasi Items Manager */}
+                  <div className="space-y-2 border-t pt-3">
+                    <span className="text-xs font-bold text-slate-800 block text-left">📋 Daftar Fasilitas/Layanan Presisi (Edit, Tambah, Hapus)</span>
+                    
+                    <div className="space-y-2">
+                      {(settingsForm.profilAkurasiItems || [
+                        { id: 'pa-1', title: 'Lab Komputer Simulasi CAT', status: 'Tersedia' },
+                        { id: 'pa-2', title: 'Ruang Konseling Kedap Nyaman', status: 'Tersedia' },
+                        { id: 'pa-3', title: 'Rapor Psikogram Kepribadian', status: 'Eksklusif' }
+                      ]).map((item) => (
+                        <div key={item.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left flex items-center justify-between">
+                          {editingProfilAkurasiItemId === item.id ? (
+                            <div className="flex flex-col sm:flex-row gap-2 w-full pr-1">
+                              <input
+                                  type="text"
+                                  value={editingProfilAkurasiItemTitle}
+                                  onChange={(e) => setEditingProfilAkurasiItemTitle(e.target.value)}
+                                  className="p-2 text-xs border rounded-lg bg-neutral-50 flex-1"
+                                  placeholder="Nama Fasilitas"
+                                />
+                              <input
+                                  type="text"
+                                  value={editingProfilAkurasiItemStatus}
+                                  onChange={(e) => setEditingProfilAkurasiItemStatus(e.target.value)}
+                                  className="p-2 text-xs border rounded-lg bg-neutral-50 sm:w-1/3"
+                                  placeholder="Status (e.g. Tersedia)"
+                                />
+                              <div className="flex items-center space-x-1 justify-end shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveProfilAkurasiItem(item.id)}
+                                  className="px-2.5 py-1.5 bg-emerald-800 text-white hover:bg-emerald-950 font-bold text-[10px] rounded cursor-pointer flex items-center space-x-1"
+                                >
+                                  <Save className="w-3 h-3" />
+                                  <span>Simpan</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingProfilAkurasiItemId(null)}
+                                  className="px-2.5 py-1.5 bg-gray-150 text-gray-700 font-bold text-[10px] rounded cursor-pointer"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="space-y-0.5">
+                                <h5 className="text-xs font-bold text-slate-900 pr-16">{item.title}</h5>
+                                <div className="flex items-center space-x-1.5 pt-0.5">
+                                  <span className="text-[10px] font-mono text-gray-400">Status:</span>
+                                  <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-800 font-bold text-[9px] rounded uppercase tracking-wider">{item.status}</span>
+                                </div>
+                              </div>
+                              <div className="flex space-x-1 shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEditProfilAkurasiItem(item.id, item.title, item.status)}
+                                  className="p-1 px-2.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-lg flex items-center space-x-1 text-[10px] font-bold"
+                                  title="Edit Item"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                  <span>Ubah</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteProfilAkurasiItem(item.id)}
+                                  className="p-1 px-2 text-rose-600 hover:bg-rose-50 rounded-lg"
+                                  title="Hapus Item"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add Item form */}
+                    <div className="bg-white p-3.5 rounded-xl border border-dashed border-gray-300 space-y-3.5 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest block">➕ Tambah Fasilitas Akurasi Baru:</span>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="Nama Fasilitas Baru (e.g. Ruang Istirahat Berupaya)"
+                          value={newProfilAkurasiItemTitle}
+                          onChange={(e) => setNewProfilAkurasiItemTitle(e.target.value)}
+                          className="w-full sm:w-2/3 p-2.5 text-xs border bg-slate-50 rounded-lg"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Keterangan/Status (e.g. Tersedia)"
+                          value={newProfilAkurasiItemStatus}
+                          onChange={(e) => setNewProfilAkurasiItemStatus(e.target.value)}
+                          className="w-full sm:w-1/3 p-2.5 text-xs border bg-slate-50 rounded-lg"
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={handleAddProfilAkurasiItem}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-lg uppercase cursor-pointer flex items-center space-x-1"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Fasilitas</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1. Fitur: Sekilas Tentang Azta */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-sekilas-azta">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">1. Fitur: Sekilas Tentang Azta (Beranda)</h4>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #1</span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-gray-550 block">Judul Utama Sekilas Azta:</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.aboutAztaTitle || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, aboutAztaTitle: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                        placeholder="Sekilas Tentang Lembaga Konseling Azta"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-550 block">Daftar Paragraf Penjelas (Tambah & Hapus):</label>
+                      
+                      <div className="space-y-2">
+                        {(settingsForm.aboutAztaParas || [
+                          'Azta Best Choice Counseling & Psychology Madiun hadir sebagai wujud nyata dedikasi layanan profesional yang mengintegrasikan kesiapan mental, kognitif, fisik, dan kejiwaan bagi segenap calon bintara TNI-POLRI, instansi kedinasan, calon pegawai BUMN, serta pendampingan klinis psikologis anak dan dewasa di wilayah Jawa Timur.',
+                          'Didirikan di Jl. Kawis, Kecamatan Taman, Madiun, lembaga kami memadukan bimbingan akademik tervalidasi menggunakan Computer Assisted Test (CAT) mandiri di laboratorium komputer rahasia kami, latihan jasmani taktis luar ruangan, dan bimbingan konseling profesional tatap muka bersama psikolog utama berlisensi SIPP / HIMPSI.'
+                        ]).map((para, index) => (
+                          <div key={index} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left">
+                            {editingAboutAztaParaIdx === index ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  value={editingAboutAztaParaText}
+                                  onChange={(e) => setEditingAboutAztaParaText(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded-lg"
+                                  rows={3}
+                                />
+                                <div className="flex justify-end space-x-1.5">
+                                  <button
+                                    onClick={() => handleSaveAboutAztaPara(index)}
+                                    className="px-2 py-1 bg-emerald-800 text-white text-[10px] font-bold rounded cursor-pointer"
+                                  >
+                                    Simpan
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingAboutAztaParaIdx(null)}
+                                    className="px-2 py-1 bg-gray-150 text-gray-700 text-[10px] font-bold rounded cursor-pointer"
+                                  >
+                                    Batal
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <p className="text-xs text-gray-700 leading-relaxed pr-12">{para}</p>
+                                <div className="absolute right-2 top-2 flex space-x-1">
+                                  <button
+                                    onClick={() => handleStartEditAboutAztaPara(index, para)}
+                                    className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                                    title="Edit Paragraf"
+                                  >
+                                    <Edit className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteAboutAztaPara(index)}
+                                    className="p-1 text-rose-600 hover:bg-rose-50 rounded"
+                                    title="Hapus Paragraf"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Paragraph Input Row */}
+                      <div className="flex gap-2 pt-1">
+                        <textarea
+                          placeholder="Masukkan paragraf baru untuk Sekilas Tentang Azta..."
+                          value={newAboutAztaPara}
+                          onChange={(e) => setNewAboutAztaPara(e.target.value)}
+                          className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                          rows={2}
+                        />
+                        <button
+                          onClick={handleAddAboutAztaPara}
+                          className="px-4 bg-slate-800 hover:bg-slate-905 text-white font-bold text-xs rounded-lg uppercase cursor-pointer shrink-0 self-end py-3"
+                        >
+                          Tambah Para
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Fitur: Visi Utama Azta */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-visi-azta">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">2. Fitur: Visi Utama Azta (Beranda)</h4>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #2</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-4 text-left">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-gray-550 block">Slogan Sub-Visi (Subtitle):</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.visionSubtitle || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, visionSubtitle: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                        placeholder="Integrasi Taktis & Karakter Unggul"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-gray-550 block">Pernyataan Visi Utama:</label>
+                      <textarea 
+                        value={settingsForm.visionText || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, visionText: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg font-sans"
+                        rows={3}
+                        placeholder="Menjadi lembaga bimbingan psikotes, pembinaan kesiapan mental taruna, dan layanan konseling klinis..."
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-gray-550 block">Catatan Kaki Visi (Footnote):</label>
+                      <input 
+                        type="text"
+                        value={settingsForm.visionFootnote || ''}
+                        onChange={(e) => setSettingsForm(prev => ({ ...prev, visionFootnote: e.target.value }))}
+                        className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                        placeholder="Sinergi Akademis, Jasmani, & Psikologis tervalidasi Psikolog profesional."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Fitur: PortoPolio Yananan (Pilar) */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-portopolio">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">3. Fitur: Portofolio Layanan (Pilar Utama Beranda)</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Ubah item pilar (A, B, C) yang tampil pada Beranda.</p>
+                    </div>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #3</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {(settingsForm.portfolioPillars || [
+                        { id: 'pil-1', category: 'seleksi', title: 'Pilar A: Seleksi & Akurasi CAT', desc: 'Bimbingan intensif persiapan ujian bintara kepolisian, akademi militer, kedinasan IPDN, STIS, STAN, dan CPNS/BUMN.', bullets: ['Simulasi Software CAT Mandiri', 'Latihan Postur Jasmani', 'Paket Evaluasi Soal Terkini'] },
+                        { id: 'pil-2', category: 'asesmen', title: 'Pilar B: Asesmen Psikometri', desc: 'Pengukuran orisinil kognitif IQ umum, penjurusan bakat minat anak, serta rekrutmen pegawai.', bullets: ['Tes IQ (CFIT, IST, WAIS)', 'Pemetaan Karir RIASEC', 'Sertifikat Psikogram Resmi'] },
+                        { id: 'pil-3', category: 'konseling', title: 'Pilar C: Konseling & Klinis', desc: 'Pendampingan langsung kesehatan mental, stress coping management, pasca-kegagalan seleksi.', bullets: ['Terapi Burnout Belajar', 'Konseling Rahasia', 'Coping Management Ujian'] }
+                      ]).map((pillar) => (
+                        <div key={pillar.id} className="bg-white p-4 rounded-xl border border-gray-200 relative flex flex-col justify-between text-left">
+                          {editingPillarId === pillar.id ? (
+                            <div className="space-y-2 text-left">
+                              <input 
+                                type="text"
+                                value={editingPillarTitle}
+                                onChange={(e) => setEditingPillarTitle(e.target.value)}
+                                className="w-full p-2 text-[11px] border rounded"
+                                placeholder="Judul Pilar"
+                              />
+                              <select
+                                value={editingPillarCategory}
+                                onChange={(e) => setEditingPillarCategory(e.target.value)}
+                                className="w-full p-1.5 text-[11px] border rounded bg-white"
+                              >
+                                <option value="seleksi">Seleksi (Pilar A)</option>
+                                <option value="asesmen">Asesmen (Pilar B)</option>
+                                <option value="konseling">Konseling (Pilar C)</option>
+                              </select>
+                              <textarea
+                                value={editingPillarDesc}
+                                onChange={(e) => setEditingPillarDesc(e.target.value)}
+                                className="w-full p-2 text-[11px] border rounded"
+                                rows={2}
+                                placeholder="Deskripsi Singkat"
+                              />
+                              <input 
+                                type="text"
+                                value={editingPillarBulletsText}
+                                onChange={(e) => setEditingPillarBulletsText(e.target.value)}
+                                className="w-full p-2 text-[11px] border rounded"
+                                placeholder="Poin-Poin Bullets (pisahkan dengan koma)"
+                              />
+                              <div className="flex justify-end space-x-1 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSavePillar(pillar.id)}
+                                  className="px-2.5 py-1 bg-emerald-800 text-white rounded text-[10px] font-bold"
+                                >
+                                  Simpan
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingPillarId(null)}
+                                  className="px-2.5 py-1 bg-gray-150 text-gray-700 rounded text-[10px] font-bold"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="space-y-1 flex-grow">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-1.5 py-0.5 rounded uppercase leading-none">{pillar.category}</span>
+                                  <div className="flex space-x-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleStartEditPillar(pillar.id, pillar.title, pillar.category, pillar.desc, pillar.bullets)}
+                                      className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                                    >
+                                      <Edit className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeletePillar(pillar.id)}
+                                      className="p-1 text-rose-600 hover:bg-rose-50 rounded"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <h5 className="font-bold text-xs text-slate-900 mt-1">{pillar.title}</h5>
+                                <p className="text-[10px] text-gray-500 leading-snug line-clamp-3">{pillar.desc}</p>
+                                <div className="pt-1.5 flex flex-wrap gap-1">
+                                  {pillar.bullets.slice(0, 3).map((b, i) => (
+                                    <span key={i} className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">{b}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Form tambah pilar */}
+                    <div className="p-4 bg-white rounded-xl border border-dashed border-gray-300 space-y-3 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-650 uppercase">Form Tambah Pilar Baru:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Nama Pilar (e.g. Pilar D: Pembinaan Fisik)"
+                          value={newPillarTitle}
+                          onChange={(e) => setNewPillarTitle(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                        <select
+                          value={newPillarCategory}
+                          onChange={(e) => setNewPillarCategory(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        >
+                          <option value="seleksi">Seleksi</option>
+                          <option value="asesmen">Asesmen</option>
+                          <option value="konseling">Konseling</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Contoh Poin (Bullet 1, Bullet 2)"
+                          value={newPillarBulletsText}
+                          onChange={(e) => setNewPillarBulletsText(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                      </div>
+                      <textarea
+                        placeholder="Deskripsi pilar yang menggambarkan fokus layanannya..."
+                        value={newPillarDesc}
+                        onChange={(e) => setNewPillarDesc(e.target.value)}
+                        className="w-full p-2 text-xs border rounded-lg bg-slate-50"
+                        rows={2}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddPillar}
+                        className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-xs uppercase cursor-pointer"
+                      >
+                        Tambah Pilar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Fitur: Keunggulan Lembaga */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-keunggulan">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">4. Fitur: Keunggulan Lembaga (Beranda)</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Ubah daftar poin kelebihan instansi.</p>
+                    </div>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #4</span>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                      <div className="space-y-1.55">
+                        <label className="text-[11px] font-bold text-gray-500">Judul Keunggulan:</label>
+                        <input 
+                          type="text"
+                          value={settingsForm.keunggulanTitle || ''}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, keunggulanTitle: e.target.value }))}
+                          className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                          placeholder="Keunggulan Bimbingan Azta"
+                        />
+                      </div>
+                      <div className="space-y-1.55">
+                        <label className="text-[11px] font-bold text-gray-500">Deskripsi Pengantar:</label>
+                        <input 
+                          type="text"
+                          value={settingsForm.keunggulanDesc || ''}
+                          onChange={(e) => setSettingsForm(prev => ({ ...prev, keunggulanDesc: e.target.value }))}
+                          className="w-full p-2.5 text-xs border bg-white rounded-lg"
+                          placeholder="Mengapa ratusan calon taruna dan instansi memilih kami?"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Keunggulan List */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-gray-550 block text-left">Poin Keunggulan (Tambah / Hapus):</label>
+                      <div className="space-y-2">
+                        {(settingsForm.keunggulanList || [
+                          { id: 'k-1', title: 'Psikolog Berlisensi SIPP', desc: 'Tes langsung diawasi dan laporan ditandatangani Psikolog HIMPSI.' },
+                          { id: 'k-2', title: 'Laboratorium CAT Mandiri', desc: 'Latihan simulasi mirip aslinya untuk mengurangi cemas.' }
+                        ]).map((keunggulan) => (
+                          <div key={keunggulan.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left">
+                            {editingKeunggulanId === keunggulan.id ? (
+                              <div className="space-y-2">
+                                <input
+                                  type="text"
+                                  value={editingKeunggulanTitle}
+                                  onChange={(e) => setEditingKeunggulanTitle(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded"
+                                  placeholder="Judul Keunggulan"
+                                />
+                                <textarea
+                                  value={editingKeunggulanDesc}
+                                  onChange={(e) => setEditingKeunggulanDesc(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded"
+                                  rows={2}
+                                  placeholder="Deskripsi Poin"
+                                />
+                                <div className="flex justify-end space-x-1.5">
+                                  <button
+                                    onClick={() => handleSaveKeunggulan(keunggulan.id)}
+                                    className="px-2.5 py-1 bg-emerald-800 text-white text-[10px] font-bold rounded cursor-pointer"
+                                  >
+                                    Simpan
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingKeunggulanId(null)}
+                                    className="px-2.5 py-1 bg-gray-150 text-gray-750 text-[10px] font-bold rounded cursor-pointer"
+                                  >
+                                    Batal
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <h5 className="text-xs font-bold text-slate-900 pr-12">{keunggulan.title}</h5>
+                                <p className="text-[11px] text-gray-500 leading-snug pr-12 mt-0.5">{keunggulan.desc}</p>
+                                <div className="absolute right-2 top-2.5 flex space-x-1">
+                                  <button
+                                    onClick={() => handleStartEditKeunggulan(keunggulan.id, keunggulan.title, keunggulan.desc)}
+                                    className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                                  >
+                                    <Edit className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteKeunggulan(keunggulan.id)}
+                                    className="p-1 text-rose-600 hover:bg-rose-50 rounded"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Keunggulan Form */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-2 text-left">
+                        <input
+                          type="text"
+                          placeholder="Nama Keunggulan Baru"
+                          value={newKeunggulanItemTitle}
+                          onChange={(e) => setNewKeunggulanItemTitle(e.target.value)}
+                          className="p-2.5 text-xs border bg-white rounded-lg flex-1"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Penjelasan kebaikan/keunggulan..."
+                          value={newKeunggulanItemDesc}
+                          onChange={(e) => setNewKeunggulanItemDesc(e.target.value)}
+                          className="p-2.5 text-xs border bg-white rounded-lg flex-1 sm:flex-[2]"
+                        />
+                        <button
+                          onClick={handleAddKeunggulan}
+                          className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-lg uppercase cursor-pointer"
+                        >
+                          Tambah Poin
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Fitur: Layanan Detail (Sub-programs) */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-sub-program-layanan">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">5. Fitur: Sub-Program Layanan Detail (Katalog Lengkap)</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Tambah & kelola item bimbingan yang terpeta ke Menu Layanan (Pilar A, B, C).</p>
+                    </div>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #5</span>
+                  </div>
+
+                  <div className="space-y-3 text-left">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3" id="subprogs-admin-list">
+                      {(settingsForm.servicesSubPrograms || []).map((item) => (
+                        <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-150 relative text-left flex flex-col justify-between">
+                          {editingSubProgId === item.id ? (
+                            <div className="space-y-2">
+                              <input
+                                type="text"
+                                value={editingSubProgTitle}
+                                onChange={(e) => setEditingSubProgTitle(e.target.value)}
+                                className="w-full p-2 text-xs border rounded"
+                                placeholder="Judul Sub-program"
+                              />
+                              <select
+                                value={editingSubProgCategory}
+                                onChange={(e) => setEditingSubProgCategory(e.target.value as any)}
+                                className="w-full p-2 text-xs border rounded bg-white"
+                              >
+                                <option value="seleksi">Seleksi (Pilar A)</option>
+                                <option value="asesmen">Asesmen (Pilar B)</option>
+                                <option value="konseling">Konseling (Pilar C)</option>
+                              </select>
+                              <textarea
+                                value={editingSubProgDesc}
+                                onChange={(e) => setEditingSubProgDesc(e.target.value)}
+                                className="w-full p-2 text-xs border rounded"
+                                rows={2}
+                                placeholder="Detail penjelasan program"
+                              />
+                              <div className="grid grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  value={editingSubProgLabel1}
+                                  onChange={(e) => setEditingSubProgLabel1(e.target.value)}
+                                  className="p-1.5 text-[10px] border rounded"
+                                  placeholder="Label Detail 1"
+                                />
+                                <input
+                                  type="text"
+                                  value={editingSubProgVal1}
+                                  onChange={(e) => setEditingSubProgVal1(e.target.value)}
+                                  className="p-1.5 text-[10px] border rounded"
+                                  placeholder="Nilai Detail 1"
+                                />
+                                <input
+                                  type="text"
+                                  value={editingSubProgLabel2}
+                                  onChange={(e) => setEditingSubProgLabel2(e.target.value)}
+                                  className="p-1.5 text-[10px] border rounded"
+                                  placeholder="Label Detail 2"
+                                />
+                                <input
+                                  type="text"
+                                  value={editingSubProgVal2}
+                                  onChange={(e) => setEditingSubProgVal2(e.target.value)}
+                                  className="p-1.5 text-[10px] border rounded"
+                                  placeholder="Nilai Detail 2"
+                                />
+                              </div>
+                              <div className="flex justify-end space-x-1.5 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveSubProg(item.id)}
+                                  className="px-2.5 py-1 bg-emerald-800 text-white rounded text-[10px] font-bold"
+                                >
+                                  Simpan
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingSubProgId(null)}
+                                  className="px-2.5 py-1 bg-gray-150 text-gray-700 rounded text-[10px] font-bold"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[9px] bg-slate-100 text-purple-700 font-bold px-1.5 py-0.5 rounded uppercase">{item.category}</span>
+                                  <div className="flex space-x-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleStartEditSubProg(item)}
+                                      className="p-1 text-blue-600 hover:bg-slate-50 rounded"
+                                    >
+                                      <Edit className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteSubProg(item.id)}
+                                      className="p-1 text-rose-600 hover:bg-slate-50 rounded"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <h5 className="font-extrabold text-xs text-slate-900 mt-1">{item.title}</h5>
+                                <p className="text-[10px] text-gray-500 leading-snug line-clamp-2 mt-0.5">{item.desc}</p>
+                              </div>
+                              <div className="mt-2 pt-1.5 border-t border-gray-100 grid grid-cols-2 gap-1 text-[9px] text-slate-650 font-mono">
+                                <div><strong>{item.materiLabel1 || 'Materi'}:</strong> {item.materiVal1 || '-'}</div>
+                                <div><strong>{item.materiLabel2 || 'Detail'}:</strong> {item.materiVal2 || '-'}</div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                      {(settingsForm.servicesSubPrograms || []).length === 0 && (
+                        <div className="col-span-2 text-center py-4 text-xs text-gray-400 bg-white rounded-xl">belum ada sub-program katalog. Silakan tambah menggunakan form di bawah.</div>
+                      )}
+                    </div>
+
+                    {/* Add Subprog Block */}
+                    <div className="p-4 bg-white rounded-xl border border-dashed border-gray-300 space-y-3 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-650 uppercase">Form Tambah Sub-Program Layanan:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Judul Sub-program bimbingan"
+                          value={newSubProgTitle}
+                          onChange={(e) => setNewSubProgTitle(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                        <select
+                          value={newSubProgCategory}
+                          onChange={(e) => setNewSubProgCategory(e.target.value as any)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50 text-slate-800"
+                        >
+                          <option value="seleksi">Seleksi & Akurasi CAT (Pilar A)</option>
+                          <option value="asesmen">Asesmen Psikometri (Pilar B)</option>
+                          <option value="konseling">Konseling & Klinis (Pilar C)</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Penjelasan ringkas..."
+                          value={newSubProgDesc}
+                          onChange={(e) => setNewSubProgDesc(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Materi Utama"
+                          value={newSubProgLabel1}
+                          onChange={(e) => setNewSubProgLabel1(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                        <input
+                          type="text"
+                          placeholder="e.g. Kecerdasan, Kepribadian"
+                          value={newSubProgVal1}
+                          onChange={(e) => setNewSubProgVal1(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Detail Sesi"
+                          value={newSubProgLabel2}
+                          onChange={(e) => setNewSubProgLabel2(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                        <input
+                          type="text"
+                          placeholder="e.g. 5 Sesi Simulasi CAT"
+                          value={newSubProgVal2}
+                          onChange={(e) => setNewSubProgVal2(e.target.value)}
+                          className="p-2 text-xs border rounded-lg bg-slate-50"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddSubProg}
+                        className="px-4 py-2.5 bg-slate-850 hover:bg-slate-900 text-white rounded-lg font-bold text-xs uppercase cursor-pointer"
+                      >
+                        Tambah Sub Program Layanan
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6. Fitur: Tentang Kami (Values, Profile & Tim Mentor) */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-tentang-kami-kolektif">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">6. Fitur: Tentang Kami & Tim Mentor (Halaman Tentang)</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Kelola Karakter Nilai Intisari & Profil Tim Instruktur / Psikolog Azta.</p>
+                    </div>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #6</span>
+                  </div>
+
+                  <div className="space-y-4 text-left">
+                    {/* Nilai Instansi values list */}
+                    <div className="space-y-2">
+                      <span className="text-[10pt] font-extrabold text-slate-800 block">A. Nilai-Nilai Intisari Lembaga:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" id="admin-values-list">
+                        {(settingsForm.tentangKamiValues || []).map((val) => (
+                          <div key={val.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left">
+                            {editingKamiValueId === val.id ? (
+                              <div className="space-y-2">
+                                <input
+                                  type="text"
+                                  value={editingKamiValueTitle}
+                                  onChange={(e) => setEditingKamiValueTitle(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded"
+                                />
+                                <textarea
+                                  value={editingKamiValueDesc}
+                                  onChange={(e) => setEditingKamiValueDesc(e.target.value)}
+                                  className="w-full p-2 text-xs border rounded"
+                                  rows={2}
+                                />
+                                <div className="flex justify-end space-x-1.5">
+                                  <button onClick={() => handleSaveKamiValue(val.id)} className="px-2 py-1 bg-emerald-800 text-white text-[10px] font-bold rounded">Simpan</button>
+                                  <button onClick={() => setEditingKamiValueId(null)} className="px-2 py-1 bg-gray-150 text-gray-700 text-[10px] font-bold rounded">Batal</button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <h5 className="text-xs font-bold text-slate-900 pr-12">{val.title}</h5>
+                                <p className="text-[10px] text-gray-500 mt-1">{val.desc}</p>
+                                <div className="absolute right-2 top-2 flex space-x-1">
+                                  <button onClick={() => handleStartEditKamiValue(val.id, val.title, val.desc)} className="p-1 text-blue-600 hover:bg-slate-50 rounded"><Edit className="w-3.5 h-3.5" /></button>
+                                  <button onClick={() => handleDeleteKamiValue(val.id)} className="p-1 text-rose-600 hover:bg-slate-50 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Kami Value */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-1 text-left">
+                        <input
+                          type="text"
+                          placeholder="Nama Karakter/Nilai"
+                          value={newKamiValueTitle}
+                          onChange={(e) => setNewKamiValueTitle(e.target.value)}
+                          className="p-2.5 text-xs border bg-white rounded-lg flex-1"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Deskripsi singkat makna nilai..."
+                          value={newKamiValueDesc}
+                          onChange={(e) => setNewKamiValueDesc(e.target.value)}
+                          className="p-2.5 text-xs border bg-white rounded-lg flex-1 sm:flex-[2]"
+                        />
+                        <button onClick={handleAddKamiValue} className="px-4 py-2 bg-slate-800 hover:bg-slate-950 text-white font-bold text-xs rounded-lg uppercase cursor-pointer">Tambah</button>
+                      </div>
+                    </div>
+
+                    {/* Mentors / Tim list */}
+                    <div className="space-y-2 pt-2 border-t text-left">
+                      <span className="text-[10pt] font-extrabold text-slate-800 block">B. Struktur Tim Ahli / Psikolog / Instruktur:</span>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" id="admin-mentors-list">
+                        {(settingsForm.tentangKamiMentors || []).map((m) => (
+                          <div key={m.id} className="bg-white p-3 rounded-xl border border-gray-150 relative text-left flex items-start space-x-3">
+                            <img src={m.avatar} alt={m.name} className="w-10 h-10 rounded-full object-cover border" />
+                            {editingKamiMentorId === m.id ? (
+                              <div className="space-y-1.5 flex-1 text-left">
+                                <input type="text" value={editingKamiMentorName} onChange={(e) => setEditingKamiMentorName(e.target.value)} className="w-full p-1 text-[10px] border rounded" placeholder="Nama Lengkap & SIPP/Gelar" />
+                                <input type="text" value={editingKamiMentorRole} onChange={(e) => setEditingKamiMentorRole(e.target.value)} className="w-full p-1 text-[10px] border rounded" placeholder="Jabatan" />
+                                <input type="text" value={editingKamiMentorSpecial} onChange={(e) => setEditingKamiMentorSpecial(e.target.value)} className="w-full p-1 text-[10px] border rounded" placeholder="Spesialisasi" />
+                                <textarea value={editingKamiMentorBio} onChange={(e) => setEditingKamiMentorBio(e.target.value)} className="w-full p-1 text-[10px] border rounded" rows={2} placeholder="Riwayat Karir Singkat" />
+                                <input type="text" value={editingKamiMentorAvatar} onChange={(e) => setEditingKamiMentorAvatar(e.target.value)} className="w-full p-1 text-[10px] border rounded font-mono" placeholder="URL Foto Avatar" />
+                                <div className="flex justify-end space-x-1">
+                                  <button onClick={() => handleSaveKamiMentor(m.id)} className="px-2 py-1 bg-emerald-800 text-white text-[9px] font-bold rounded">Simpan</button>
+                                  <button onClick={() => setEditingKamiMentorId(null)} className="px-2 py-1 bg-gray-150 text-gray-700 text-[9px] font-bold rounded">Batal</button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h5 className="text-xs font-bold text-slate-900 truncate pr-10">{m.name}</h5>
+                                  <div className="absolute right-2 top-2.5 flex space-x-1">
+                                    <button onClick={() => handleStartEditKamiMentor(m)} className="p-1 text-blue-600 hover:bg-slate-50 rounded"><Edit className="w-3 h-3" /></button>
+                                    <button onClick={() => handleDeleteKamiMentor(m.id)} className="p-1 text-rose-600 hover:bg-slate-50 rounded"><Trash2 className="w-3 h-3" /></button>
+                                  </div>
+                                </div>
+                                <p className="text-[10px] text-emerald-800 font-bold leading-none">{m.role}</p>
+                                <p className="text-[9px] text-amber-600 uppercase tracking-wide font-semibold mt-0.5">{m.special}</p>
+                                <p className="text-[10px] text-gray-500 leading-snug font-sans mt-1 line-clamp-2">{m.bio}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Tim Mentor Block */}
+                      <div className="p-4 bg-white rounded-xl border border-dashed border-gray-300 space-y-3 mt-2 text-left">
+                        <span className="text-[10px] font-extrabold text-slate-650 uppercase">Form Tambah Tim Pengajar / Psikolog:</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Nama Lengkap + Gelar Akademik"
+                            value={newKamiMentorName}
+                            onChange={(e) => setNewKamiMentorName(e.target.value)}
+                            className="p-2 text-xs border rounded bg-slate-50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Peran (e.g. Psikolog Utama SIPP)"
+                            value={newKamiMentorRole}
+                            onChange={(e) => setNewKamiMentorRole(e.target.value)}
+                            className="p-2 text-xs border rounded bg-slate-50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Spesialisasi (e.g. CAT TNI-POLRI)"
+                            value={newKamiMentorSpecial}
+                            onChange={(e) => setNewKamiMentorSpecial(e.target.value)}
+                            className="p-2 text-xs border rounded bg-slate-50"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Tulis Riwayat Singkat / Bio Karir..."
+                            value={newKamiMentorBio}
+                            onChange={(e) => setNewKamiMentorBio(e.target.value)}
+                            className="p-2 text-xs border rounded bg-slate-50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="URL Gambar Berkas Foto (Biarkan kosong untuk default)"
+                            value={newKamiMentorAvatar}
+                            onChange={(e) => setNewKamiMentorAvatar(e.target.value)}
+                            className="p-2 text-xs border rounded bg-slate-50 font-mono"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleAddKamiMentor}
+                          className="px-4 py-2 bg-slate-850 hover:bg-slate-905 text-white rounded-lg font-bold text-xs uppercase cursor-pointer"
+                        >
+                          Tambah Pengajar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 7. Fitur-fitur pada menu "Artikel" */}
+                <div className="bg-slate-50 p-5 rounded-2xl border border-gray-200 space-y-4" id="editor-blog-kolektif">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">7. Fitur: Artikel & Berita Edukasi Psikotes (Blog)</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Tambah, ubah, dan hapus artikel berita tips bimbingan psikotes dan kesehatan mental.</p>
+                    </div>
+                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Fitur #7</span>
+                  </div>
+
+                  <div className="space-y-4 text-left">
+                    <div className="grid grid-cols-1 gap-2.5" id="admin-articles-list">
+                      {(settingsForm.blogs || []).map((b) => (
+                        <div key={b.id} className="bg-white p-3 rounded-xl border border-gray-150 text-left flex gap-3 relative">
+                          <img src={b.image} alt={b.title} className="w-16 h-16 rounded-lg object-cover hidden sm:block border shrink-0" />
+                          {editingBlogId === b.id ? (
+                            <div className="space-y-2 flex-1 text-left">
+                              <input type="text" value={editingBlogTitle} onChange={(e) => setEditingBlogTitle(e.target.value)} className="w-full p-2 text-xs border rounded" placeholder="Judul Artikel" />
+                              <select
+                                value={editingBlogCategory}
+                                onChange={(e) => setEditingBlogCategory(e.target.value as any)}
+                                className="w-full p-2 text-xs border rounded bg-white text-slate-800"
+                              >
+                                <option value="Tips Psikotes">Tips Psikotes (Kategori Seleksi)</option>
+                                <option value="Kesehatan Mental">Kesehatan Mental</option>
+                                <option value="Informasi Seleksi">Informasi Seleksi</option>
+                              </select>
+                              <input type="text" value={editingBlogExcerpt} onChange={(e) => setEditingBlogExcerpt(e.target.value)} className="w-full p-2 text-xs border rounded" placeholder="Kutipan singkat penarik pembaca (Excerpt)" />
+                              <textarea value={editingBlogContent} onChange={(e) => setEditingBlogContent(e.target.value)} className="w-full p-2 text-xs border rounded" rows={3} placeholder="Gunakan sintaks bebas / format teks artikel lengkap" />
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <input type="text" value={editingBlogAuthor} onChange={(e) => setEditingBlogAuthor(e.target.value)} className="p-2 text-xs border rounded" placeholder="Penulis (Author)" />
+                                <input type="text" value={editingBlogImage} onChange={(e) => setEditingBlogImage(e.target.value)} className="p-2 text-xs border rounded font-mono" placeholder="Nilai URL cover gambar" />
+                              </div>
+                              <input type="text" value={editingBlogTagsText} onChange={(e) => setEditingBlogTagsText(e.target.value)} className="w-full p-2 text-xs border rounded" placeholder="Daftar Tag Kata Kunci (e.g. BUMN, CAT - pisahkan dengan koma)" />
+                              <div className="flex justify-end space-x-1.5">
+                                <button type="button" onClick={() => handleSaveBlog(b.id)} className="px-3 py-1.5 bg-emerald-800 text-white rounded text-xs font-bold">Simpan Artikel</button>
+                                <button type="button" onClick={() => setEditingBlogId(null)} className="px-3 py-1.5 bg-gray-150 text-gray-700 rounded text-xs font-bold">Batal</button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex-1 min-w-0 pr-16 text-left">
+                              <div className="flex items-center space-x-2">
+                                <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded-full uppercase font-mono">{b.category}</span>
+                                <span className="text-[9px] text-gray-400 font-mono">{b.date} • {b.author}</span>
+                              </div>
+                              <h5 className="font-extrabold text-xs text-slate-900 mt-1 truncate">{b.title}</h5>
+                              <p className="text-[10px] text-gray-500 leading-snug line-clamp-1 mt-0.5">{b.excerpt}</p>
+                              <div className="flex gap-1.5 flex-wrap pt-1.5">
+                                {(b.tags || []).map((t, idx) => (
+                                  <span key={idx} className="text-[9px] bg-emerald-50 text-emerald-800 rounded px-1">{t}</span>
+                                ))}
+                              </div>
+                              <div className="absolute right-2 top-2 flex space-x-1">
+                                <button type="button" onClick={() => handleStartEditBlog(b)} className="p-1 text-blue-600 hover:bg-slate-105 rounded" title="Edit Artikel"><Edit className="w-3.5 h-3.5" /></button>
+                                <button type="button" onClick={() => handleDeleteBlog(b.id)} className="p-1 text-rose-600 hover:bg-slate-105 rounded" title="Hapus Artikel"><Trash2 className="w-3.5 h-3.5" /></button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Form tambah Artikel Blog */}
+                    <div className="p-4 bg-white rounded-xl border border-dashed border-gray-300 space-y-3 mt-2 text-left">
+                      <span className="text-[10px] font-extrabold text-slate-650 uppercase">Form Tulis & Luncurkan Artikel Baru:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Judul Artikel Baru"
+                          value={newBlogTitle}
+                          onChange={(e) => setNewBlogTitle(e.target.value)}
+                          className="p-2 text-xs border rounded bg-slate-50"
+                        />
+                        <select
+                          value={newBlogCategory}
+                          onChange={(e) => setNewBlogCategory(e.target.value as any)}
+                          className="p-2 text-xs border rounded bg-slate-50 text-slate-800"
+                        >
+                          <option value="Tips Psikotes">Tips Psikotes</option>
+                          <option value="Kesehatan Mental">Kesehatan Mental</option>
+                          <option value="Informasi Seleksi">Informasi Seleksi</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Penulis (e.g. Tim Psikolog Azta)"
+                          value={newBlogAuthor}
+                          onChange={(e) => setNewBlogAuthor(e.target.value)}
+                          className="p-2 text-xs border rounded bg-slate-50"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Ringkasan singkat memikat (Kutipan Excerpt)..."
+                        value={newBlogExcerpt}
+                        onChange={(e) => setNewBlogExcerpt(e.target.value)}
+                        className="w-full p-2 text-xs border rounded bg-slate-50"
+                      />
+                      <textarea
+                        placeholder="Tulis seluruh isi materi artikel bimbingan atau berita seleksi di sini secara detail..."
+                        value={newBlogContent}
+                        onChange={(e) => setNewBlogContent(e.target.value)}
+                        className="w-full p-2.5 text-xs border rounded bg-slate-50 font-sans"
+                        rows={3}
+                      />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="URL Cover Gambar Cover Artikel (Opsional)"
+                          value={newBlogImage}
+                          onChange={(e) => setNewBlogImage(e.target.value)}
+                          className="p-2 text-xs border rounded bg-slate-50 font-mono"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Daftar Tag Kata Kunci BUMN, CAT (pisahkan dengan koma)"
+                          value={newBlogTagsText}
+                          onChange={(e) => setNewBlogTagsText(e.target.value)}
+                          className="p-2 text-xs border rounded bg-slate-50"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddBlog}
+                        className="px-4 py-2.5 bg-slate-850 hover:bg-slate-905 text-white rounded-lg font-bold text-xs uppercase cursor-pointer"
+                      >
+                        Terbitkan Artikel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Data Portability (Backup / Export / Import) block */}
               <div className="space-y-4 pt-6 border-t" id="settings-backup-block">
                 <div className="flex items-center space-x-2">
@@ -2437,6 +4100,21 @@ export default function DashboardAdmin({
                         />
                       </div>
 
+                      {/* Nomor Siswa (Otomatis) */}
+                      <div className="space-y-1 sm:col-span-2 bg-slate-50 p-3 rounded-xl border">
+                        <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">1. Nomor Registrasi Siswa (Sistem Otomatis):</label>
+                        <p className="text-xs font-bold font-mono text-emerald-950 mt-1">
+                          {editingStudentId ? (
+                            <span>{students.find(s => s.id === editingStudentId)?.studentNumber || 'AST-XXXX'}</span>
+                          ) : (
+                            <span className="flex items-center space-x-2">
+                              <span>AST-{new Date().getFullYear()}-{String(students.length + 1).padStart(3, '0')}</span>
+                              <span className="text-[9px] bg-emerald-100 text-emerald-800 font-sans px-1.5 py-0.5 rounded ml-1 font-normal">Sistem Otomatis</span>
+                            </span>
+                          )}
+                        </p>
+                      </div>
+
                       {/* Email, Phone and Password for Login */}
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-gray-700 block">Email (Akun Login Portal):</label>
@@ -2474,17 +4152,58 @@ export default function DashboardAdmin({
                         />
                       </div>
 
-                      {/* Photo Url input */}
+                      {/* Photo Upload and Preview */}
                       <div className="space-y-1 sm:col-span-2">
-                        <label className="text-xs font-bold text-gray-700 block">Tautan Foto Portrait Siswa (URL):</label>
-                        <input
-                          type="text"
-                          value={studPhotoUrl}
-                          onChange={(e) => setStudPhotoUrl(e.target.value)}
-                          placeholder="e.g. https://images.unsplash.com/photo-X"
-                          className="w-full p-2.5 text-xs border border-gray-200 rounded-xl focus:border-emerald-800"
-                        />
-                        <p className="text-[10px] text-gray-400">Tinggalkan kosong untuk menggunakan gambar penampung Unsplash default.</p>
+                        <label className="text-xs font-bold text-gray-700 block">Pas Foto Portrait Siswa:</label>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 p-4 rounded-xl border border-gray-200">
+                          <div className="w-16 h-20 bg-slate-200 rounded-lg overflow-hidden shrink-0 border border-slate-350 shadow-xs">
+                            {studPhotoUrl ? (
+                              <img src={studPhotoUrl} alt="Preview Siswa" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400 font-semibold text-center leading-none p-1 bg-slate-100">Tanpa Foto</div>
+                            )}
+                          </div>
+                          <div className="flex-grow space-y-2 text-left w-full">
+                            <div className="flex flex-wrap gap-2">
+                              <label className="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-lg text-[10px] font-bold tracking-wider uppercase transition-colors cursor-pointer text-center">
+                                Unggah File Foto
+                                <input 
+                                  type="file" 
+                                  accept="image/*" 
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onloadend = async () => {
+                                        const compressed = await compressImage(reader.result as string, 200, 260, 0.7);
+                                        setStudPhotoUrl(compressed);
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }} 
+                                  className="hidden" 
+                                />
+                              </label>
+                              {studPhotoUrl && (
+                                <button
+                                  type="button"
+                                  onClick={() => setStudPhotoUrl('')}
+                                  className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-[10px] font-bold"
+                                >
+                                  Hapus Foto
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              value={studPhotoUrl}
+                              onChange={(e) => setStudPhotoUrl(e.target.value)}
+                              placeholder="Atau tempel Tautan URL Foto di sini..."
+                              className="w-full p-2 text-[10px] border border-gray-200 rounded-lg focus:border-emerald-800 bg-white"
+                            />
+                            <p className="text-[9px] text-slate-400">Rekomendasi: Unggah berkas portrait .jpg/.png untuk dicetak langsung pada sertifikat/rapor.</p>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Birth Place */}

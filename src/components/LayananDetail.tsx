@@ -148,71 +148,101 @@ export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActi
                 </div>
 
                 {/* Sub-Programs Right */}
-                <div className="lg:w-2/3 space-y-8">
-                  
-                  {/* Sub-Program 1 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <span>1. Pelatihan Psikotes TNI-POLRI (Akurasi Presisi)</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Program unggulan terspesialisasi untuk calon Akpol, Akmil, Bintara, dan Tamtama. Penyelenggaraan kelas materi regulasi kognitif dan pembiasaan pengerjaan presisi.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Materi Fokus:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">Tes Pauli & Kraepelin (Koran), Tes Wartegg, Gambar Manusia (DAP), Gambar Pohon (BAUM), Tes Spasial Figural, Tes Kepribadian MMPI.</p>
+                <div className="lg:w-2/3 space-y-8 text-left">
+                  {siteSettings?.servicesSubPrograms && siteSettings.servicesSubPrograms.filter(p => p.category === 'seleksi').length > 0 ? (
+                    siteSettings.servicesSubPrograms.filter(p => p.category === 'seleksi').map((sub_p, sIdx) => (
+                      <div key={sub_p.id || sIdx} className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                          <span>{sIdx + 1}. {sub_p.title}</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          {sub_p.desc}
+                        </p>
+                        {(sub_p.materiVal1 || sub_p.materiVal2) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                            {sub_p.materiVal1 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">{sub_p.materiLabel1 || 'Materi Fokus:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal1}</p>
+                              </div>
+                            )}
+                            {sub_p.materiVal2 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">{sub_p.materiLabel2 || 'Simulasi:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal2}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Simulasi Fisik / Mental:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">Pelatihan konsentrasi visual, manajemen kepanikan, pembiasaan instruksi cepat dan sistem tata tertib penilaian polisi.</p>
+                    ))
+                  ) : (
+                    <>
+                      {/* Sub-Program 1 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-400" />
+                          <span>1. Pelatihan Psikotes TNI-POLRI (Akurasi Presisi)</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Program unggulan terspesialisasi untuk calon Akpol, Akmil, Bintara, dan Tamtama. Penyelenggaraan kelas materi regulasi kognitif and pembiasaan pengerjaan presisi.
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Materi Fokus:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">Tes Pauli & Kraepelin (Koran), Tes Wartegg, Gambar Manusia (DAP), Gambar Pohon (BAUM), Tes Spasial Figural, Tes Kepribadian MMPI.</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Simulasi Fisik / Mental:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">Pelatihan konsentrasi visual, manajemen kepanikan, pembiasaan instruksi cepat dan sistem tata tertib penilaian polisi.</p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Sub-Program 2 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <span>2. Persiapan Instansi Pemerintah / BUMN / Swasta</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Kesiapan Seleksi Kompetensi Bidang (SKB) rekrutmen CPNS, Assessment Center manajerial bagi ODP Perbankan atau staff BUMN, beserta simulasi LGD (Leaderless Group Discussion).
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Metode Pelatihan:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">Bimbingen intensif presentasi portofolio, negosiasi, studi kasus organisasi korporat, dan penilaian integritas moral kerja.</p>
+                      {/* Sub-Program 2 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-400" />
+                          <span>2. Persiapan Instansi Pemerintah / BUMN / Swasta</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Kesiapan Seleksi Kompetensi Bidang (SKB) rekrutmen CPNS, Assessment Center manajerial bagi ODP Perbankan atau staff BUMN, beserta simulasi LGD (Leaderless Group Discussion).
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Metode Pelatihan:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">Bimbingen intensif presentasi portofolio, negosiasi, studi kasus organisasi korporat, dan penilaian integritas moral kerja.</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Kelas Wawancara Kerja:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">Ulasan bahasa tubuh, cara menjawab metode STAR (Situation, Task, Action, Result), & simulasi wawancara dengan assessor senior berizin.</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Kelas Wawancara Kerja:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">Ulasan bahasa tubuh, cara menjawab metode STAR (Situation, Task, Action, Result), & simulasi wawancara dengan assessor senior berizin.</p>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Sub-Program 3 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <span>3. Persiapan Masuk Perguruan Tinggi Kedinasan / Reguler</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Kesiapan mental & kognitif menghadapi seleksi ujian masuk perguruan tinggi kedinasan terkemuka seperti IPDN, PKN STAN, STIS, Politeknik Imigrasi (Poltekim), serta PTN jalur mandiri reguler.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Fokus Modul:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">Penalaran matematika, struktur kognitif dasar kedinasan, tes kepribadian asasi, serta uji integritas kesetiaan bela negara.</p>
+                      {/* Sub-Program 3 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-400" />
+                          <span>3. Persiapan Masuk Perguruan Tinggi Kedinasan / Reguler</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Kesiapan mental & kognitif menghadapi seleksi ujian masuk perguruan tinggi kedinasan terkemuka seperti IPDN, PKN STAN, STIS, Politeknik Imigrasi (Poltekim), serta PTN jalur mandiri reguler.
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Fokus Modul:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">Penalaran matematika, struktur kognitif dasar kedinasan, tes kepribadian asasi, serta uji integritas kesetiaan bela negara.</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Estimasi Sesi:</p>
+                            <p className="text-[11px] text-gray-500 mt-1.5">24 Sesi Materi Utama terstruktur + 6 Sesi Try Out CAT terintegrasi pendampingan psikogram.</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[11px] font-bold text-emerald-900 uppercase tracking-widest leading-none">Estimasi Sesi:</p>
-                        <p className="text-[11px] text-gray-500 mt-1.5">24 Sesi Materi Utama terstruktur + 6 Sesi Try Out CAT terintegrasi pendampingan psikogram.</p>
-                      </div>
-                    </div>
-                  </div>
-
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -257,46 +287,77 @@ export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActi
                 </div>
 
                 {/* Sub-Programs Right */}
-                <div className="lg:w-2/3 space-y-8">
-                  
-                  {/* Sub-Program 1 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-700" />
-                      <span>1. Tes IQ / Inteligensi (Anak, Remaja & Dewasa)</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Pengukuran tingkat kecerdasan kognitif umum (General Intelligence) menggunakan alat ukur tervalidasi (e.g. IST, WAIS, WISC) untuk menakar kesiapan studi atau rekrutmen kerja.
-                    </p>
-                    <div className="mt-4 text-xs text-gray-500 bg-white p-3.5 rounded-xl border border-gray-105">
-                      <strong>Hasil Tes:</strong> Kategori IQ (Superior, Tinggi, Rata-rata), skor kecerdasan verbal, penalaran berhitung, visual abstrak, serta daya ingat.
-                    </div>
-                  </div>
+                <div className="lg:w-2/3 space-y-8 text-left">
+                  {siteSettings?.servicesSubPrograms && siteSettings.servicesSubPrograms.filter(p => p.category === 'asesmen').length > 0 ? (
+                    siteSettings.servicesSubPrograms.filter(p => p.category === 'asesmen').map((sub_p, sIdx) => (
+                      <div key={sub_p.id || sIdx} className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-700 shrink-0" />
+                          <span>{sIdx + 1}. {sub_p.title}</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          {sub_p.desc}
+                        </p>
+                        {(sub_p.materiVal1 || sub_p.materiVal2) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                            {sub_p.materiVal1 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-990 uppercase tracking-widest leading-none">{sub_p.materiLabel1 || 'Hasil Tes:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal1}</p>
+                              </div>
+                            )}
+                            {sub_p.materiVal2 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-990 uppercase tracking-widest leading-none">{sub_p.materiLabel2 || 'Detail:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal2}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      {/* Sub-Program 1 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-700" />
+                          <span>1. Tes IQ / Inteligensi (Anak, Remaja & Dewasa)</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Pengukuran tingkat kecerdasan kognitif umum (General Intelligence) menggunakan alat ukur tervalidasi (e.g. IST, WAIS, WISC) untuk menakar kesiapan studi atau rekrutmen kerja.
+                        </p>
+                        <div className="mt-4 text-xs text-gray-500 bg-white p-3.5 rounded-xl border border-gray-105">
+                          <strong>Hasil Tes:</strong> Kategori IQ (Superior, Tinggi, Rata-rata), skor kecerdasan verbal, penalaran berhitung, visual abstrak, serta daya ingat.
+                        </div>
+                      </div>
 
-                  {/* Sub-Program 2 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-700" />
-                      <span>2. Tes Bakat & Minat Terpadu (Karier & Sekolah)</span>
-                    </h3>
-                    <p className="text-xs text-gray-605 mt-2 leading-relaxed">
-                      Didesain untuk mengarahkan siswa sekolah menentukan penjurusan SMA/SMK, program kuliah PTN yang tepat, serta kecocokan kepribadian pilar profesi karier agar menghidari salah jurusan kuliah.
-                    </p>
-                    <div className="mt-4 text-xs text-gray-500 bg-white p-3.5 rounded-xl border border-gray-105">
-                      <strong>Aspek Pemetaan:</strong> Minat Holland RIASEC (Realistic, Investigative, Artistic, Social, Enterprising, Conventional), bakat mekanik, klerikal, sains, analitis.
-                    </div>
-                  </div>
+                      {/* Sub-Program 2 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-700" />
+                          <span>2. Tes Bakat & Minat Terpadu (Karier & Sekolah)</span>
+                        </h3>
+                        <p className="text-xs text-gray-650 mt-2 leading-relaxed">
+                          Didesain untuk mengarahkan siswa sekolah menentukan penjurusan SMA/SMK, program kuliah PTN yang tepat, serta kecocokan kepribadian pilar profesi karier agar menghidari salah jurusan kuliah.
+                        </p>
+                        <div className="mt-4 text-xs text-gray-500 bg-white p-3.5 rounded-xl border border-gray-105">
+                          <strong>Aspek Pemetaan:</strong> Minat Holland RIASEC (Realistic, Investigative, Artistic, Social, Enterprising, Conventional), bakat mekanik, klerikal, sains, analitis.
+                        </div>
+                      </div>
 
-                  {/* Sub-Program 3 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-700" />
-                      <span>3. Tes Akademik Khusus & Profil Kognitif</span>
-                    </h3>
-                    <p className="text-xs text-gray-605 mt-2 leading-relaxed">
-                      Pengukuran spesifik tingkat daya tangkap, kecepatan berhitung numerik linier, serta penalaran logis bagi calon pegawai instansi atau taruna akademi.
-                    </p>
-                  </div>
+                      {/* Sub-Program 3 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-emerald-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-700" />
+                          <span>3. Tes Akademik Khusus & Profil Kognitif</span>
+                        </h3>
+                        <p className="text-xs text-gray-650 mt-2 leading-relaxed">
+                          Pengukuran spesifik tingkat daya tangkap, kecepatan berhitung numerik linier, serta penalaran logis bagi calon pegawai instansi atau taruna akademi.
+                        </p>
+                      </div>
+                    </>
+                  )}
 
                   {/* Dynamic Services from Admin Settings */}
                   {siteSettings?.services && siteSettings.services.length > 0 && (
@@ -369,36 +430,66 @@ export default function LayananDetail({ serviceSubTab, setServiceSubTab, setActi
                 </div>
 
                 {/* Sub-Programs Right */}
-                <div className="lg:w-2/3 space-y-8">
-                  
-                  {/* Sub-Program 1 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-rose-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-rose-500" />
-                      <span>1. Pendampingan & Coping Stress Sesi Klinis</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Konseling mendalam untuk mengatasi burnout belajar, kecemasan pengerjaan tes, depresi akademis, kecemasan interpersonal keluarga, PTSD (Trauma), serta gangguan emosional lainnya.
-                    </p>
-                    <div className="mt-4 bg-white p-3.5 rounded-xl border border-gray-100 text-xs text-gray-500 leading-relaxed">
-                      <strong>Siapa yang memerlukan:</strong> Calon peserta seleksi TNI-POLRI yang berkali-kali gugur dan mengalami luka mental kecemasan, siswa sekolah berstres tinggi, atau individu dengan burnout kerja.
-                    </div>
-                  </div>
+                <div className="lg:w-2/3 space-y-8 text-left">
+                  {siteSettings?.servicesSubPrograms && siteSettings.servicesSubPrograms.filter(p => p.category === 'konseling').length > 0 ? (
+                    siteSettings.servicesSubPrograms.filter(p => p.category === 'konseling').map((sub_p, sIdx) => (
+                      <div key={sub_p.id || sIdx} className="border border-gray-100 rounded-2xl p-6 hover:border-rose-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+                          <span>{sIdx + 1}. {sub_p.title}</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          {sub_p.desc}
+                        </p>
+                        {(sub_p.materiVal1 || sub_p.materiVal2) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white p-4 rounded-xl border border-gray-100">
+                            {sub_p.materiVal1 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-990 uppercase tracking-widest leading-none">{sub_p.materiLabel1 || 'Detail Pendampingan:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal1}</p>
+                              </div>
+                            )}
+                            {sub_p.materiVal2 && (
+                              <div>
+                                <p className="text-[11px] font-bold text-emerald-990 uppercase tracking-widest leading-none">{sub_p.materiLabel2 || 'Sasaran Utama:'}</p>
+                                <p className="text-[11px] text-gray-500 mt-1.5">{sub_p.materiVal2}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      {/* Sub-Program 1 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-rose-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-rose-500" />
+                          <span>1. Pendampingan & Coping Stress Sesi Klinis</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Konseling mendalam untuk mengatasi burnout belajar, kecemasan pengerjaan tes, depresi akademis, kecemasan interpersonal keluarga, PTSD (Trauma), serta gangguan emosional lainnya.
+                        </p>
+                        <div className="mt-4 bg-white p-3.5 rounded-xl border border-gray-100 text-xs text-gray-500 leading-relaxed">
+                          <strong>Siapa yang memerlukan:</strong> Calon peserta seleksi TNI-POLRI yang berkali-kali gugur dan mengalami luka mental kecemasan, siswa sekolah berstres tinggi, atau individu dengan burnout kerja.
+                        </div>
+                      </div>
 
-                  {/* Sub-Program 2 */}
-                  <div className="border border-gray-100 rounded-2xl p-6 hover:border-rose-300 transition-colors bg-slate-50/50">
-                    <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
-                      <span className="w-2 h-2 rounded-full bg-rose-500" />
-                      <span>2. Konsultasi Mengoptimalkan Potensi Diri (Post-Assessment)</span>
-                    </h3>
-                    <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                      Sesi tatap muka khusus untuk membahas hasil Tes IQ / Bakat Minat Anda secara mendalam. Psikolog membantu menterjemahkan rekomendasi psikogram menjadi aksi nyata karier Anda.
-                    </p>
-                    <div className="mt-4 bg-white p-3.5 rounded-xl border border-gray-100 text-xs text-gray-500 leading-relaxed">
-                      <strong>Tujuan Utama:</strong> Memahamkan siswa akan potensi orisinil dirinya, menetapkan target pilar kuliah, serta membuat program bimbingan fisik-kognitif selaras.
-                    </div>
-                  </div>
-
+                      {/* Sub-Program 2 */}
+                      <div className="border border-gray-100 rounded-2xl p-6 hover:border-rose-300 transition-colors bg-slate-50/50">
+                        <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-rose-500" />
+                          <span>2. Konsultasi Mengoptimalkan Potensi Diri (Post-Assessment)</span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                          Sesi tatap muka khusus untuk membahas hasil Tes IQ / Bakat Minat Anda secara mendalam. Psikolog membantu menterjemahkan rekomendasi psikogram menjadi aksi nyata karier Anda.
+                        </p>
+                        <div className="mt-4 bg-white p-3.5 rounded-xl border border-gray-100 text-xs text-gray-500 leading-relaxed">
+                          <strong>Tujuan Utama:</strong> Memahamkan siswa akan potensi orisinil dirinya, menetapkan target pilar kuliah, serta membuat program bimbingan fisik-kognitif selaras.
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

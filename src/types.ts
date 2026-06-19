@@ -182,6 +182,78 @@ export interface SiteSettings {
   showBenefitsOnHome?: boolean;
   showPartnersOnHome?: boolean;
   partners?: PartnerItem[];
+  nib?: string; // NIB
+  noTester?: string; // No Tester
+  
+  // Custom Dynamic Content Fields for the 7 Admin editable features
+  aboutAztaTitle?: string;
+  aboutAztaParas?: string[];
+  aboutPageProfileTitle?: string;
+  aboutPageProfileParas?: string[];
+  visionText?: string;
+  visionSubtitle?: string;
+  visionFootnote?: string;
+  portfolioPillars?: PortfolioPillar[];
+  keunggulanTitle?: string;
+  keunggulanDesc?: string;
+  keunggulanList?: KeunggulanItem[];
+  servicesSubPrograms?: ServicesSubProgram[];
+  tentangKamiValues?: TentangKamiValue[];
+  tentangKamiMentors?: TentangKamiMentor[];
+  blogs?: BlogArticle[];
+  showProfilAkurasiOnHome?: boolean;
+  profilAkurasiLabel?: string;
+  profilAkurasiTitle?: string;
+  profilAkurasiDesc?: string;
+  profilAkurasiItems?: ProfilAkurasiItem[];
+  profilAkurasiLocation?: string;
+  profilAkurasiBadge?: string;
+}
+
+export interface ProfilAkurasiItem {
+  id: string;
+  title: string;
+  status: string;
+}
+
+export interface PortfolioPillar {
+  id: string;
+  category: 'seleksi' | 'asesmen' | 'konseling' | string;
+  title: string;
+  desc: string;
+  bullets: string[];
+}
+
+export interface KeunggulanItem {
+  id: string;
+  title: string;
+  desc: string;
+}
+
+export interface ServicesSubProgram {
+  id: string;
+  category: 'seleksi' | 'asesmen' | 'konseling';
+  title: string;
+  desc: string;
+  materiLabel1?: string;
+  materiVal1?: string;
+  materiLabel2?: string;
+  materiVal2?: string;
+}
+
+export interface TentangKamiValue {
+  id: string;
+  title: string;
+  desc: string;
+}
+
+export interface TentangKamiMentor {
+  id: string;
+  name: string;
+  role: string;
+  special: string;
+  bio: string;
+  avatar: string;
 }
 
 export interface PartnerItem {

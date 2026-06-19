@@ -5,7 +5,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
 
 import { 
@@ -63,6 +63,28 @@ export function handleFirestoreError(error: unknown, operationType: string, path
   };
   console.error('[Azta db] Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
+}
+
+// Helper to keep a collection's document list perfectly in sync with an array of objects
+export async function syncCollectionList(collectionName: string, newList: { id: string }[]) {
+  const querySnap = await getDocs(collection(db, collectionName));
+  const newIds = new Set(newList.map(item => item.id));
+
+  // 1. Delete removed items
+  for (const docSnap of querySnap.docs) {
+    if (!newIds.has(docSnap.id)) {
+      try {
+        await deleteDoc(doc(db, collectionName, docSnap.id));
+      } catch (err) {
+        console.warn(`Failed to delete doc ${docSnap.id} from collection ${collectionName}:`, err);
+      }
+    }
+  }
+
+  // 2. Add or update items
+  for (const item of newList) {
+    await setDoc(doc(db, collectionName, item.id), item);
+  }
 }
 
 // Ensure the local storage is populated with initial values if empty
@@ -182,10 +204,12 @@ export async function fetchAllData(): Promise<AztaDataStructure> {
   if (!isConfigDummy) {
     try {
       // Load Site Settings
+      let dbInitialized = false;
       const settingsDoc = await getDoc(doc(db, 'siteSettings', 'config'));
       if (settingsDoc.exists()) {
         data.siteSettings = settingsDoc.data() as SiteSettings;
         localStorage.setItem('azta_site_settings', JSON.stringify(data.siteSettings));
+        dbInitialized = true;
       } else {
         // Seed blank default settings since it is empty
         await setDoc(doc(db, 'siteSettings', 'config'), data.siteSettings);
@@ -309,9 +333,7 @@ export async function saveStudents(students: Student[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of students) {
-        await setDoc(doc(db, 'students', item.id), item);
-      }
+      await syncCollectionList('students', students);
     } catch (err) {
       handleFirestoreError(err, 'write', 'students');
     }
@@ -324,9 +346,7 @@ export async function saveAlumni(alumni: Alumni[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of alumni) {
-        await setDoc(doc(db, 'alumni', item.id), item);
-      }
+      await syncCollectionList('alumni', alumni);
     } catch (err) {
       handleFirestoreError(err, 'write', 'alumni');
     }
@@ -339,9 +359,7 @@ export async function saveRegistrations(registrations: ProgramRegistration[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of registrations) {
-        await setDoc(doc(db, 'registrations', item.id), item);
-      }
+      await syncCollectionList('registrations', registrations);
     } catch (err) {
       handleFirestoreError(err, 'write', 'registrations');
     }
@@ -354,9 +372,7 @@ export async function savePayments(payments: PaymentTransaction[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of payments) {
-        await setDoc(doc(db, 'payments', item.id), item);
-      }
+      await syncCollectionList('payments', payments);
     } catch (err) {
       handleFirestoreError(err, 'write', 'payments');
     }
@@ -369,9 +385,7 @@ export async function saveResults(results: PsychologicalResult[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of results) {
-        await setDoc(doc(db, 'results', item.id), item);
-      }
+      await syncCollectionList('results', results);
     } catch (err) {
       handleFirestoreError(err, 'write', 'results');
     }
@@ -384,9 +398,7 @@ export async function saveSessions(sessions: CounselingSession[]) {
 
   if (!isConfigDummy) {
     try {
-      for (const item of sessions) {
-        await setDoc(doc(db, 'sessions', item.id), item);
-      }
+      await syncCollectionList('sessions', sessions);
     } catch (err) {
       handleFirestoreError(err, 'write', 'sessions');
     }

@@ -339,6 +339,8 @@ const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
   phone: '0811-3000-888',
   email: 'aztabestchoice@gmail.com',
   operationalHours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
+  nib: '2712230283639',
+  noTester: '0507/lz.Pr/PP-IIBKIN/VI/2017',
   
   // Home page Hero config
   heroTitle: 'Wujudkan Impian Masa Depan Anda',
@@ -408,6 +410,18 @@ const BASE_DEFAULT_SITE_SETTINGS: SiteSettings = {
     { id: 'partner-4', name: 'Bank Mandiri', type: 'Perbankan BUMN' },
     { id: 'partner-5', name: 'Kemenkumham RI', type: 'Kedinasan / PNS' },
     { id: 'partner-6', name: 'HIMPSI Jatim', type: 'Asosiasi Resmi' }
+  ],
+  blogs: MOCK_BLOGS,
+  showProfilAkurasiOnHome: true,
+  profilAkurasiLabel: 'PROFIL AKURASI',
+  profilAkurasiTitle: 'Fasilitas Bimbingan Azta',
+  profilAkurasiDesc: 'Suasana bimbingan nyaman dan representatif di pusat kota Madiun, menjamin fokus terbaik selama pengerjaan.',
+  profilAkurasiLocation: 'Madiun, Jawa Timur',
+  profilAkurasiBadge: '⭐ Terakreditasi',
+  profilAkurasiItems: [
+    { id: 'pa-1', title: 'Lab Komputer Simulasi CAT', status: 'Tersedia' },
+    { id: 'pa-2', title: 'Ruang Konseling Kedap Nyaman', status: 'Tersedia' },
+    { id: 'pa-3', title: 'Rapor Psikogram Kepribadian', status: 'Eksklusif' }
   ]
 };
 

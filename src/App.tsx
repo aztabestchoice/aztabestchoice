@@ -262,7 +262,7 @@ export default function App() {
 
         {/* ABOUT US VISUAL HISTORIES */}
         {activeTab === 'tentang' && (
-          <TentangKami />
+          <TentangKami siteSettings={siteSettings} />
         )}
 
         {/* ALUMNI SUCCESS GALLERY */}
@@ -272,7 +272,7 @@ export default function App() {
 
         {/* ARTICLES & EDUCATIONAL BLOGS */}
         {activeTab === 'blog' && (
-          <BlogPage />
+          <BlogPage siteSettings={siteSettings} />
         )}
 
         {/* CONTACT US & FAQs ACCORDION */}

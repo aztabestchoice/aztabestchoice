@@ -5,17 +5,25 @@
 
 import React, { useState } from 'react';
 import { MOCK_BLOGS } from '../mockData';
-import { BlogArticle } from '../types';
+import { BlogArticle, SiteSettings } from '../types';
 import { BookOpen, Calendar, User, Clock, ArrowLeft, ArrowRight, Tag } from 'lucide-react';
 
-export default function BlogPage() {
+interface BlogPageProps {
+  siteSettings?: SiteSettings;
+}
+
+export default function BlogPage({ siteSettings }: BlogPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Tips Psikotes' | 'Kesehatan Mental' | 'Informasi Seleksi'>('All');
   const [activeArticle, setActiveArticle] = useState<BlogArticle | null>(null);
 
+  const activeBlogs = siteSettings?.blogs && siteSettings.blogs.length > 0
+    ? siteSettings.blogs
+    : MOCK_BLOGS;
+
   // Filter based on state selection
   const filteredBlogs = selectedCategory === 'All'
-    ? MOCK_BLOGS 
-    : MOCK_BLOGS.filter(blog => blog.category === selectedCategory);
+    ? activeBlogs 
+    : activeBlogs.filter(blog => blog.category === selectedCategory);
 
   const categories = ['All', 'Tips Psikotes', 'Kesehatan Mental', 'Informasi Seleksi'] as const;
 

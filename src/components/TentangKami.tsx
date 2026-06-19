@@ -6,33 +6,38 @@
 import React from 'react';
 import { MOCK_PSYCHOLOGISTS } from '../mockData';
 import { ShieldCheck, Award, Flag, Users, CheckSquare, Target, BookOpen, Star } from 'lucide-react';
+import { SiteSettings } from '../types';
 
-export default function TentangKami() {
+interface TentangKamiProps {
+  siteSettings?: SiteSettings;
+}
+
+export default function TentangKami({ siteSettings }: TentangKamiProps) {
   
-  const coreValues = [
+  const defaultCoreValues = [
     {
+      id: 'val-1',
       title: 'Integritas Ilmiah',
       desc: 'Setiap asesmen dan tes psikometri didasarkan pada instrumen baku, sahih, tepercaya, dan bebas dari manipulasi pihak lain.',
-      icon: <ShieldCheck className="w-5 h-5 text-emerald-800" />
     },
     {
+      id: 'val-2',
       title: 'Akurasi Presisi',
       desc: 'Materi bimbingan disesuaikan dengan kurikulum seleksi kepolisian/TNI & PNS terkini untuk meminimalkan deviasi hasil ujian.',
-      icon: <Target className="w-5 h-5 text-emerald-800" />
     },
     {
+      id: 'val-3',
       title: 'Kerahasiaan Mutlak',
       desc: 'Seluruh rekam konseling dan lembar psikogram adalah rahasia pribadi pasien, dilindungi penuh oleh UU Kode Etik Psikolog.',
-      icon: <Award className="w-5 h-5 text-emerald-800" />
     },
     {
+      id: 'val-4',
       title: 'Empati Pengasuhan',
       desc: 'Kami menyadari bahwa pilar psikologi bukan sekadar angka di kertas, tetapi mendampingi pertumbuhan jiwa siswa dengan tulus.',
-      icon: <BookOpen className="w-5 h-5 text-emerald-800" />
     }
   ];
 
-  const mentors = [
+  const defaultMentors = [
     {
       name: 'AKP (Purn) Soedjatmiko',
       role: 'Mentor Kepala Fisik & Mental Seleksi',
@@ -48,6 +53,21 @@ export default function TentangKami() {
       avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200'
     }
   ];
+
+  const coreValues = siteSettings?.tentangKamiValues && siteSettings.tentangKamiValues.length > 0 
+    ? siteSettings.tentangKamiValues 
+    : defaultCoreValues;
+
+  const mentors = siteSettings?.tentangKamiMentors && siteSettings.tentangKamiMentors.length > 0 
+    ? siteSettings.tentangKamiMentors 
+    : defaultMentors;
+
+  const getIconForValue = (idx: number) => {
+    if (idx % 4 === 0) return <ShieldCheck className="w-5 h-5 text-emerald-800" />;
+    if (idx % 4 === 1) return <Target className="w-5 h-5 text-emerald-800" />;
+    if (idx % 4 === 2) return <Award className="w-5 h-5 text-emerald-800" />;
+    return <BookOpen className="w-5 h-5 text-emerald-800" />;
+  };
 
   return (
     <div className="bg-slate-50 py-12 px-4 font-sans" id="about-us-view">
@@ -73,15 +93,27 @@ export default function TentangKami() {
             {/* Left Content Column */}
             <div className="lg:col-span-7 space-y-6 text-left" id="about-history-content">
               <span className="text-xs text-emerald-800 font-semibold uppercase tracking-wider block">Profil & Sejarah Singkat</span>
-              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight">Mewujudkan Cita-Cita Abdi Negara di Jl. Kawis Madiun</h2>
+              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight">
+                {siteSettings?.aboutPageProfileTitle || 'Mewujudkan Cita-Cita Abdi Negara di Jl. Kawis Madiun'}
+              </h2>
               
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Azta Best Choice lahir bermula dari kolaborasi praktisi psikologi industri, klinis, dan mantan instruktur pertahanan negara. Mengamati tingginya angka keguguran peserta seleksi kepolisian dan militer dari Jawa Timur di tahap psikotes (mencapai lebih dari 62%), kami bertekad menciptakan pusat bimbingan dengan akurasi presisi tinggi.
-              </p>
-              
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Kini, berlokasi di Jl. Kawis, Kecamatan Taman, Kota Madiun, Azta Best Choice telah berkembang menjadi bimbingan pilihan utama yang menyinergikan peningkatan inteligensi, ketahanan stres, pemetaan minat bakat anak sejak dini, beserta pendampingan keluhan stres klinis.
-              </p>
+              {siteSettings?.aboutPageProfileParas && siteSettings.aboutPageProfileParas.length > 0 ? (
+                siteSettings.aboutPageProfileParas.map((p, idx) => (
+                  <p key={idx} className="text-xs text-gray-600 leading-relaxed">
+                    {p}
+                  </p>
+                ))
+              ) : (
+                <>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    Azta Best Choice lahir bermula dari kolaborasi praktisi psikologi industri, klinis, dan mantan instruktur pertahanan negara. Mengamati tingginya angka keguguran peserta seleksi kepolisian dan militer dari Jawa Timur di tahap psikotes (mencapai lebih dari 62%), kami bertekad menciptakan pusat bimbingan dengan akurasi presisi tinggi.
+                  </p>
+                  
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    Kini, berlokasi di Jl. Kawis, Kecamatan Taman, Kota Madiun, Azta Best Choice telah berkembang menjadi bimbingan pilihan utama yang menyinergikan peningkatan inteligensi, ketahanan stres, pemetaan minat bakat anak sejak dini, beserta pendampingan keluhan stres klinis.
+                  </p>
+                </>
+              )}
 
               {/* Mission list */}
               <div className="space-y-3 pt-2">
@@ -155,7 +187,7 @@ export default function TentangKami() {
                 id={`val-box-${index}`}
               >
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 shrink-0">
-                  {val.icon}
+                  {getIconForValue(index)}
                 </div>
                 <h4 className="text-sm font-bold text-slate-950 mb-2">{val.title}</h4>
                 <p className="text-[11px] text-gray-500 leading-relaxed text-left">{val.desc}</p>
